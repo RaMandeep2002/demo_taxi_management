@@ -279,7 +279,7 @@ export default function BookingHistory() {
                             <div className="flex gap-2">
                               <Route className="h-4 w-4" />
                               <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                                {booking.distance}
+                                {booking.distance} Km
                               </span>
                             </div>
                             <div className="flex gap-2">
