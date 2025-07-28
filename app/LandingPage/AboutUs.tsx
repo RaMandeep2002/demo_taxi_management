@@ -6,7 +6,7 @@ export default function AboutUs() {
     <>
       <section
         id="about"
-        className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
+        className="w-full  py-12 md:py-24 lg:py-32 flex justify-center items-center"
       >
         <div className="max-w-6xl w-full px-4 md:px-6">
           <div className="items-center justify-center">

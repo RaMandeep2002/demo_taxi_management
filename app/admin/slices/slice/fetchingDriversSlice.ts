@@ -9,13 +9,13 @@ import axios from "axios";
 interface DriverState {
   data: Drivers[];
   isLoading: boolean;
-  error: string | null;
+  isthereerror: string | null;
 }
 
 const initialState: DriverState = {
   data: [],
   isLoading: false,
-  error: null,
+  isthereerror: null,
 };
 
 export const fetchdriverdetails = createAsyncThunk(
@@ -36,6 +36,7 @@ export const fetchdriverdetails = createAsyncThunk(
           },
         },
       );
+      console.log("data --> ", response.data)
       return response.data; // Return admin data
     } catch (error) {
       console.error(error);
@@ -53,14 +54,14 @@ const driverDetailSlice = createSlice({
     clearData: (state) => {
       state.data = [];
       state.isLoading = false;
-      state.error = null;
+      state.isthereerror = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchdriverdetails.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
+        state.isthereerror = null;
       })
       .addCase(
         fetchdriverdetails.fulfilled,
@@ -71,7 +72,7 @@ const driverDetailSlice = createSlice({
       )
       .addCase(fetchdriverdetails.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.isthereerror = action.payload as string;
       });
   },
 });

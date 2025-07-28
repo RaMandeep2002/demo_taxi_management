@@ -67,24 +67,35 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center"
+      className={`
+        min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 
+        bg-cover bg-center transition-colors
+        bg-white dark:bg-zinc-900
+      `}
       style={{
-        backgroundImage: "url('https://i.postimg.cc/JnTcbvg9/bg-1.png')",
+        backgroundImage:
+          "url('https://i.postimg.cc/JnTcbvg9/bg-1.png')",
+        backgroundBlendMode: "multiply",
       }}
     >
       <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-[450px]">
-        <Card className="w-full shadow-lg">
+        <Card className="w-full shadow-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 transition-colors">
           <CardHeader>
-            <CardTitle>Admin Login</CardTitle>
-            <CardDescription>
-              Enter your credentials to access the dashboard
+            <CardTitle className="text-zinc-900 dark:text-white text-2xl font-bold">
+              Admin Login
+            </CardTitle>
+            <CardDescription className="text-zinc-600 dark:text-zinc-300">
+              Please enter your admin credentials to access the dashboard.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit}>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
+            <form onSubmit={handleSubmit} autoComplete="off">
+              <div className="grid w-full items-center gap-6">
+                {/* Email Field */}
+                <div className="flex flex-col space-y-2">
+                  <Label htmlFor="email" className="text-zinc-800 dark:text-zinc-200 font-medium">
+                    Email Address
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -92,33 +103,44 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className="h-11 px-3 rounded-md border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                   />
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
+                {/* Password Field */}
+                <div className="flex flex-col space-y-2">
+                  <Label htmlFor="password" className="text-zinc-800 dark:text-zinc-200 font-medium">
+                    Password
+                  </Label>
                   <Input
                     id="password"
                     type="password"
+                    placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="h-11 px-3 rounded-md border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                   />
                 </div>
               </div>
+              {/* Submit Button */}
+              <CardFooter className="flex justify-end mt-6 px-0">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 font-semibold transition"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Please wait
+                    </>
+                  ) : (
+                    "Login"
+                  )}
+                </Button>
+              </CardFooter>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit" onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Login"
-              )}
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </div>

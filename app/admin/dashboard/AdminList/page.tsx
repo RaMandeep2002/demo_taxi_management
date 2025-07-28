@@ -14,22 +14,33 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-  import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -40,7 +51,15 @@ import {
   fetchAdminsdetails,
 } from "../../slices/slice/fetchingAdminSlice";
 import { useSelector } from "react-redux";
-import { Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  List,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Trash,
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { updateAdmin } from "../../slices/slice/updateUserSlice";
 import { useToast } from "@/hooks/use-toast";
@@ -58,6 +77,9 @@ export default function AdminList() {
   const dispatch = useDispatch<AppDispatch>();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [dialogType, setDialogType] = useState<
+    "profile" | "edit" | "delete" | null
+  >(null);
 
   const [selectedAdmin, setSelectedAdmin] = useState<Admins | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,6 +96,19 @@ export default function AdminList() {
   const { isDeleteting, succeesMessage } = useSelector(
     (state: RootState) => state.deleteAdmins
   );
+
+  const handleDialogOpen = (
+    admin: Admins,
+    type: "profile" | "edit" | "delete"
+  ) => {
+    setSelectedAdmin(admin);
+    setDialogType(type);
+  };
+
+  const handleDialogClose = () => {
+    setSelectedAdmin(null);
+    setDialogType(null);
+  };
 
   //   const [showPassword, setShowPassword] = useState(false);
 
@@ -109,7 +144,7 @@ export default function AdminList() {
   }, [selectedAdmin]);
 
   const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage);
-  const paginatedDrivers = filteredAdmins.slice(
+  const paginatedAdmins = filteredAdmins.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -117,9 +152,6 @@ export default function AdminList() {
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
-
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -155,7 +187,6 @@ export default function AdminList() {
     }
   };
 
-
   const handleAdminDriver = (userId: string) => async () => {
     try {
       await dispatch(deleteAdmin(userId));
@@ -177,28 +208,19 @@ export default function AdminList() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Admins List</h1>
-
-        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-          <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
-            <Input
-              placeholder="Search by name, email..."
-              className="w-full sm:w-72 text-white border border-[#F5EF1B] placeholder-white"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {/* <Button
-                variant="outline"
-                size="icon"
-                className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B] flex-shrink-0"
-              >
-                <Search className="h-4 w-4 text-[#F5EF1B]" />
-              </Button> */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+              <span>
+                <List />
+              </span>
+              <span>Admin Management</span>
+            </h1>
+            <p className="text-gray-600 dark:text-white mt-1">Manage system administrators.</p>
           </div>
-
-          <div className="w-full sm:w-auto flex justify-end">
+          <div className="w-full sm:w-auto flex justify-end mt-4 sm:mt-0">
             <Button
-              className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+              className="w-full sm:w-auto"
               onClick={() => router.push("/admin/dashboard/AddAdmin")}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -207,346 +229,364 @@ export default function AdminList() {
           </div>
         </div>
 
-        <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="text-center border border-[#F5EF1B]">
-                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Name
-                </TableHead>
-                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Email
-                </TableHead>
-                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center text-white">
-                    {error}
-                  </TableCell>
-                </TableRow>
-              ) : filteredAdmins.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    No drivers found
-                  </TableCell>
-                </TableRow>
-              ) : (
-                paginatedDrivers.map((admin) => (
-                  <TableRow
-                    className="text-center border text-yellow-400 border-[#F5EF1B]"
-                    key={admin._id}
-                  >
-                    <TableCell className="text-white text-xs sm:text-sm">
-                      {highlightMatch(admin.name, debouncedSearch)}
-                    </TableCell>
-                    <TableCell className="text-white text-xs sm:text-sm">
-                      {admin.email}
-                    </TableCell>
-                    {/* <TableCell className="text-center text-white">
-                        {driver.driversLicenseNumber}
-                      </TableCell> */}
-
-                    <TableCell className="text-center">
-                      <Dialog>
-                        <DialogTrigger asChild className="text-white">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setSelectedAdmin(admin)}
-                          >
-                            <Eye className="h-4 w-4 text-[#F5EF1B]" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-xl bg-[#F5EF1B] border-none rounded-2xl shadow-lg">
-                          <DialogHeader>
-                            <DialogTitle className="text-3xl font-bold text-zinc-900 text-center">
-                              Admin Details
-                            </DialogTitle>
-                          </DialogHeader>
-
-                          <div className="grid gap-5 mt-6 px-2">
-                            {[
-                              {
-                                label: "Name",
-                                value: selectedAdmin?.name,
-                              },
-                              { label: "Email", value: selectedAdmin?.email },
-                            ].map(({ label, value }, idx) => (
-                              <div
-                                key={idx}
-                                className="flex justify-between items-center border-b border-black pb-2"
-                              >
-                                <span className="text-lg font-medium text-zinc-700">
-                                  {label}
-                                </span>
-                                <span className="text-lg font-semibold text-zinc-900">
-                                  {value}
-                                </span>
-                              </div>
-                            ))}
+        <div className="border rounded-lg overflow-hidden">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <CardTitle>System Administrators</CardTitle>
+                  <CardDescription>
+                    Manage admin users and their access levels
+                  </CardDescription>
+                </div>
+                <div className="relative">
+                  {/* <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" /> */}
+                  <Input
+                    placeholder="Search by name, email..."
+                    className="w-full sm:w-52 border placeholder-white"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[50px]"></TableHead>
+                    <TableHead>Admin Name</TableHead>
+                    <TableHead>Admin Email</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center">
+                        Loading...
+                      </TableCell>
+                    </TableRow>
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center text-black dark:text-white">
+                        {error}
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredAdmins.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center">
+                        No drivers found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    paginatedAdmins.map((admin) => (
+                      <TableRow key={admin._id}>
+                        <TableCell>
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 font-semibold text-base">
+                              {admin.name
+                                ? admin.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")
+                                    .toUpperCase()
+                                : "A"}
+                            </span>
                           </div>
-                        </DialogContent>
-                      </Dialog>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setSelectedAdmin(admin)}
-                          >
-                            <Pencil className="h-4 w-4 text-[#F5EF1B]" />
-                          </Button>
-                        </DialogTrigger>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium text-gray-900 dark:text-white">
+                            {highlightMatch(admin.name, debouncedSearch)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                        <div className="font-medium text-gray-900 dark:text-white">
+                            {highlightMatch(admin.email, debouncedSearch)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleDialogOpen(admin, "profile")
+                                }
+                              >
+                                <Eye className="w-4 h-4" />
+                                View Profile
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDialogOpen(admin, "edit")}
+                              >
+                                <Pencil className="w-4 h-4" />
+                                Update Admin
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() =>
+                                  handleDialogOpen(admin, "delete")
+                                }
+                              >
+                                <Trash className="w-4 h-4" />
+                                Delete Admin
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
 
-                        <DialogContent className="bg-[#F5EF1B] border-none">
-                          <DialogHeader>
-                            <DialogTitle className="  text-zinc-800">
-                              {/* Edit Driver */}
-                              <h1 className="text-zinc-800">
-                                <span className="text-zinc-900">
-                                  Update Data for <span className="font-bold">{admin.name}</span>
-                                </span>
-                              </h1>
-                            </DialogTitle>
-                          </DialogHeader>
-                          {iserror && (
-                              <p className="text-red-500 text-center">
-                                {iserror}
-                              </p>
-                            )}
-                          <form
-                          onSubmit={handleSubmit}
-                          >
-                            <div className="grid gap-4 py-4">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="name"
-                                  className="text-right     text-zinc-800"
-                                >
-                                  Admin Name
-                                </Label>
-                                <Input
-                                  id="name"
-                                  type="text"
-                                  placeholder="Enter Driver Name"
-                                  value={formData.name}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      name: e.target.value,
-                                    })
-                                  }
-                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
-                                />
-                              </div>
+        <Dialog
+          open={dialogType === "profile"}
+          onOpenChange={handleDialogClose}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Admin Profile</DialogTitle>
+              <DialogDescription>
+                Detailed information about {selectedAdmin?.name}
+              </DialogDescription>
+            </DialogHeader>
+            {selectedAdmin && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-semibold text-base">
+                        {selectedAdmin.name
+                          ? selectedAdmin.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()
+                          : "A"}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        {selectedAdmin.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {selectedAdmin._id}
+                      </p>
+                    </div>
+                  </div>
 
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="email"
-                                  className="text-right     text-zinc-800"
-                                >
-                                  Email
-                                </Label>
-                                <Input
-                                  type="email"
-                                  placeholder="Enter Email"
-                                  value={formData.email}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      email: e.target.value,
-                                    })
-                                  }
-                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
-                                />
-                              </div>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">
+                        Email
+                      </Label>
+                      <p className="text-sm">{selectedAdmin.email}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {/* You can add more admin details here if needed */}
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={handleDialogClose}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-                              {/* <h1 className="text-zinc-800">
+        <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
+          <DialogContent className="sm:max-w-[500px] border-0 shadow-2xl">
+            <DialogHeader className="space-y-3 pb-6 border-b border-slate-100">
+              <DialogTitle className="text-slate-800 dark:text-white text-2xl font-bold flex items-center gap-3">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
+                    <span className="text-blue-600 font-bold text-xl">
+                      {selectedAdmin?.name
+                        ? selectedAdmin?.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : "A"}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
+                      Update Data for
+                    </h3>
+                    <span className="block text-base font-medium text-blue-700 dark:text-yellow-300">
+                      {selectedAdmin?.name}
+                    </span>
+                  </div>
+                </div>
+              </DialogTitle>
+            </DialogHeader>
+            {iserror && <p className="text-red-500 text-center">{iserror}</p>}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="name"
+                    className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
+                  >
+                    Admin Name
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter Driver Name"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="email"
+                    className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
+                  >
+                    Email
+                  </Label>
+                  <Input
+                    type="email"
+                    placeholder="Enter Email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                {/* <h1 className="text-zinc-800">
                                 <span className="bg-yellow-200 px-2 py-1 rounded text-zinc-900">
                                   Update Password for <span className="font-bold">{admin.name}</span>
                                 </span>
                               </h1> */}
-                              <div className="grid grid-cols-4 items-center gap-4 relative">
-                                <Label
-                                  htmlFor="password"
-                                  className="text-right text-zinc-800"
-                                >
-                                  Password
-                                </Label>
-                                <div className="col-span-3 relative">
-                                  <Input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Enter Updated Password"
-                                    value={formData.password}
-                                    onChange={(e) =>
-                                      setFormData({
-                                        ...formData,
-                                        password: e.target.value,
-                                      })
-                                    }
-                                    className="w-full border border-zinc-800 rounded-lg text-zinc-800 pr-10"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setShowPassword(!showPassword)
-                                    }
-                                    className="absolute top-1/2 right-2 transform -translate-y-1/2 text-zinc-600 hover:text-zinc-800"
-                                  >
-                                    {showPassword ? (
-                                      <EyeOff size={18} />
-                                    ) : (
-                                      <Eye size={18} />
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="password"
+                  className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
+                  >
+                    Password
+                  </Label>
+                  <div className="col-span-3 relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter Updated Password"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          password: e.target.value,
+                        })
+                      }
+                      className="h-11"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute top-1/2 right-2 transform -translate-y-1/2 text-zinc-600 hover:text-zinc-800"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                            <DialogFooter>
-                              <Button
-                                type="submit"
-                                disabled={isProcessing}
-                              >
-                                {isProcessing ? "Updating..." : "Update Admin"} 
-                              </Button>
-                            </DialogFooter>
-                          </form>
-                        </DialogContent>
-                      </Dialog>
+              <DialogFooter>
+                <Button type="submit" disabled={isProcessing}>
+                  {isProcessing ? "Updating..." : "Update Admin"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
 
-
-                       <AlertDialog>
-                          <AlertDialogTrigger asChild className="text-white">
-                            <Button variant="ghost" size="icon">
-                              <Trash2 className="h-4 w-4 text-[#F5EF1B]" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className="bg-[#F5EF1B] border-none">
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Delete this User{" "}
-                                <span className="font-bold">
-                                  {admin.name}
-                                </span>
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={handleAdminDriver(admin._id)}
-                                disabled={isDeleteting}
-                              >
-                                {isDeleteting ? "Deleting..." : "Delete"}
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                    </TableCell>
-
-
-
-                     
-                    {/* <TableCell className="text-center">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
-                              onClick={() => setSelectedDriver(driver)}
-                            >
-                              Reset Password
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-md bg-[#F5EF1B] border-none">
-                            <DialogHeader>
-                              <DialogTitle className="text-2xl font-semibold text-zinc-800">
-                                Reset Password
-                              </DialogTitle>
-                            </DialogHeader>
-  
-                            <form
-                              onSubmit={handleResetPassword}
-                              className="grid gap-3 mt-4"
-                            >
-                              <div className="grid grid-cols-4 items-center gap-4 relative">
-                                <Label
-                                  htmlFor="new-password"
-                                  className="text-right text-zinc-800"
-                                >
-                                  New Password
-                                </Label>
-                                <div className="col-span-3 relative">
-                                  <input
-                                    id="new-password"
-                                    type={showPassword ? "text" : "password"}
-                                    className="w-full px-3 py-2 pr-10 bg-white rounded-md border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-700"
-                                    placeholder="Enter new password"
-                                    value={newPassword}
-                                    onChange={(e) =>
-                                      setNewPassword(e.target.value)
-                                    }
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
-                                    tabIndex={-1}
-                                  >
-                                    {showPassword ? (
-                                      <EyeOff size={18} />
-                                    ) : (
-                                      <Eye size={18} />
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-  
-                              <div className="flex justify-end">
-                                <button
-                                  type="submit"
-                                  className="px-4 py-2 bg-zinc-800 text-white rounded-md hover:bg-zinc-700 transition"
-                                >
-                                  Reset Password
-                                </button>
-                              </div>
-                            </form>
-                          </DialogContent>
-                        </Dialog>
-                      </TableCell> */}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <AlertDialog
+          open={dialogType === "delete"}
+          onOpenChange={handleDialogClose}
+        >
+          <AlertDialogContent className="border-none">
+          <AlertDialogHeader className="space-y-3 pb-6">
+              <AlertDialogTitle className="flex items-center gap-4 text-slate-800 text-2xl font-bold">
+                <div className="flex items-center gap-4 mb-4">
+                  {/* Admin Initials Avatar */}
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
+                    <span className="text-blue-600 font-bold text-xl">
+                      {selectedAdmin?.name
+                        ? selectedAdmin.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : "A"}
+                    </span>
+                  </div>
+                  {/* Delete Confirmation Text */}
+                  <div>
+                    <h3 className="text-lg font-bold text-red-600">
+                      Confirm Admin Deletion
+                    </h3>
+                    <p className="text-sm text-zinc-700 mt-1">
+                      You are about to permanently delete the following admin account:
+                    </p>
+                    <span className="block text-base font-semibold text-blue-700 dark:text-yellow-300">
+                      {selectedAdmin?.name || "Unknown Admin"}
+                    </span>
+                  </div>
+                </div>
+              </AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={
+                  selectedAdmin?._id
+                    ? handleAdminDriver(selectedAdmin?._id)
+                    : undefined
+                }
+                disabled={isDeleteting}
+              >
+                {isDeleteting ? "Deleting..." : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
+            className="text-black bg-white hover:bg-gray-100 hover:text-black w-full sm:w-auto border border-gray-300"
           >
             Previous
           </Button>
-          <span className="text-sm text-[#F5EF1B]">
+          <span className="text-sm">
             Page {currentPage} of {totalPages}
           </span>
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
+            className="text-black bg-white hover:bg-gray-100 hover:text-black w-full sm:w-auto border border-gray-300"
           >
             Next
           </Button>

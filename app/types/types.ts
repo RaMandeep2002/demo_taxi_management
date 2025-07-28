@@ -14,6 +14,8 @@ export interface Drivers {
   vehicle: []; // Replace `any` with a specific type if needed
   password: string;
   status: string;
+  totalEarnings: number;
+  totalTrips: number;
   shifts: []; // Replace `any` with a specific type if needed
   createdAt: string;
   updatedAt: string;
@@ -22,7 +24,7 @@ export interface Drivers {
 }
 
 export interface DriversResponse {
-  success: boolean;
+  success: boolean; 
   message: string;
   data: Drivers[];
 }

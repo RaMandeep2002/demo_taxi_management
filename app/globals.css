@@ -171,5 +171,7 @@ body {
 
 
 .PhoneInputInput {
-  @apply w-full  text-zinc-800 bg-transparent text-base;
+  @apply w-full bg-transparent text-base focus:outline-none;
 }
+
+

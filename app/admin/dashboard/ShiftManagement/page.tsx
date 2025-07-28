@@ -21,11 +21,29 @@ import {
 } from "../../slices/slice/stopShiftsDriver";
 import { useToast } from "@/hooks/use-toast";
 import { useDebounce } from "@/lib/useDebounce";
-import { Ban } from "lucide-react";
+import { Ban, Car, Clock10, Plus, Search } from "lucide-react";
 import { stopAllShiftByAdmin } from "../../slices/slice/stopAllShiftSlice";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { Label } from "@/components/ui/label";
 
 export default function ShiftsAndVehicle() {
   const { toast: showToast } = useToast(); // rename to avoid shadowing
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -170,11 +188,36 @@ export default function ShiftsAndVehicle() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">
-          Shifts with Vehicle Assigned
-        </h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+          <div className="space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-bold">Shift Management</h1>
+            <p>Monitor and manage driver shifts and schedules</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 sm:mt-0">
+            <Button
+              className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-2 shadow"
+              onClick={() => {
+                router.push("/admin/dashboard/ScheduleRide/");
+              }}
+            >
+              <span className="animate-pulse">
+                <Plus size={20} />
+              </span>
+              Schedule Shift
+            </Button>
+            <Button
+              className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors flex items-center gap-2 shadow"
+              onClick={handleStopAllShiftDriver}
+            >
+              <span className="animate-pulse">
+                <Ban className="mr-2 h-4 w-4" />
+              </span>
+              Stop All Shift
+            </Button>
+          </div>
+        </div>
 
-        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        {/* <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
               autoFocus
@@ -198,141 +241,205 @@ export default function ShiftsAndVehicle() {
               Stop All Shift
             </Button>
           </div>
-        </div>
+        </div> */}
 
-        <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="text-center border border-[#F5EF1B]">
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Driver Name
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Vehicle
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Start
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  End
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Shift Status
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Vehicle Status
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Action
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-white">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-white">
-                    {error}
-                  </TableCell>
-                </TableRow>
-              ) : paginatedShifts.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-white">
-                    No shift data available.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                paginatedShifts.map((shift, index) => (
-                  <TableRow
-                    key={index}
-                    className="text-center text-white border border-[#F5EF1B]"
-                  >
-                    <TableCell>
-                      {highlightMatch(shift.driver.drivername, debouncedSearch)}
-                    </TableCell>
-                    <TableCell>{shift.vehicle.vehicleModel}</TableCell>
-                    <TableCell>
-                      {`${shift.startTime} - ${shift.startDate}`}
-                    </TableCell>
-                    <TableCell>
-                      {shift.endTime && shift.endDate
-                        ? `${shift.endTime} - ${shift.endDate}`
-                        : "Ongoing"}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          shift.isActive
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {shift.isActive ? "Active" : "End"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          shift.isActive
-                            ? shift.vehicle.isAssigned
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                            : // If shift is ended, but vehicle is still assigned elsewhere, show "Should be Free"
-                            shift.vehicle.isAssigned
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {shift.isActive
-                          ? shift.vehicle.isAssigned
-                            ? "Assigned"
-                            : "Free"
-                          : shift.vehicle.isAssigned
-                          ? "Free"
-                          : "Free"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        className="bg-red-600 hover:bg-red-700"
-                        disabled={
-                          !shift.isActive ||
-                          stoppingDriverId === shift.driver.driverId
-                        }
-                        onClick={handleStopShiftDriver(shift.driver.driverId)}
-                      >
-                        Stop Shift
-                      </Button>
-                    </TableCell>
+        <div className="rounded-lg overflow-hidden">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <CardTitle>All Drivers</CardTitle>
+                  <CardDescription>
+                    Complete list of registered drivers
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search drivers..."
+                      className="pl-10 w-64"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Driver Name</TableHead>
+                    <TableHead>Vehicle</TableHead>
+                    <TableHead>Start</TableHead>
+                    <TableHead>End</TableHead>
+                    <TableHead>Shift Status</TableHead>
+                    <TableHead>Shift Earnings</TableHead>
+                    <TableHead>Vehicle Status</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center">
+                        Loading...
+                      </TableCell>
+                    </TableRow>
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={9}
+                        className="text-center text-black dark:text-white"
+                      >
+                        {error}
+                      </TableCell>
+                    </TableRow>
+                  ) : paginatedShifts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center">
+                        No Shifts found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    paginatedShifts.map((shift, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <span className="text-blue-600 font-semibold text-base">
+                                {shift.driver.drivername
+                                  ? shift.driver.drivername
+                                      .split(" ")
+                                      .map((n) => n[0])
+                                      .join("")
+                                      .toUpperCase()
+                                  : "D"}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-white">
+                                {highlightMatch(
+                                  shift.driver.drivername,
+                                  debouncedSearch
+                                )}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {shift.driver.driverId?.slice(0, 8)}
+                              </div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Car className="h-3 w-3 text-gray-400 dark:text-white" />
+                              <span className="text-gray-600 dark:text-white">
+                                {shift.vehicle.vehicleModel}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Clock10 className="h-3 w-3 text-gray-400 dark:text-white" />
+                              <span className="text-gray-600 dark:text-white">
+                                {`${shift.startTime} - ${shift.startDate}`}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Clock10 className="h-3 w-3 text-gray-400 dark:text-white" />
+                              <span className="text-gray-600 dark:text-white">
+                                {shift.endTime && shift.endDate
+                                  ? `${shift.endTime} - ${shift.endDate}`
+                                  : "Ongoing"}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={shift.isActive ? "default" : "outline"}
+                          >
+                            {shift.isActive ? "Active" : "End"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              {/* <DollarSign className="h-3 w-3 text-gray-400 dark:text-white" /> */}
+                              <span className="font-medium text-green-600 dark:text-yellow-300">
+                                ${shift.totalEarnings}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                              shift.isActive
+                                ? shift.vehicle.isAssigned
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                                : shift.vehicle.isAssigned
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {shift.isActive
+                              ? shift.vehicle.isAssigned
+                                ? "Assigned"
+                                : "Free"
+                              : shift.vehicle.isAssigned
+                              ? "Free"
+                              : "Free"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            disabled={
+                              !shift.isActive ||
+                              stoppingDriverId === shift.driver.driverId
+                            }
+                            onClick={handleStopShiftDriver(
+                              shift.driver.driverId
+                            )}
+                            className="hover:cursor-pointer"
+                          >
+                            Stop Shift
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
+            className="text-black bg-white hover:bg-gray-100 hover:text-black w-full sm:w-auto border border-gray-300"
           >
             Previous
           </Button>
-          <span className="text-sm text-[#F5EF1B]">
+          <span className="text-sm">
             Page {currentPage} of {totalPages}
           </span>
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
+            className="text-black bg-white hover:bg-gray-100 hover:text-black w-full sm:w-auto border border-gray-300"
           >
             Next
           </Button>

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { UpdateSettings } from "../../slices/slice/UpdateSettingSlice";
 import { useToast } from "@/hooks/use-toast";
+import { Settings2 } from "lucide-react";
 
 export default function Settings() {
   const dispatch = useDispatch<AppDispatch>();
@@ -65,7 +66,17 @@ export default function Settings() {
   return (
     <DashboardLayout>
       <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Settings</h1>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold  flex items-center gap-2">
+              <span>
+                <Settings2 />
+              </span>
+              <span>Settings</span>
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">Manage system Settings.</p>
+          </div>
+        </div>
 
         {isLoading && (
           <div className="flex justify-center items-center">
@@ -79,58 +90,85 @@ export default function Settings() {
           </div>
         )}
 
-        {!isLoading && settings && (
+        {!isLoading  && (
           <form
             onSubmit={handleSubmit}
-            className="bg-[#F5EF1B] shadow-lg rounded-lg p-6 max-w-md"
+            className="shadow-lg rounded-lg p-6 max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
           >
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-              Pricing Details
+            <h2 className="text-2xl font-semibold text-gray-700 dark:text-white mb-4">
+              Update Ride Pricing
             </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-300 mb-6">
+              Adjust the pricing details for rides. These settings affect how fares are calculated for all users.
+            </p>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <Label className="block text-zinc-800 font-medium mb-1">
-                  Base Price:
+                <Label className="block text-zinc-800 dark:text-zinc-200 font-medium mb-1" htmlFor="base_price">
+                  Base Price
                 </Label>
                 <Input
-                  type="text"
+                  id="base_price"
+                  type="number"
+                  min="0"
+                  step="0.01"
                   value={base_price}
                   onChange={(e) => setBase_price(e.target.value)}
-                  className="border border-zinc-800 text-zinc-800"
+                  className="border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 bg-white dark:bg-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                  placeholder="Enter the base fare (e.g., 5.00)"
+                  required
                 />
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  The minimum fare charged for any ride.
+                </span>
               </div>
 
               <div>
-                <Label className="block text-zinc-800 font-medium mb-1">
-                  Distance Price Per KM:
+                <Label className="block text-zinc-800 dark:text-zinc-200 font-medium mb-1" htmlFor="km_price">
+                  Distance Price Per KM
                 </Label>
                 <Input
-                  type="text"
+                  id="km_price"
+                  type="number"
+                  min="0"
+                  step="0.01"
                   value={km_price}
                   onChange={(e) => setKm_price(e.target.value)}
-                  className="border border-zinc-800 text-zinc-800"
+                  className="border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 bg-white dark:bg-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                  placeholder="Enter price per kilometer (e.g., 1.25)"
+                  required
                 />
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Additional fare charged for each kilometer traveled.
+                </span>
               </div>
 
               <div>
-                <Label className="block text-zinc-800 font-medium mb-1">
-                  Waiting Time Per Minute:
+                <Label className="block text-zinc-800 dark:text-zinc-200 font-medium mb-1" htmlFor="waiting_time_price_per_minutes">
+                  Waiting Time Price Per Minute
                 </Label>
                 <Input
-                  type="text"
+                  id="waiting_time_price_per_minutes"
+                  type="number"
+                  min="0"
+                  step="0.01"
                   value={waiting_time_price_per_minutes}
                   onChange={(e) => setWaitingTime(e.target.value)}
-                  className="border border-zinc-800 text-zinc-800"
+                  className="border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 bg-white dark:bg-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                  placeholder="Enter waiting charge per minute (e.g., 0.50)"
+                  required
                 />
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Fare charged for each minute the driver waits.
+                </span>
               </div>
 
               <Button
                 type="submit"
                 disabled={isUpdating}
-                className="mt-4 bg-black text-white hover:bg-zinc-800"
+                className="mt-6 w-full rounded-md py-2 text-base font-semibold bg-black dark:bg-zinc-800 text-white hover:bg-zinc-800 dark:hover:bg-zinc-700 transition duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isUpdating ? "Updating..." : "Update Prices"}
+                {isUpdating ? "Updating..." : "Update Pricing"}
               </Button>
             </div>
           </form>

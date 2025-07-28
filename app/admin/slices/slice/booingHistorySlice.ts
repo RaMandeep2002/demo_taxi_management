@@ -26,6 +26,7 @@ export const fetchBookingHistory = createAsyncThunk<BookingHistory[], void, { re
                   "Content-Type": "application/json",
                 },
               });
+              console.log(response.data.bookings)
             return response.data.bookings;
         } catch (error:unknown) {
              // @ts-expect-error this is giving no import error

@@ -8,9 +8,9 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-  	extend: {
-		screens: {
-			'xs': '30rem',         // 480px
+    extend: {
+      screens: {
+        'xs': '30rem',         // 480px
 			'2xl': '100rem',       // 1600px
 			'3xl': '120rem',       // 1920px
 			'large': '2550px',     // 2550px
@@ -74,5 +74,4 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
