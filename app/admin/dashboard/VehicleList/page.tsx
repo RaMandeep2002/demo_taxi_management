@@ -11,6 +11,8 @@ import {
   MoreHorizontal,
   Trash,
   Car,
+  Wrench,
+  Calendar,
 } from "lucide-react";
 
 import { fetchDetailWithVehicle } from "@/app/admin/slices/slice/detailWithVechicle";
@@ -46,8 +48,6 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
@@ -241,6 +241,68 @@ export default function VechicleList() {
             </Button>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-yellow-500/10 rounded-full p-2">
+                <svg
+                  className="h-6 w-6 text-yellow-600 dark:text-yellow-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4" />
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-yellow-700 dark:text-yellow-200">
+                Total Vehicles
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-yellow-900 dark:text-yellow-200">
+                {paginatedVehicles.length}
+              </div>
+              <p className="text-xs text-yellow-600 mt-1 font-medium">
+                {paginatedVehicles.length > 0
+                  ? `+${Math.floor(paginatedVehicles.length * 0.12)} this month`
+                  : "No new vehicles"}
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-green-500/10 rounded-full p-2">
+                <svg
+                  className="h-6 w-6 text-green-600 dark:text-green-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-green-700 dark:text-green-200">
+                Active
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-green-900 dark:text-green-200">
+                {paginatedVehicles.length}
+              </div>
+              <p className="text-xs text-green-600 mt-1 font-medium">
+                {paginatedVehicles.length > 0
+                  ? `${Math.round(
+                      (paginatedVehicles.length / paginatedVehicles.length) *
+                        100
+                    )}% of fleet`
+                  : "No active vehicles"}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
         {/* <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
@@ -252,7 +314,7 @@ export default function VechicleList() {
           </div>
         </div> */}
         <div className="border rounded-lg overflow-hidden">
-          <Card>
+          <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -280,8 +342,11 @@ export default function VechicleList() {
                   <TableRow>
                     <TableHead>Company</TableHead>
                     <TableHead>Vehicle Model</TableHead>
+                    <TableHead>License Plate</TableHead>
                     <TableHead>Year</TableHead>
                     <TableHead>Vehcile Plate Number</TableHead>
+                    <TableHead>Maintenance</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -294,7 +359,10 @@ export default function VechicleList() {
                     </TableRow>
                   ) : error ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center text-black dark:text-white">
+                      <TableCell
+                        colSpan={9}
+                        className="text-center text-black dark:text-white"
+                      >
                         {error}
                       </TableCell>
                     </TableRow>
@@ -329,7 +397,11 @@ export default function VechicleList() {
                                 )}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {vehicle?._id?.slice(0, 8)}
+                                {vehicle.color
+                                  ? vehicle.color.charAt(0).toUpperCase() +
+                                    vehicle.color.slice(1)
+                                  : ""}{" "}
+                                • {vehicle?._id?.slice(0, 8)}
                               </div>
                             </div>
                           </div>
@@ -342,6 +414,14 @@ export default function VechicleList() {
                                 {vehicle?.vehicleModel}
                               </span>
                             </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium">
+                            {vehicle.vehicle_plate_number}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            VIN: {vehicle.vin_number.slice(-6)}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -360,6 +440,45 @@ export default function VechicleList() {
                               {vehicle?.vehicle_plate_number
                                 ? vehicle.vehicle_plate_number
                                 : "Not Set"}
+                            </div>
+                          </div>
+                        </TableCell>
+
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1 text-xs">
+                              <Wrench className="h-3 w-3 text-gray-400" />
+                              <span>
+                                Last: {vehicle.registration_Expiry_Date ? new Date(vehicle.registration_Expiry_Date).toLocaleDateString() : "N/A"}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <Calendar className="h-3 w-3 text-gray-400" />
+                              <span>
+                                Next: {vehicle.last_Inspection_Date ? new Date(vehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={`px-2 py-1 rounded-full font-semibold ${
+                                  vehicle.status === "active"
+                                    ? "bg-green-100 text-green-800"
+                                    : vehicle.status === "inactive"
+                                    ? "bg-gray-200 text-gray-700"
+                                    : vehicle.status === "maintenance"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {vehicle.status
+                                  ? vehicle.status.charAt(0).toUpperCase() +
+                                    vehicle.status.slice(1)
+                                  : "Unknown"}
+                              </span>
                             </div>
                           </div>
                         </TableCell>
@@ -408,86 +527,109 @@ export default function VechicleList() {
             </CardContent>
           </Card>
 
-          <Dialog
-            open={dialogType === "view"}
-            onOpenChange={handleDialogClose}
-          >
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Vehicle Profile</DialogTitle>
-                <DialogDescription>
-                  Detailed information about {selectedVehicle?.company}
-                </DialogDescription>
+          <Dialog open={dialogType === "view"} onOpenChange={handleDialogClose}>
+            <DialogContent className="max-w-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl border-0 p-0 rounded-3xl overflow-hidden">
+              <DialogHeader className="bg-blue-600 dark:bg-blue-900 px-8 py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-blue-200 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-900">
+                    <span className="text-blue-700 dark:text-blue-200 font-extrabold text-2xl">
+                      {selectedVehicle?.company
+                        ? selectedVehicle.company
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : "V"}
+                    </span>
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl font-bold text-white tracking-wide">
+                      {selectedVehicle?.company || "Vehicle Profile"}
+                    </DialogTitle>
+                    <DialogDescription className="text-blue-100 mt-1">
+                      Detailed information about {selectedVehicle?.company}
+                    </DialogDescription>
+                  </div>
+                </div>
               </DialogHeader>
               {selectedVehicle && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-semibold text-base">
-                          {selectedVehicle.company
-                            ? selectedVehicle.company
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                                .toUpperCase()
-                            : "V"}
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold">
-                          {selectedVehicle.company}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          {selectedVehicle._id}
-                        </p>
-                      </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
+                  {/* Left: Vehicle Info */}
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Vehicle Model
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.vehicleModel}
+                      </p>
                     </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">
-                          Vehicle Model
-                        </Label>
-                        <p className="text-sm">{selectedVehicle.vehicleModel}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">
-                          Year
-                        </Label>
-                        <p className="text-sm">{selectedVehicle.year}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">
-                          Plate Number
-                        </Label>
-                        <p className="text-sm">
-                          {selectedVehicle.vehicle_plate_number || "Not Set"}
-                        </p>
-                      </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Year
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.year}
+                      </p>
                     </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Plate Number
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.vehicle_plate_number || (
+                          <span className="italic text-gray-400">Not Set</span>
+                        )}
+                      </p>
+                    </div>
+                    {/* <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Vehicle ID
+                      </Label>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
+                        {selectedVehicle._id}
+                      </p>
+                    </div> */}
                   </div>
-
-                  <div className="space-y-4">
-                    <div className="flex gap-3">
-                      <Label className="text-sm font-medium text-gray-600">
+                  {/* Right: Status & Company */}
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Company
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.company}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                         Status
                       </Label>
-                      <Badge
-                        variant={
-                          selectedVehicle.status === "Active"
-                            ? "default"
-                            : "outline"
-                        }
-                      >
-                        {selectedVehicle.status}
-                      </Badge>
+                      <div className="mt-1">
+                        <Badge
+                          className={`px-3 py-1 text-base font-semibold rounded-full ${
+                            selectedVehicle.status === "Active"
+                              ? "bg-green-100 text-green-700 border border-green-300"
+                              : selectedVehicle.status === "Inactive"
+                              ? "bg-gray-200 text-gray-600 border border-gray-300"
+                              : "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                          }`}
+                          variant="outline"
+                        >
+                          {selectedVehicle.status?.charAt(0).toUpperCase() +
+                            selectedVehicle.status?.slice(1)}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
-              <DialogFooter>
-                <Button variant="outline" onClick={handleDialogClose}>
+              <DialogFooter className="bg-blue-50 dark:bg-slate-800 px-8 py-4 rounded-b-2xl flex justify-end">
+                <Button
+                  variant="outline"
+                  className="border-blue-600 text-blue-700 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:hover:bg-blue-900"
+                  onClick={handleDialogClose}
+                >
                   Close
                 </Button>
               </DialogFooter>
@@ -495,133 +637,165 @@ export default function VechicleList() {
           </Dialog>
 
           <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-            <DialogContent className="sm:max-w-[500px] border-0 shadow-2xl">
-              <DialogHeader className="space-y-3 pb-6 border-b border-slate-100">
-                <DialogTitle className="text-slate-800 dark:text-white text-2xl font-bold flex items-center gap-3">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
-                      <span className="text-blue-600 font-bold text-xl">
-                        {selectedVehicle?.company
-                          ? selectedVehicle?.company
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                          : "V"}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
-                        Update Vehicle Information
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                        Please update the details for the selected vehicle below.
-                      </p>
-                      <div className="mt-2">
-                        <span className="block text-base font-medium text-blue-700 dark:text-yellow-300">
-                          Company: {selectedVehicle?.company || "N/A"}
-                        </span>
-                      </div>
-                    </div>
+            <DialogContent className="sm:max-w-[520px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
+              <DialogHeader className="space-y-0 pb-0">
+                <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
+                  <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
+                    <span className="text-blue-700 dark:text-blue-200 font-extrabold text-2xl tracking-widest">
+                      {selectedVehicle?.company
+                        ? selectedVehicle?.company
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : "V"}
+                    </span>
                   </div>
-                </DialogTitle>
-              </DialogHeader>
-              {iserror && <p className="text-red-500 text-center">{iserror}</p>}
-              <form
-                onSubmit={handleSubmit} // Uncomment when ready to use
-                className="space-y-6"
-              >
-                <div className="space-y-5">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="company"
-                      className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                    >
-                      Company
-                    </Label>
-                    <Input
-                      id="company"
-                      type="text"
-                      value={formData.company}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          company: e.target.value,
-                        })
-                      }
-                      className="h-11"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="vehicleModel"
-                      className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                    >
-                      Vehicle Model
-                    </Label>
-                    <Input
-                      id="vehicleModel"
-                      type="text"
-                      value={formData.vehicleModel}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          vehicleModel: e.target.value,
-                        })
-                      }
-                      // defaultValue={vehicle.vehicleModel}
-                      className="h-11"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="year"
-                      className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                    >
-                      Year
-                    </Label>
-                    <Input
-                      id="year"
-                      type="number"
-                      value={formData.year}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          year: Number(e.target.value),
-                        })
-                      }
-                      // defaultValue={vehicle.year}
-                      className="h-11"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="Plate-Number"
-                      className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                    >
-                      Vehicle Plate Number
-                    </Label>
-                    <Input
-                      id="vehicle_plate_number"
-                      type="text"
-                      value={formData.vehicle_plate_number}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          vehicle_plate_number: e.target.value,
-                        })
-                      }
-                      // defaultValue={vehicle.vehicle_plate_number}
-                      className="h-11"
-                    />
-                  </div>
+                  <DialogTitle className="text-2xl font-bold text-white tracking-wide">
+                    {selectedVehicle?.company
+                      ? selectedVehicle.company.charAt(0).toUpperCase() +
+                        selectedVehicle.company.slice(1)
+                      : "Vehicle Profile"}
+                  </DialogTitle>
+                  <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
+                    Update Vehicle Information
+                  </h3>
+                  {/* <span className="block text-base font-medium text-blue-100 dark:text-yellow-200 mt-1">
+                    {selectedVehicle?.company}
+                  </span> */}
                 </div>
-                <DialogFooter>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Updating.." : "Update Vehicle"}
-                  </Button>
-                </DialogFooter>
-              </form>
+              </DialogHeader>
+              <div className="px-8 py-6">
+                {iserror && (
+                  <div className="mb-4">
+                    <p className="text-red-500 text-center font-semibold bg-red-50 dark:bg-red-900 rounded py-2">
+                      {iserror}
+                    </p>
+                  </div>
+                )}
+                <form onSubmit={handleSubmit} className="space-y-7">
+                  <div className="grid grid-cols-1 gap-5">
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="company"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Company
+                      </Label>
+                      <Input
+                        id="company"
+                        type="text"
+                        placeholder="Enter Company Name"
+                        value={formData.company}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            company: e.target.value,
+                          })
+                        }
+                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="vehicleModel"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Vehicle Model
+                      </Label>
+                      <Input
+                        id="vehicleModel"
+                        type="text"
+                        placeholder="Enter Vehicle Model"
+                        value={formData.vehicleModel}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            vehicleModel: e.target.value,
+                          })
+                        }
+                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="year"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Year
+                      </Label>
+                      <Input
+                        id="year"
+                        type="number"
+                        placeholder="Enter Year"
+                        value={formData.year}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            year: Number(e.target.value),
+                          })
+                        }
+                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="vehicle_plate_number"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Vehicle Plate Number
+                      </Label>
+                      <Input
+                        id="vehicle_plate_number"
+                        type="text"
+                        placeholder="Enter Vehicle Plate Number"
+                        value={formData.vehicle_plate_number}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            vehicle_plate_number: e.target.value,
+                          })
+                        }
+                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter className="pt-4">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full h-11 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg tracking-wide shadow-md transition disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              fill="none"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v8z"
+                            />
+                          </svg>
+                          Updating...
+                        </span>
+                      ) : (
+                        "Update Vehicle"
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </div>
             </DialogContent>
           </Dialog>
 
@@ -629,27 +803,81 @@ export default function VechicleList() {
             open={dialogType === "delete"}
             onOpenChange={handleDialogClose}
           >
-            <AlertDialogContent className="border-none">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to <span className="font-bold text-red-600">permanently delete</span> the vehicle from{" "}
-                  <span className="font-bold text-blue-700">{selectedVehicle?.company || "this company"}</span>?<br />
-                  This action cannot be undone.
+            <AlertDialogContent className="border-none p-0 overflow-hidden rounded-2xl shadow-2xl max-w-lg">
+              <div className="bg-gradient-to-r from-red-600 via-red-500 to-yellow-400 dark:from-red-900 dark:via-yellow-800 dark:to-yellow-600 px-8 py-6 flex flex-col items-center">
+                <div className="bg-white dark:bg-slate-900 rounded-full p-3 shadow-lg mb-3 border-4 border-red-200 dark:border-yellow-700">
+                  <svg
+                    className="w-10 h-10 text-red-600 dark:text-yellow-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="opacity-30"
+                    />
+                    <path
+                      d="M15 9l-6 6M9 9l6 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <AlertDialogTitle className="text-2xl font-bold text-white mb-1">
+                  Delete Vehicle?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-white text-base text-center font-medium">
+                  Are you sure you want to{" "}
+                  <span className="font-bold text-yellow-200">
+                    permanently delete
+                  </span>{" "}
+                  the vehicle from <br />
+                  <span className="font-bold text-white bg-red-700/70 px-2 py-1 rounded">
+                    {selectedVehicle?.company || "this company"}
+                  </span>
+                  ?
+                  <br />
+                  <span className="text-sm text-yellow-100 font-normal">
+                    This action cannot be undone.
+                  </span>
                 </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+              </div>
+              <div className="bg-white dark:bg-slate-900 px-8 py-6 flex flex-col sm:flex-row gap-3 justify-end rounded-b-2xl">
+                <AlertDialogCancel className="w-full sm:w-auto px-6 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-200 dark:hover:bg-slate-700 transition">
+                  Cancel
+                </AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={() => {
-                    if (selectedVehicle?.registrationNumber) {
-                      handleDeleteVehicle(selectedVehicle.registrationNumber);
-                    }
-                  }}
+                  onClick={
+                    selectedVehicle?.registrationNumber
+                      ? () =>
+                          handleDeleteVehicle(
+                            selectedVehicle.registrationNumber
+                          )
+                      : undefined
+                  }
+                  className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gradient-to-r from-red-600 to-yellow-500 text-white font-bold shadow hover:from-red-700 hover:to-yellow-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
+                  <svg
+                    className="w-5 h-5 mr-1 -ml-1 inline-block"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15 9l-6 6M9 9l6 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                   Delete
                 </AlertDialogAction>
-              </AlertDialogFooter>
+              </div>
             </AlertDialogContent>
           </AlertDialog>
         </div>

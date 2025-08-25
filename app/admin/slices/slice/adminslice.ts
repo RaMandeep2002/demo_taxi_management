@@ -12,18 +12,18 @@ interface Admin {
 
 interface AdminState {
   data: Admin | null;
-  isLoading: boolean;
-  error: string | null;
+  isLoad: boolean;
+  isthereError: string | null;
 }
-
+    
 interface ApiResponse {
   admin: Admin;
 }
 
 const initialState: AdminState = {
   data: null,
-  isLoading: false,
-  error: null,
+  isLoad: false,
+  isthereError: null,
 };
 
 export const fetchAdminInfo = createAsyncThunk(
@@ -48,11 +48,11 @@ export const fetchAdminInfo = createAsyncThunk(
       if (!response.data?.admin) {
         throw new Error("Invalid response structure");
       }
-
+      console.log("admin --> ", response.data.admin)
       return response.data.admin;
     } catch (error) {
       console.log(error)
-      return rejectWithValue("An unexpected error occurred") || "Failed to fetch admin info";
+      return rejectWithValue("Failed to fetch admin info") || "Failed to fetch admin info";
     }
   }
 );
@@ -64,16 +64,16 @@ const adminSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAdminInfo.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+        state.isLoad = true;
+        state.isthereError = null;
       })
       .addCase(fetchAdminInfo.fulfilled, (state, action: PayloadAction<Admin>) => {
-        state.isLoading = false;
+        state.isLoad = false;
         state.data = action.payload;
       })
       .addCase(fetchAdminInfo.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
+        state.isLoad = false;
+        state.isthereError = action.payload as string;
       });
   },
 });

@@ -24,8 +24,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
+  AlertDialogDescription,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
@@ -230,7 +229,7 @@ export default function AdminList() {
         </div>
 
         <div className="border rounded-lg overflow-hidden">
-          <Card className="lg:col-span-2">
+         <Card className="lg:col-span-2 shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -257,6 +256,7 @@ export default function AdminList() {
                     <TableHead className="w-[50px]"></TableHead>
                     <TableHead>Admin Name</TableHead>
                     <TableHead>Admin Email</TableHead>
+                    <TableHead>Admin Role</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -282,7 +282,7 @@ export default function AdminList() {
                   ) : (
                     paginatedAdmins.map((admin) => (
                       <TableRow key={admin._id}>
-                        <TableCell>
+                          <TableCell>
                           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <span className="text-blue-600 font-semibold text-base">
                               {admin.name
@@ -301,8 +301,31 @@ export default function AdminList() {
                           </div>
                         </TableCell>
                         <TableCell>
-                        <div className="font-medium text-gray-900 dark:text-white">
+                          <div className="font-medium text-gray-900 dark:text-white">
                             {highlightMatch(admin.email, debouncedSearch)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium text-gray-900 dark:text-white">
+                            {admin.role ? (
+                              <span
+                                className={`inline-block px-2 py-1 rounded-full text-xs font-semibold
+                                  ${
+                                    admin.role === "super-admin"
+                                      ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200"
+                                      : admin.role === "admin"
+                                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200"
+                                      : admin.role === "fleet-manager"
+                                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
+                                      : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                                  }
+                                `}
+                              >
+                                {admin.role.charAt(0).toUpperCase() + admin.role.slice(1)}
+                              </span>
+                            ) : (
+                              "N/A"
+                            )}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -348,58 +371,72 @@ export default function AdminList() {
           </Card>
         </div>
 
-        <Dialog
-          open={dialogType === "profile"}
-          onOpenChange={handleDialogClose}
-        >
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Admin Profile</DialogTitle>
-              <DialogDescription>
-                Detailed information about {selectedAdmin?.name}
-              </DialogDescription>
+        <Dialog open={dialogType === "profile"} onOpenChange={handleDialogClose}>
+          <DialogContent className="max-w-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl border-0 p-0 rounded-3xl overflow-hidden">
+            <DialogHeader className="bg-blue-600 dark:bg-blue-900 px-8 py-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-blue-200 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-900">
+                  <span className="text-blue-700 dark:text-blue-200 font-extrabold text-2xl">
+                    {selectedAdmin?.name
+                      ? selectedAdmin.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "A"}
+                  </span>
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl font-bold text-white tracking-wide">
+                    {selectedAdmin?.name || "Admin Profile"}
+                  </DialogTitle>
+                  <DialogDescription className="text-blue-100 mt-1">
+                    Detailed information about {selectedAdmin?.name}
+                  </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
             {selectedAdmin && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-base">
-                        {selectedAdmin.name
-                          ? selectedAdmin.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                          : "A"}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        {selectedAdmin.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {selectedAdmin._id}
-                      </p>
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
+                {/* Left: Admin Info */}
+                <div className="space-y-6">
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Name
+                    </Label>
+                    <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                      {selectedAdmin.name}
+                    </p>
                   </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        Email
-                      </Label>
-                      <p className="text-sm">{selectedAdmin.email}</p>
-                    </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Email
+                    </Label>
+                    <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                      {selectedAdmin.email}
+                    </p>
                   </div>
+                  {/* <div>
+                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Admin ID
+                    </Label>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
+                      {selectedAdmin._id}
+                    </p>
+                  </div> */}
                 </div>
-                <div className="space-y-4">
-                  {/* You can add more admin details here if needed */}
+                {/* Right: Placeholder for more admin details */}
+                <div className="space-y-6">
+                  {/* Add more admin details here if needed */}
                 </div>
               </div>
             )}
-            <DialogFooter>
-              <Button variant="outline" onClick={handleDialogClose}>
+            <DialogFooter className="bg-blue-50 dark:bg-slate-800 px-8 py-4 rounded-b-2xl flex justify-end">
+              <Button
+                variant="outline"
+                className="border-blue-600 text-blue-700 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:hover:bg-blue-900"
+                onClick={handleDialogClose}
+              >
                 Close
               </Button>
             </DialogFooter>
@@ -407,169 +444,174 @@ export default function AdminList() {
         </Dialog>
 
         <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-          <DialogContent className="sm:max-w-[500px] border-0 shadow-2xl">
-            <DialogHeader className="space-y-3 pb-6 border-b border-slate-100">
-              <DialogTitle className="text-slate-800 dark:text-white text-2xl font-bold flex items-center gap-3">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
-                    <span className="text-blue-600 font-bold text-xl">
-                      {selectedAdmin?.name
-                        ? selectedAdmin?.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "A"}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
-                      Update Data for
-                    </h3>
-                    <span className="block text-base font-medium text-blue-700 dark:text-yellow-300">
-                      {selectedAdmin?.name}
-                    </span>
-                  </div>
+          <DialogContent className="sm:max-w-[520px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-0 overflow-hidden">
+            <DialogHeader className="space-y-0 pb-0">
+              <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
+                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
+                  <span className="text-blue-700 dark:text-blue-200 font-extrabold text-2xl tracking-widest">
+                    {selectedAdmin?.name
+                      ? selectedAdmin?.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "A"}
+                  </span>
                 </div>
-              </DialogTitle>
+                <DialogTitle className="text-2xl font-bold text-white tracking-wide">
+                  {selectedAdmin?.name
+                    ? selectedAdmin.name.charAt(0).toUpperCase() + selectedAdmin.name.slice(1)
+                    : "Admin Profile"}
+                </DialogTitle>
+                <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
+                  Update Admin Information
+                </h3>
+              </div>
             </DialogHeader>
-            {iserror && <p className="text-red-500 text-center">{iserror}</p>}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-5">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="name"
-                    className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                  >
-                    Admin Name
-                  </Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Enter Driver Name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        name: e.target.value,
-                      })
-                    }
-                  />
+            <div className="px-8 py-6">
+              {iserror && (
+                <div className="mb-4">
+                  <p className="text-red-500 text-center font-semibold bg-red-50 dark:bg-red-900 rounded py-2">
+                    {iserror}
+                  </p>
                 </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="email"
-                    className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                  >
-                    Email
-                  </Label>
-                  <Input
-                    type="email"
-                    placeholder="Enter Email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        email: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-
-                {/* <h1 className="text-zinc-800">
-                                <span className="bg-yellow-200 px-2 py-1 rounded text-zinc-900">
-                                  Update Password for <span className="font-bold">{admin.name}</span>
-                                </span>
-                              </h1> */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="password"
-                  className="text-slate-700 dark:text-white font-medium flex items-center gap-2"
-                  >
-                    Password
-                  </Label>
-                  <div className="col-span-3 relative">
+              )}
+              <form onSubmit={handleSubmit} className="space-y-7">
+                <div className="grid grid-cols-1 gap-5">
+                  <div className="space-y-1.5">
+                    <Label
+                      htmlFor="name"
+                      className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                    >
+                      Admin Name
+                    </Label>
                     <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter Updated Password"
-                      value={formData.password}
+                      id="name"
+                      type="text"
+                      placeholder="Enter Admin Name"
+                      value={formData.name}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          password: e.target.value,
+                          name: e.target.value,
                         })
                       }
-                      className="h-11"
+                      className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute top-1/2 right-2 transform -translate-y-1/2 text-zinc-600 hover:text-zinc-800"
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label
+                      htmlFor="email"
+                      className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter Email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          email: e.target.value,
+                        })
+                      }
+                      className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label
+                      htmlFor="password"
+                      className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                    >
+                      Password
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter Updated Password"
+                        value={formData.password}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            password: e.target.value,
+                          })
+                        }
+                        className="h-11 pr-10 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute top-1/2 right-2 transform -translate-y-1/2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <DialogFooter>
-                <Button type="submit" disabled={isProcessing}>
-                  {isProcessing ? "Updating..." : "Update Admin"}
-                </Button>
-              </DialogFooter>
-            </form>
+                <DialogFooter className="pt-4">
+                  <Button
+                    type="submit"
+                    disabled={isProcessing}
+                    className="w-full h-11 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg tracking-wide shadow-md transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {isProcessing ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        Updating...
+                      </span>
+                    ) : (
+                      "Update Admin"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </div>
           </DialogContent>
         </Dialog>
 
-        <AlertDialog
-          open={dialogType === "delete"}
-          onOpenChange={handleDialogClose}
-        >
-          <AlertDialogContent className="border-none">
-          <AlertDialogHeader className="space-y-3 pb-6">
-              <AlertDialogTitle className="flex items-center gap-4 text-slate-800 text-2xl font-bold">
-                <div className="flex items-center gap-4 mb-4">
-                  {/* Admin Initials Avatar */}
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
-                    <span className="text-blue-600 font-bold text-xl">
-                      {selectedAdmin?.name
-                        ? selectedAdmin.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "A"}
-                    </span>
-                  </div>
-                  {/* Delete Confirmation Text */}
-                  <div>
-                    <h3 className="text-lg font-bold text-red-600">
-                      Confirm Admin Deletion
-                    </h3>
-                    <p className="text-sm text-zinc-700 mt-1">
-                      You are about to permanently delete the following admin account:
-                    </p>
-                    <span className="block text-base font-semibold text-blue-700 dark:text-yellow-300">
-                      {selectedAdmin?.name || "Unknown Admin"}
-                    </span>
-                  </div>
-                </div>
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialog open={dialogType === "delete"} onOpenChange={handleDialogClose}>
+          <AlertDialogContent className="border-none p-0 overflow-hidden rounded-2xl shadow-2xl max-w-lg">
+            <div className="bg-gradient-to-r from-red-600 via-red-500 to-yellow-400 dark:from-red-900 dark:via-yellow-800 dark:to-yellow-600 px-8 py-6 flex flex-col items-center">
+              <div className="bg-white dark:bg-slate-900 rounded-full p-3 shadow-lg mb-3 border-4 border-red-200 dark:border-yellow-700">
+                <svg className="w-10 h-10 text-red-600 dark:text-yellow-300" fill="none" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" className="opacity-30"/>
+                  <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <AlertDialogTitle className="text-2xl font-bold text-white mb-1">Delete Admin?</AlertDialogTitle>
+              <AlertDialogDescription className="text-white text-base text-center font-medium">
+                Are you sure you want to <span className="font-bold text-yellow-200">permanently delete</span> the admin account for <br />
+                <span className="font-bold text-white bg-red-700/70 px-2 py-1 rounded">{selectedAdmin?.name || "this admin"}</span>?
+                <br />
+                <span className="text-sm text-yellow-100 font-normal">This action cannot be undone.</span>
+              </AlertDialogDescription>
+            </div>
+            <div className="bg-white dark:bg-slate-900 px-8 py-6 flex flex-col sm:flex-row gap-3 justify-end rounded-b-2xl">
+              <AlertDialogCancel className="w-full sm:w-auto px-6 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-200 dark:hover:bg-slate-700 transition">
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction
                 onClick={
                   selectedAdmin?._id
-                    ? handleAdminDriver(selectedAdmin?._id)
+                    ? () => handleAdminDriver(selectedAdmin._id)
                     : undefined
                 }
                 disabled={isDeleteting}
+                className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gradient-to-r from-red-600 to-yellow-500 text-white font-bold shadow hover:from-red-700 hover:to-yellow-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
+                <svg className="w-5 h-5 mr-1 -ml-1 inline-block" fill="none" viewBox="0 0 24 24">
+                  <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 {isDeleteting ? "Deleting..." : "Delete"}
               </AlertDialogAction>
-            </AlertDialogFooter>
+            </div>
           </AlertDialogContent>
         </AlertDialog>
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">

@@ -29,7 +29,7 @@ import resetPasswordReducer from "../admin/slices/slice/resetPasswordSlice";
 import updateAdminReducer from "../admin/slices/slice/updateUserSlice";
 import deleteAdminsReducer from "../admin/slices/slice/deleteAdminSlice";
 import stopAllShiftReducer from "../admin/slices/slice/stopAllShiftSlice";
-
+import fetchScheduleHistoryReducer from "../admin/slices/slice/getScheduleRideSlice"
 // Configure the Redux store with all the imported reducers
 export const store = configureStore({
   reducer: {
@@ -44,6 +44,7 @@ export const store = configureStore({
     detailWithVehicle: detailWithVehicleReducer, // Handles driver details with vehicle info
     registerVehicle: registerVehicleReducer, // Handles vehicle registration
     fetchBookingHistory:fetchBookingHistoryReducer, // Handles booking history
+    fetchScheduleHistory: fetchScheduleHistoryReducer,
     updateDriverinfo : updatedriverReducer, // Handles updating driver info
     deleteDriver: deleteDriverReducer, // Handles deleting drivers
     updateVehcile: updateVehicleReducer, // Handles updating vehicle info
@@ -58,6 +59,7 @@ export const store = configureStore({
     dashboardStats: dashboardStatsReducer, // Handles dashboard statistics
     resetPassword: resetPasswordReducer, // Handles password reset
     stopAllShift : stopAllShiftReducer,
+
   },
 });
 

@@ -41,10 +41,15 @@ export default function ScheduleRide() {
   const dispatch = useDispatch<AppDispatch>();
   const [customerName, setCustomerName] = useState("");
   const [customer_phone_number, setcustomer_phone_number] = useState("");
+  const [customer_email, setcustomer_Email] = useState("");
+  const [number_of_passengers, setNumber_of_passengers] = useState<string>("");
   const [pickupAddress, setPickupAddress] = useState("");
   const [dropOffAddress, setDropOffAddress] = useState("");
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [pickupTime, setPickupTime] = useState<Date | null>(null);
+  const [roundTrip, setRoundTrip] = useState<boolean>(false);
+  const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [returnTime, setReturnTime] = useState<Date | null>(null);
 
   const { loading, error, success } = useSelector(
     (state: RootState) => state.scheduleRIde
@@ -62,17 +67,31 @@ export default function ScheduleRide() {
     console.log("formattedDate ===> ", formattedDate);
     const formattedTime = pickupTime ? format(pickupTime, "hh:mma") : "";
     console.log("formattedTime ===> ", formattedTime);
+    const formattedReturnDate = returnDate
+      ? format(returnDate, "MM/dd/yyyy")
+      : "";
+    console.log("formattedReturnDate ===> ", formattedReturnDate);
+    const formattedReturnTime = returnTime ? format(returnTime, "hh:mma") : "";
+    console.log("formattedReturnTime ===> ", formattedReturnTime);
 
     const resultAction = await dispatch(
       scheduleRide({
         customerName,
         customer_phone_number,
+        customer_email,
+        number_of_passengers,
         time: formattedTime,
         date: formattedDate,
         pickupAddress,
         dropOffAddress,
+        roundTrip,
+        ...(roundTrip && {
+          returnDate: formattedReturnDate,
+          returnTime: formattedReturnTime,
+        }),
       })
     );
+
     if (scheduleRide.fulfilled.match(resultAction)) {
       toast.toast({
         title: "Ride Scheduled",
@@ -85,7 +104,7 @@ export default function ScheduleRide() {
     <DashboardLayout>
       <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-black dark:text-[#BAFB5D]">
             <span>
               <Clock10 />
             </span>
@@ -94,17 +113,18 @@ export default function ScheduleRide() {
           <p className="mt-1">Create a new ride booking for customers</p>
         </div>
 
-        <div className="max-w-5xl p-6 mt-4 sm:p-8">
+        <div className="max-w-5xl mx-auto p-6 mt-4 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {success && (
-              <p className="text-black">Ride scheduled successfully!</p>
+              <div className="flex justify-center">
+                <p>Ride scheduled successfully!</p>
+              </div>
             )}
             {error && <p className="text-red-600">{error}</p>}
             {/* Customer Name */}
-
-            <Card>
+            <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-black dark:text-[#BAFB5D]">
                   <User className="h-5 w-5" />
                   Customer Information
                 </CardTitle>
@@ -126,7 +146,7 @@ export default function ScheduleRide() {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="Enter full name"
-                      // className="w-full px-4 py-3 border border-zinc-800 text-zinc-800 rounded-lg bg-transparent  placeholder:text-zinc-600 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
@@ -144,7 +164,7 @@ export default function ScheduleRide() {
                       onChange={(value) =>
                         setcustomer_phone_number(value || "")
                       }
-                      className="PhoneInputInput w-full h-9 px-2 py-2 border border-gray-300 dark:border-zinc-700 text-zinc-800 dark:text-white rounded-lg  placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none"
+                      className="PhoneInputInput w-full h-9 px-2 py-2 border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg  placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none"
                     />
                   </div>
                   <div className="space-y-2">
@@ -158,33 +178,41 @@ export default function ScheduleRide() {
                       type="text"
                       name="name"
                       autoComplete="off"
-                      // value={customerName}
-                      // onChange={(e) => setCustomerName(e.target.value)}
+                      value={customer_email}
+                      onChange={(e) => setcustomer_Email(e.target.value)}
                       placeholder="Enter Customer Email"
-                      // className="w-full px-4 py-3 border border-zinc-800 text-zinc-800 rounded-lg bg-transparent  placeholder:text-zinc-600 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                      className="border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none  transition"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="passengers">Number of Passengers</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select passengers" />
+                    <Select
+                      value={number_of_passengers}
+                      onValueChange={(value) => setNumber_of_passengers(value)}
+                    >
+                      <SelectTrigger className="border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg dark:bg-[#34363F] placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition shadow-md hover:border-indigo-400 focus:ring-2 focus:ring-fuchsia-400">
+                        <SelectValue placeholder="Select number of passengers" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1 Passenger</SelectItem>
-                        <SelectItem value="2">2 Passengers</SelectItem>
-                        <SelectItem value="3">3 Passengers</SelectItem>
-                        <SelectItem value="4">4 Passengers</SelectItem>
-                        <SelectItem value="5">5+ Passengers</SelectItem>
+                      <SelectContent className="bg-white dark:bg-gray-900 rounded-lg shadow-lg border dark:border-gray-700">
+                        {[1, 2, 3, 4, "5+"].map((num) => (
+                          <SelectItem
+                            key={num}
+                            value={String(num)}
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            {" "}
+                            {num} Passenger{num !== 1 ? "s" : ""}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-black dark:text-[#BAFB5D]">
                   <Map className="h-5 w-5" />
                   Pickup and destination information
                 </CardTitle>
@@ -210,7 +238,7 @@ export default function ScheduleRide() {
                       value={pickupAddress}
                       onChange={(e) => setPickupAddress(e.target.value)}
                       placeholder="Enter Pick Up Address"
-                      className="w-full h-10 px-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-transparent text-base text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                      className="border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                   {/* Drop Off Address */}
@@ -229,7 +257,7 @@ export default function ScheduleRide() {
                       value={dropOffAddress}
                       onChange={(e) => setDropOffAddress(e.target.value)}
                       placeholder="Enter Drop Off Address"
-                      className="w-full h-10 px-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-transparent text-base text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                      className="border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                 </div>
@@ -253,7 +281,7 @@ export default function ScheduleRide() {
                             placeholder: "MM/DD/YYYY",
                             InputProps: {
                               className:
-                                "w-full h-10 px-3 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
+                                "w-full h-10 px-3 border border-zinc-300 dark:border-gray-300 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
                             },
                             InputLabelProps: {
                               className: "text-zinc-700 dark:text-zinc-300",
@@ -279,7 +307,7 @@ export default function ScheduleRide() {
                             fullWidth: true,
                             InputProps: {
                               className:
-                                "w-full h-10 px-3 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
+                                "w-full h-10 px-3 border border-zinc-300 dark:border-gray-300 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
                             },
                             InputLabelProps: {
                               className: "text-zinc-700 dark:text-zinc-300",
@@ -291,7 +319,13 @@ export default function ScheduleRide() {
                   </div>
                   {/* Round Trip Option */}
                   <div className="flex items-center mt-4">
-                    <Checkbox id="roundTrip" />
+                    <Checkbox
+                      id="roundTrip"
+                      checked={roundTrip}
+                      onCheckedChange={(checked) =>
+                        setRoundTrip(checked === true)
+                      }
+                    />
                     <Label
                       htmlFor="roundTrip"
                       className="ml-2 text-sm font-medium"
@@ -300,8 +334,8 @@ export default function ScheduleRide() {
                     </Label>
                   </div>
 
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Pickup Date */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Return Date */}
                     <div>
                       <Label
                         htmlFor="return-date"
@@ -310,8 +344,9 @@ export default function ScheduleRide() {
                         Return Date
                       </Label>
                       <DatePicker
-                        // value={pickupDate}
-                        // onChange={setPickupDate}
+                        value={returnDate}
+                        onChange={setReturnDate}
+                        disabled={!roundTrip}
                         slotProps={{
                           textField: {
                             id: "return-date",
@@ -319,7 +354,8 @@ export default function ScheduleRide() {
                             placeholder: "MM/DD/YYYY",
                             InputProps: {
                               className:
-                                "w-full h-10 px-3 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
+                                "w-full h-10 px-3 border border-zinc-300 dark:border-gray-300 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
+                              disabled: !roundTrip,
                             },
                             InputLabelProps: {
                               className: "text-zinc-700 dark:text-zinc-300",
@@ -328,7 +364,7 @@ export default function ScheduleRide() {
                         }}
                       />
                     </div>
-                    {/* Pickup Time */}
+                    {/* Return Time */}
                     <div>
                       <Label
                         htmlFor="return-time"
@@ -337,15 +373,17 @@ export default function ScheduleRide() {
                         Return Time
                       </Label>
                       <TimePicker
-                        // value={pickupTime}
-                        // onChange={setPickupTime}
+                        value={returnTime}
+                        onChange={setReturnTime}
+                        disabled={!roundTrip}
                         slotProps={{
                           textField: {
                             id: "return-time",
                             fullWidth: true,
                             InputProps: {
                               className:
-                                "w-full h-10 px-3 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
+                                "w-full h-10 px-3 border border-zinc-300 dark:border-gray-300 rounded-lg text-zinc-800 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 transition",
+                              disabled: !roundTrip,
                             },
                             InputLabelProps: {
                               className: "text-zinc-700 dark:text-zinc-300",

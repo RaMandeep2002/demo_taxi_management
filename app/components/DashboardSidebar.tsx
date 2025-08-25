@@ -17,36 +17,46 @@ import {
   UserPlus,
   MenuIcon,
   X,
-  Moon,
-  Sun,
+  List,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { logout } from "../admin/slices/slice/authSlice";
 import { toast } from "@/hooks/use-toast";
 import { MenuItem } from "./MenuItems";
-import { useState } from "react";
-import { AppDispatch } from "../store/store";
+import { useEffect, useState } from "react";
+import { AppDispatch, RootState } from "../store/store";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
+import { useSelector } from "react-redux";
+import { fetchAdminInfo } from "../admin/slices/slice/adminslice";
+// import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export default function DashboardSidebar() {
-  const { setTheme } = useTheme();
+  // const { setTheme } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
+  const {
+    data: admin,
+    isLoad,
+    isthereError,
+  } = useSelector((state: RootState) => state.admin);
+
   const handleNavigation = (path: string) => {
     router.push(path);
     setIsMobileSidebarOpen(false);
   };
+
+  useEffect(() => {
+    dispatch(fetchAdminInfo());
+  }, [dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -62,14 +72,20 @@ export default function DashboardSidebar() {
   const toggleMobileSidebar = () => setIsMobileSidebarOpen((prev) => !prev);
 
   const SidebarContent = (collapsed: boolean, mobile?: boolean) => (
-    <div className="h-full flex flex-col bg-white dark:bg-zinc-800 text-gray-800 dark:text-white">
+    <div className="h-full flex flex-col bg-transparent text-gray-800 dark:text-white">
       {/* Header */}
       <div className="px-4 py-4 flex justify-between items-center">
         {!collapsed && (
           <h2
-            className="text-lg font-bold cursor-pointer hover:text-primary"
+            className="text-lg font-bold cursor-pointer hover:text-primary flex items-center gap-2 justify-center w-full"
             onClick={() => handleNavigation("/admin/dashboard")}
           >
+            <img
+              src="https://i.postimg.cc/02m5mBSD/Group-43-2.png"
+              alt="Demo Taxi Logo"
+              className="h-6 w-6 dark:invert"
+              aria-label="Demo Taxi Logo"
+            />
             Demo Taxi
           </h2>
         )}
@@ -77,18 +93,12 @@ export default function DashboardSidebar() {
           onClick={mobile ? toggleMobileSidebar : toggleSidebar}
           className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
         >
-          {mobile ? (
-            <X size={24} />
-          ) : collapsed ? (
-            <Menu />
-          ) : (
-            <ChevronLeft />
-          )}
+          {mobile ? <X size={24} /> : collapsed ? <Menu /> : <ChevronLeft />}
         </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-4 overflow-y-auto">
+      <nav className="flex-1 px-4 space-y-4 overflow-y-auto scrollbar-thin scrollbar-track-gray-400/20 scrollbar-thumb-[#F7AB0A]/80 scroll-smooth">
         {[
           {
             icon: Home,
@@ -99,6 +109,11 @@ export default function DashboardSidebar() {
             icon: AlarmClock,
             label: "Schedule Ride",
             path: "/admin/dashboard/ScheduleRide",
+          },
+          {
+            icon: List,
+            label: "Schedule Rides List",
+            path: "/admin/dashboard/ScheduleBookingList",
           },
           {
             icon: Plus,
@@ -159,10 +174,12 @@ export default function DashboardSidebar() {
           // For this file, add at the top: import { usePathname } from "next/navigation";
           // and inside the component: const pathname = usePathname();
           // Here, we assume pathname is available.
-          const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+          const pathname =
+            typeof window !== "undefined" ? window.location.pathname : "";
           const isActive =
             pathname === item.path ||
-            (item.path !== "/admin/dashboard" && pathname.startsWith(item.path));
+            (item.path !== "/admin/dashboard" &&
+              pathname.startsWith(item.path));
           return (
             <MenuItem
               key={item.path}
@@ -179,26 +196,114 @@ export default function DashboardSidebar() {
 
       {/* Footer */}
       <div className="px-4 py-4 space-y-3">
-        {/* Theme Toggle */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="w-full flex items-center justify-center border border-gray-200 dark:border-zinc-700">
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="mt-2">
+          {isLoad ? (
+            <span className="text-gray-500 text-sm">
+              Loading admin details...
+            </span>
+          ) : isthereError ? (
+            <span className="text-red-500 text-sm">{isthereError}</span>
+          ) : admin ? (
+            collapsed ? (
+              <div className="flex items-center justify-center w-10 h-10  rounded-full bg-[#BAFB5D] dark:bg-[#23272f] shadow-inner flex-shrink-0 mx-auto sm:mx-0">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-[#BAFB5D] dark:bg-[#23272f] shadow-inner transition hover:ring-2 hover:ring-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/80"
+                      aria-label="Open admin menu"
+                    >
+                      <span className="text-lg font-bold text-gray-900 dark:text-[#BAFB5D]">
+                        {admin?.name?.[0]?.toUpperCase() || "A"}
+                      </span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white dark:bg-[#18181b] shadow-lg rounded-xl p-0 border-0 mb-4 min-w-[260px]">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-gradient-to-r from-[#bafb5d33] to-[#e0e7ff33] dark:from-[#23272f] dark:to-[#bafb5d22] rounded-xl px-3 py-2 sm:px-4 sm:py-3 ">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#BAFB5D] dark:bg-[#23272f] shadow-inner flex-shrink-0 mx-auto sm:mx-0">
+                        <span className="text-lg font-bold text-gray-900 dark:text-[#BAFB5D]">
+                          {admin?.name?.[0]?.toUpperCase() || "A"}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center sm:items-start text-center sm:text-left w-full min-w-0">
+                        <span className="font-semibold text-gray-900 dark:text-[#BAFB5D] text-base tracking-wide truncate w-full">
+                          {admin?.name?.toUpperCase()}
+                        </span>
+                        <span className="text-gray-600 dark:text-gray-300 text-xs flex items-center gap-1 justify-center sm:justify-start w-full truncate">
+                          <svg
+                            className="w-4 h-4 text-gray-400 dark:text-gray-400 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M16 12a4 4 0 01-8 0m8 0a4 4 0 00-8 0m8 0V8a4 4 0 00-8 0v4m8 0v4a4 4 0 01-8 0v-4"
+                            ></path>
+                          </svg>
+                          <span className="truncate">{admin?.email}</span>
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 italic w-full">
+                          <span className="inline-block px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 font-medium capitalize">
+                            {admin?.role}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                {/* <span className="text-lg font-bold text-gray-900 dark:text-[#BAFB5D]">
+                  {admin?.name?.[0]?.toUpperCase() || "A"}
+                </span> */}
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-gradient-to-r from-[#bafb5d33] to-[#e0e7ff33] dark:from-[#23272f] dark:to-[#bafb5d22] rounded-xl px-3 py-2 sm:px-4 sm:py-3 shadow-md border border-gray-200 dark:border-zinc-700">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#BAFB5D] dark:bg-[#23272f] shadow-inner flex-shrink-0 mx-auto sm:mx-0">
+                  <span className="text-lg font-bold text-gray-900 dark:text-[#BAFB5D]">
+                    {admin?.name?.[0]?.toUpperCase() || "A"}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left w-full min-w-0">
+                  <span className="font-semibold text-gray-900 dark:text-[#BAFB5D] text-base tracking-wide truncate w-full">
+                    {admin?.name?.toUpperCase()}
+                  </span>
+                  <span className="text-gray-600 dark:text-gray-300 text-xs flex items-center gap-1 justify-center sm:justify-start w-full truncate">
+                    <svg
+                      className="w-4 h-4 text-gray-400 dark:text-gray-400 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 12a4 4 0 01-8 0m8 0a4 4 0 00-8 0m8 0V8a4 4 0 00-8 0v4m8 0v4a4 4 0 01-8 0v-4"
+                      ></path>
+                    </svg>
+                    <span className="truncate">{admin?.email}</span>
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 italic w-full">
+                    <span className="inline-block px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 font-medium capitalize">
+                      {admin?.role}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            )
+          ) : (
+            <span className="text-gray-500 text-sm">
+              No admin details found.
+            </span>
+          )}
+        </div>
 
         {/* Logout */}
         <Button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white"
+          className="w-full px-6 py-4 flex items-center justify-center gap-3 text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black rounded-full transition-colors shadow tracking-wider hover:bg-gray-900 dark:hover:bg-[#d6ff7f]"
+          //  className="mt-4 sm:mt-0 px-6 py-4 text-lg bg-black dark:bg-[#BAFB5D] rounded-full transition-colors flex items-center gap-3 shadow hover:scale-[1.05] tracking-wider"
         >
           {collapsed ? <LogOut /> : "Logout"}
         </Button>
@@ -225,7 +330,7 @@ export default function DashboardSidebar() {
             {SidebarContent(false, true)}
           </aside>
           <div
-            className="absolute inset-0 bg-black opacity-30"
+            className="absolute inset-0 bg-[#252428] opacity-30"
             onClick={toggleMobileSidebar}
           ></div>
         </div>
@@ -233,9 +338,9 @@ export default function DashboardSidebar() {
 
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:flex flex-col h-screen transition-all duration-300 shadow-lg ${
-          isCollapsed ? "w-20" : "w-72"
-        } bg-white dark:bg-gray-900`}
+        className={`hidden md:flex flex-col h-screen transition-all duration-300 shadow-lg border-0 dark:bg-[#252428] ${
+          isCollapsed ? "w-20" : "w-78"
+        }`}
       >
         {SidebarContent(isCollapsed)}
       </aside>

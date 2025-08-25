@@ -22,17 +22,27 @@ export const scheduleRide = createAsyncThunk(
         {
             customerName,
             customer_phone_number,
+            customer_email,
+            number_of_passengers,
             time,
             date,
             pickupAddress,
             dropOffAddress,
+            roundTrip,
+            returnDate,
+            returnTime,
         }: {
             customerName: string;
             customer_phone_number: string;
+            customer_email:string;
+            number_of_passengers:string,
             time: string;
             date: string;
             pickupAddress: string;
             dropOffAddress: string;
+            roundTrip?: boolean,
+            returnDate?: string,
+            returnTime?: string,
         },
         { rejectWithValue }
     ) => {
@@ -44,15 +54,33 @@ export const scheduleRide = createAsyncThunk(
                 return rejectWithValue("No authentication token found.");
             }
 
+            console.log("data ---- >", {
+                customerName,
+                customer_phone_number,
+                customer_email,
+                number_of_passengers,
+                time,
+                date,
+                pickupAddress,
+                dropOffAddress,
+                roundTrip,
+                returnDate,
+                returnTime
+            });
             const response = await axios.post(
                 `${API_URL}/admin/scheduleRide`, // ✅ Replace with your backend URL
                 {
                     customerName,
                     customer_phone_number,
+                    customer_email,
+                    number_of_passengers,
                     time,
                     date,
                     pickupAddress,
                     dropOffAddress,
+                    roundTrip,
+                    returnDate,
+                    returnTime,
                 },
                 {
                     headers: {

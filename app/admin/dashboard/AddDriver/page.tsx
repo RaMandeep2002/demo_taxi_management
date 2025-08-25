@@ -13,7 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CalendarIcon, FileText, Lock, Plus, PlusCircleIcon, User } from "lucide-react";
+import {
+  CalendarIcon,
+  FileText,
+  Lock,
+  Plus,
+  PlusCircleIcon,
+  User,
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,10 +31,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { format } from 'date-fns';
+import { format } from "date-fns";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function AddDriver() {
   const [drivername, setDrivername] = useState<string>("");
@@ -36,6 +54,7 @@ export default function AddDriver() {
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [success, setSuccess] = useState(false);
 
   const [licenseExpiry, setLicenseExpiry] = useState<Date>();
   const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +65,7 @@ export default function AddDriver() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess(false);
     if (phoneNumber === undefined) {
       alert("Please enter a valid phone number.");
       return;
@@ -60,6 +80,7 @@ export default function AddDriver() {
       })
     );
     if (addDriver.fulfilled.match(resultAction)) {
+      setSuccess(true);
       setDrivername("");
       setEmail("");
       setDriversLicenseNumber("");
@@ -98,6 +119,7 @@ export default function AddDriver() {
   };
 
   return (
+    // bg-gradient-to-r from-slate-900 to-slate-700
     <DashboardLayout>
       <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold text-black dark:text-white flex items-center gap-2">
@@ -107,7 +129,7 @@ export default function AddDriver() {
           Add New Driver
         </h1>
         <div
-          className="max-w-6xl w-full p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
+          className="max-w-5xl mx-auto w-full p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
         "
         >
           {error && (
@@ -116,15 +138,29 @@ export default function AddDriver() {
             </p>
           )}
           {successMessage && (
-            <p className="text-green-600 text-center text-sm sm:text-base font-semibold">
-              {successMessage}
-            </p>
+            <Dialog open={success} onOpenChange={setSuccess}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-green-600 dark:text-yellow-300 text-center">
+                    Vehicle added successfully!
+                  </DialogTitle>
+                  <DialogDescription className="text-center">
+                    The new vehicle has been added to your fleet.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-center mt-4">
+                  <Button onClick={() => setSuccess(false)} autoFocus>
+                    Close
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            <Card>
+            <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <User className="h-5 w-5" />
                   Personal Information
                 </CardTitle>
@@ -133,9 +169,9 @@ export default function AddDriver() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName" className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">Driver Name</Label>
                     <Input
                       type="text"
                       name="name"
@@ -144,17 +180,22 @@ export default function AddDriver() {
                       value={drivername}
                       onChange={(e) => setDrivername(e.target.value)}
                       required
+                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" placeholder="Enter last name" />
-                  </div>
+                  {/* <div className="space-y-2">
+                    <Label htmlFor="lastName"    className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      placeholder="Enter last name"
+                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
+                    />
+                  </div> */}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email"    className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">Email Address</Label>
                     <Input
                       type="email"
                       name="email"
@@ -163,25 +204,26 @@ export default function AddDriver() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone"    className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">Phone Number</Label>
                     <PhoneInput
                       international
                       defaultCountry="US"
                       placeholder="Enter phone number"
                       value={phoneNumber}
                       onChange={(value) => setPhoneNumber(value || "")}
-                      className="PhoneInputInput w-full h-9 px-2 py-2 border text-zinc-800 dark:text-white rounded-md"
+                      className="PhoneInputInput w-full h-9 px-2 py-2 border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <FileText className="h-5 w-5" />
                   License & Verification
                 </CardTitle>
@@ -192,7 +234,7 @@ export default function AddDriver() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="drivers_License_Number">
+                    <Label htmlFor="drivers_License_Number"    className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">
                       Drivers License Number
                     </Label>
                     <Input
@@ -203,12 +245,13 @@ export default function AddDriver() {
                       value={driversLicenseNumber}
                       onChange={(e) => setDriversLicenseNumber(e.target.value)}
                       required
+                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="licenseState">License State</Label>
+                    <Label htmlFor="licenseState" className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">License State</Label>
                     <Select>
-                      <SelectTrigger>
+                      <SelectTrigger className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition">
                         <SelectValue placeholder="Select state" />
                       </SelectTrigger>
                       <SelectContent>
@@ -221,42 +264,57 @@ export default function AddDriver() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>License Expiry Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !licenseExpiry && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {licenseExpiry ? format(licenseExpiry, "PPP") : "Pick a date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={licenseExpiry}
-                        onSelect={setLicenseExpiry}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="license_class">License Class</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <Label    className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">
+                      License Expiry Date
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full flex items-center justify-between px-4 py-2 border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400",
+                            !licenseExpiry && "text-zinc-400 dark:text-gray-400"
+                          )}
+                        >
+                          <span className="flex items-center">
+                            <CalendarIcon className="mr-2 h-5 w-5 text-indigo-500" />
+                            {licenseExpiry ? (
+                              <span>{format(licenseExpiry, "PPP")}</span>
+                            ) : (
+                              <span className="text-zinc-400 dark:text-gray-400">
+                                Pick a date
+                              </span>
+                            )}
+                          </span>
+                          <span className="ml-2 text-xs text-gray-400 dark:text-gray-400">
+                            {licenseExpiry ? "Change" : ""}
+                          </span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 rounded-lg shadow-lg border-0 bg-white dark:bg-zinc-900">
+                        <Calendar
+                          mode="single"
+                          selected={licenseExpiry}
+                          onSelect={setLicenseExpiry}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="license_class"    className="block text-sm sm:text-base font-semibold mb-1 tracking-wide">
+                      License Class
+                    </Label>
                     <Select>
-                      <SelectTrigger>
+                      <SelectTrigger className="border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400">
                         <SelectValue placeholder="Select Class" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ca">Class A</SelectItem>
-                        <SelectItem value="cb">Class B</SelectItem>
-                        <SelectItem value="cc">Class C</SelectItem>
+                      <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                        <SelectItem value="ca" className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition">Class A</SelectItem>
+                        <SelectItem value="cb" className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition">Class B</SelectItem>
+                        <SelectItem value="cc" className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition">Class C</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -281,9 +339,9 @@ export default function AddDriver() {
             </Card>
 
             {/* Styled Password Section */}
-            <Card className="mt-4">
+            <Card className="mt-4 shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <Lock />
                   <span>Password</span>
                 </CardTitle>
@@ -302,7 +360,7 @@ export default function AddDriver() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="pr-20"
+                      className="pr-20 border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                     <button
                       type="button"

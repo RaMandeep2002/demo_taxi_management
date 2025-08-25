@@ -77,7 +77,7 @@ export default function AddAdmin() {
           </p>
         </div>
         <div
-          className="max-w-6xl w-full p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
+          className="max-w-4xl mx-auto w-full p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
           "
         >
           {error && (
@@ -92,7 +92,7 @@ export default function AddAdmin() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            <Card>
+          <Card className="shadow-lg border-0 bg-gradient-to-br   dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UserCheck className="h-5 w-5" />
@@ -114,7 +114,7 @@ export default function AddAdmin() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                         className="w-full px-2 py-3 sm:px-4 sm:py-3 border text-zinc-800 dark:text-white text-base sm:text-lg bg-transparent placeholder:text-zinc-800 dark:placeholder:text-gray-400 rounded-md"
+                           className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
@@ -127,7 +127,7 @@ export default function AddAdmin() {
                       // value={name}
                       // onChange={(e) => setName(e.target.value)}
                       required
-                         className="w-full px-2 py-3 sm:px-4 sm:py-3 border text-zinc-800 dark:text-white text-base sm:text-lg bg-transparent placeholder:text-zinc-800 dark:placeholder:text-gray-400 rounded-md"
+                           className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export default function AddAdmin() {
                      value={email}
                      onChange={(e) => setEmail(e.target.value)}
                      required
-                     className="w-full px-2 py-3 sm:px-4 sm:py-3 border text-zinc-800 dark:text-white text-base sm:text-lg bg-transparent placeholder:text-zinc-800 dark:placeholder:text-gray-400 rounded-md"
+                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
@@ -153,14 +153,14 @@ export default function AddAdmin() {
                       placeholder="Enter phone number"
                       value={phoneNumber}
                       onChange={(value) => setPhoneNumber(value || "")}
-                      className="PhoneInputInput w-full h-9 px-2 py-2 border text-zinc-800   dark:text-white rounded-md"
+                      className="PhoneInputInput w-full h-9 px-2 py-2 border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+         <Card className="shadow-lg border-0 bg-gradient-to-br   dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
@@ -169,26 +169,26 @@ export default function AddAdmin() {
               <CardDescription>Define the administrator&apos;s role and system access</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">Admin Role</Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger   className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition">
                       <SelectValue placeholder="Select admin role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="super-admin">Super Admin</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="fleet-manager">Fleet Manager</SelectItem>
-                      <SelectItem value="finance-admin">Finance Admin</SelectItem>
-                      <SelectItem value="customer-support">Customer Support</SelectItem>
+                      <SelectItem value="driver-manager">Driver Manager</SelectItem>
+                      <SelectItem value="schedule-support">Schedule Ride Support</SelectItem>
                       <SelectItem value="system-admin">System Admin</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+                {/* <div className="space-y-2">
                   <Label htmlFor="accessLevel">Access Level</Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger   className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition">
                       <SelectValue placeholder="Select access level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -198,8 +198,8 @@ export default function AddAdmin() {
                       <SelectItem value="custom">Custom Permissions</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
 
               {/* <div className="space-y-2">
                 <Label htmlFor="description">Role Description</Label>
@@ -213,7 +213,7 @@ export default function AddAdmin() {
           </Card>
 
 
-            <Card className="mt-4">
+          <Card className="mt-4 shadow-lg border-0 bg-gradient-to-br   dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Lock />
@@ -233,7 +233,7 @@ export default function AddAdmin() {
                      value={password}
                      onChange={(e) => setPassword(e.target.value)}
                      required
-                     className="w-full px-2 py-3 sm:px-4 sm:py-3 border text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 dark:placeholder:text-gray-400 rounded-md"
+                    className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
                     <button
                       type="button"

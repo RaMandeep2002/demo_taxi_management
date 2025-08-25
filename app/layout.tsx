@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Discover Salmon Arm Taxi your trusted transportation service in Salmon Arm. Learn about our company, explore our fleet, and get in touch easily through our website. Safe, reliable, and professional service you can count on.",
   icons: {
-    icon: "/icon.ico",
+    icon: "/favicon.ico",
   },
 };
 
@@ -40,7 +40,7 @@ export default function RootLayout({
           {" "}
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="dark"
             enableSystem={false}  
             disableTransitionOnChange
             themes={["light", "dark", "dracula", "solarized"]} // custom themes

@@ -104,8 +104,73 @@ export default function BookingHistory() {
           <p className="mt-1">Complete record of all taxi bookings and rides</p>
         </div>
 
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Total Bookings Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-blue-500/10 rounded-full p-2">
+                <svg className="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/>
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-blue-700 dark:text-blue-200">Total Bookings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-blue-900 dark:text-blue-200">{bookings.length}</div>
+              <p className="text-xs text-blue-600 mt-1 font-medium">
+                {bookings.length > 0 ? `+${Math.floor(bookings.length * 0.12)} this month` : "No new bookings"}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Completed Bookings Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-green-500/10 rounded-full p-2">
+                <svg className="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-green-700 dark:text-green-200">Completed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-green-900 dark:text-green-200">
+                {bookings.filter((booking) => booking.status === "completed").length}
+              </div>
+              <p className="text-xs text-green-600 mt-1 font-medium">
+                {bookings.length > 0
+                  ? `${Math.round(
+                      (bookings.filter((booking) => booking.status === "completed").length / bookings.length) * 100
+                    )}% of total`
+                  : "No completed bookings"}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total Earnings Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-yellow-500/10 rounded-full p-2">
+                <svg className="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4"/>
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-yellow-700 dark:text-yellow-200">Total Earnings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-yellow-900 dark:text-yellow-200">
+                ${bookings.reduce((acc, booking) => acc + (booking.totalFare || 0), 0).toLocaleString()}
+              </div>
+              <p className="text-xs text-yellow-600 mt-1 font-medium">
+                {bookings.length > 0 ? "+18% this month" : "No earnings yet"}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="rounded-lg overflow-hidden">
-          <Card>
+        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader className="px-4 py-6 sm:px-6 border-b">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* Left Section - Title and Description */}
@@ -136,7 +201,7 @@ export default function BookingHistory() {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
-                        className="w-full sm:w-auto font-semibold rounded-lg border-gray-300 transition"
+                        className="w-full sm:w-auto bg-transparent font-semibold rounded-lg border-gray-300 transition"
                       >
                         {filterStatus === "All" ? "Drivers" : filterStatus}
                         <ChevronDown className="ml-2 h-4 w-4" />
@@ -151,9 +216,12 @@ export default function BookingHistory() {
                           key={status}
                           checked={filterStatus === status}
                           onCheckedChange={() => setFilterStatus(status)}
-                          className="font-medium px-3 py-2 text-sm cursor-pointer  transition"
+                          className={`
+                            font-medium text-sm cursor-pointer transition
+                            flex gap-2
+                          `}
                         >
-                          {status}
+                          <span className="flex-1">{status}</span>
                         </DropdownMenuCheckboxItem>
                       ))}
                     </DropdownMenuContent>
@@ -180,8 +248,25 @@ export default function BookingHistory() {
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center">
-                        Loading...
+                      <TableCell colSpan={9} className="text-center py-8">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            ></path>
+                          </svg>
+                          <span className="text-blue-700 dark:text-blue-300 font-medium text-base">Loading bookings...</span>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : error ? (
@@ -193,7 +278,7 @@ export default function BookingHistory() {
                   ) : paginatedBookings.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={9} className="text-center">
-                        No Shifts found
+                        No Bookings found
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -253,18 +338,46 @@ export default function BookingHistory() {
                           <div className="space-y-2">
                             <div className="flex gap-2">
                               <MapPin className="h-4 w-4" />
-                              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                  booking?.pickup?.address || ""
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm font-semibold text-gray-900 dark:text-white"
+                                title="View on Google Maps"
+                              >
                                 {highlightMatch(
                                   `${booking?.pickup?.address}`,
                                   debouncedSearch
                                 )}
-                              </span>
+                              </a>
+                              {/* <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                {highlightMatch(
+                                  `${booking?.pickup?.address}`,
+                                  debouncedSearch
+                                )}
+                              </span> */}
                             </div>
                             <div className="flex gap-2">
                               <MapPinCheck className="h-4 w-4" />
-                              <span className="text-xs font-medium text-gray-700 dark:text-gray-400">
+                              <span className="text-xs font-light text-gray-700 dark:text-gray-400">
                                 {booking.dropOff?.address ? (
-                                  booking.dropOff?.address
+                                   <a
+                                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                     booking?.dropOff?.address || ""
+                                   )}`}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   className="text-sm font-semibold"
+                                   title="View on Google Maps"
+                                 >
+                                   {highlightMatch(
+                                     `${booking.dropOff?.address}`,
+                                     debouncedSearch
+                                   )}
+                                 </a>
+                                  // booking.dropOff?.address
                                 ) : (
                                   <span className="italic text-gray-400">
                                     On The Way
@@ -296,7 +409,7 @@ export default function BookingHistory() {
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            <div className="text-sm font-medium">
+                            <div className="text-sm font-medium text-green-600 dark:text-yellow-300">
                               ${booking?.totalFare}
                             </div>
                           </div>

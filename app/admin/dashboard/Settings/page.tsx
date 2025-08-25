@@ -10,9 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { UpdateSettings } from "../../slices/slice/UpdateSettingSlice";
 import { useToast } from "@/hooks/use-toast";
-import { Settings2 } from "lucide-react";
+import { Moon, Settings2, Sun } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
 export default function Settings() {
+  const { setTheme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
 
@@ -65,114 +68,172 @@ export default function Settings() {
 
   return (
     <DashboardLayout>
-      <div className="p-6">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div className="p-4 sm:p-8 max-w-2xl mx-auto">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold  flex items-center gap-2">
-              <span>
-                <Settings2 />
-              </span>
+            <h1 className="text-3xl font-bold flex items-center gap-2 text-zinc-900 dark:text-white">
+              <Settings2 className="w-7 h-7" />
               <span>Settings</span>
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">Manage system Settings.</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-base">
+              Manage system settings and preferences.
+            </p>
           </div>
         </div>
 
-        {isLoading && (
-          <div className="flex justify-center items-center">
-            <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
-          </div>
-        )}
-
-        {error && (
-          <div className="text-white mb-4">
-            {error}
-          </div>
-        )}
-
-        {!isLoading  && (
-          <form
-            onSubmit={handleSubmit}
-            className="shadow-lg rounded-lg p-6 max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
-          >
-            <h2 className="text-2xl font-semibold text-gray-700 dark:text-white mb-4">
-              Update Ride Pricing
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-300 mb-6">
-              Adjust the pricing details for rides. These settings affect how fares are calculated for all users.
-            </p>
-
-            <div className="space-y-5">
-              <div>
-                <Label className="block text-zinc-800 dark:text-zinc-200 font-medium mb-1" htmlFor="base_price">
-                  Base Price
-                </Label>
-                <Input
-                  id="base_price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={base_price}
-                  onChange={(e) => setBase_price(e.target.value)}
-                  className="border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 bg-white dark:bg-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
-                  placeholder="Enter the base fare (e.g., 5.00)"
-                  required
-                />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  The minimum fare charged for any ride.
-                </span>
-              </div>
-
-              <div>
-                <Label className="block text-zinc-800 dark:text-zinc-200 font-medium mb-1" htmlFor="km_price">
-                  Distance Price Per KM
-                </Label>
-                <Input
-                  id="km_price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={km_price}
-                  onChange={(e) => setKm_price(e.target.value)}
-                  className="border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 bg-white dark:bg-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
-                  placeholder="Enter price per kilometer (e.g., 1.25)"
-                  required
-                />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  Additional fare charged for each kilometer traveled.
-                </span>
-              </div>
-
-              <div>
-                <Label className="block text-zinc-800 dark:text-zinc-200 font-medium mb-1" htmlFor="waiting_time_price_per_minutes">
-                  Waiting Time Price Per Minute
-                </Label>
-                <Input
-                  id="waiting_time_price_per_minutes"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={waiting_time_price_per_minutes}
-                  onChange={(e) => setWaitingTime(e.target.value)}
-                  className="border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 bg-white dark:bg-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
-                  placeholder="Enter waiting charge per minute (e.g., 0.50)"
-                  required
-                />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  Fare charged for each minute the driver waits.
-                </span>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isUpdating}
-                className="mt-6 w-full rounded-md py-2 text-base font-semibold bg-black dark:bg-zinc-800 text-white hover:bg-zinc-800 dark:hover:bg-zinc-700 transition duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        <div className="space-y-10">
+          {/* Pricing Settings Card */}
+          <div className="max-w-2xl mx-auto w-full">
+            <div className="relative">
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-zinc-900/70 z-10 rounded-xl">
+                  <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              <form
+                onSubmit={handleSubmit}
+                className="shadow-lg border border-gray-200 dark:border-zinc-700 p-8 rounded-xl bg-white dark:bg-zinc-900 transition mb-10 relative"
+                style={{ opacity: isLoading ? 0.5 : 1, pointerEvents: isLoading ? "none" : "auto" }}
               >
-                {isUpdating ? "Updating..." : "Update Pricing"}
-              </Button>
+                <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-4 flex items-center gap-3">
+                  <span className="inline-block bg-zinc-100 dark:bg-zinc-800 rounded-full p-2">
+                    <Settings2 className="w-6 h-6" />
+                  </span>
+                  Update Ride Pricing
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
+                  Adjust the pricing details for rides. These settings affect how fares are calculated for all users.
+                </p>
+
+                {error && (
+                  <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-6 text-center">
+                    {error}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="block text-zinc-800 dark:text-zinc-200 font-semibold mb-2" htmlFor="base_price">
+                      Base Price
+                    </Label>
+                    <Input
+                      id="base_price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={base_price}
+                      onChange={(e) => setBase_price(e.target.value)}
+                      className="border border-gray-300 dark:border-zinc-700 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full"
+                      placeholder="Enter the base fare (e.g., 5.00)"
+                      required
+                    />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                      The minimum fare charged for any ride.
+                    </span>
+                  </div>
+
+                  <div>
+                    <Label className="block text-zinc-800 dark:text-zinc-200 font-semibold mb-2" htmlFor="km_price">
+                      Distance Price Per KM
+                    </Label>
+                    <Input
+                      id="km_price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={km_price}
+                      onChange={(e) => setKm_price(e.target.value)}
+                      className="border border-gray-300 dark:border-zinc-700 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full"
+                      placeholder="Enter price per kilometer (e.g., 1.25)"
+                      required
+                    />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                      Additional fare charged for each kilometer traveled.
+                    </span>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <Label className="block text-zinc-800 dark:text-zinc-200 font-semibold mb-2" htmlFor="waiting_time_price_per_minutes">
+                      Waiting Time Price Per Minute
+                    </Label>
+                    <Input
+                      id="waiting_time_price_per_minutes"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={waiting_time_price_per_minutes}
+                      onChange={(e) => setWaitingTime(e.target.value)}
+                      className="border border-gray-300 dark:border-zinc-700 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full"
+                      placeholder="Enter waiting charge per minute (e.g., 0.50)"
+                      required
+                    />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                      Fare charged for each minute the driver waits.
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="mt-10 w-full rounded-lg py-3 text-base font-semibold bg-blue-600 hover:bg-blue-700 dark:bg-fuchsia-800 dark:hover:bg-fuchsia-900 text-white transition duration-200 disabled:opacity-70 disabled:cursor-not-allowed shadow"
+                >
+                  {isUpdating ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      Updating...
+                    </span>
+                  ) : (
+                    "Update Pricing"
+                  )}
+                </Button>
+              </form>
             </div>
-          </form>
-        )}
+          </div>
+
+          {/* Theme Settings Card */}
+          <div className="max-w-2xl mx-auto w-full">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-8">
+              <h2 className="text-lg font-semibold mb-2 text-zinc-900 dark:text-white flex items-center gap-2">
+                <Settings2 className="w-5 h-5" /> Theme Settings
+              </h2>
+              <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">
+                Choose your preferred appearance for the dashboard. You can switch between Light, Dark, or System theme.
+              </p>
+              <div className="flex items-center gap-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-300 bg-transparent dark:bg-transparent hover:bg-gray-100 dark:hover:bg-fuchsia-950 transition-colors shadow"
+                    >
+                      <Sun className="h-[1.5rem] w-[1.5rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <Moon className="absolute h-[1.5rem] w-[1.5rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                      <span className="sr-only">Toggle theme</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setTheme("light")}>
+                      Light
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("dark")}>
+                      Dark
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("system")}>
+                      System
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                {/* <span className="text-sm text-zinc-700 dark:text-zinc-300">
+                  Current: <span className="font-semibold capitalize">{(typeof window !== "undefined" && document.documentElement.classList.contains("dark")) ? "Dark" : "Light"}</span>
+                </span> */}
+              </div>
+            </div>
+          </div>
+        </div>
+
+       
       </div>
     </DashboardLayout>
   );

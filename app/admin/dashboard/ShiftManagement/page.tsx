@@ -41,6 +41,7 @@ import { Badge } from "@/components/ui/badge";
 // } from "@/components/ui/dropdown-menu";
 // import { Label } from "@/components/ui/label";
 
+
 export default function ShiftsAndVehicle() {
   const { toast: showToast } = useToast(); // rename to avoid shadowing
   const router = useRouter();
@@ -243,8 +244,114 @@ export default function ShiftsAndVehicle() {
           </div>
         </div> */}
 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          {/* Active Shifts Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-green-500/10 rounded-full p-2">
+                <Clock10 className="h-6 w-6 text-green-600 dark:text-green-300" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-green-700 dark:text-green-200">
+                Total Shifts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-green-900 dark:text-green-200">
+                {filteredShifts.length}
+              </div>
+              <p className="text-xs text-green-600 mt-1 font-medium">
+                {Number(filteredShifts.length) > 0
+                  ? `${filteredShifts.length} Shfits`
+                  : "No active shifts"}
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-green-500/10 rounded-full p-2">
+                <Clock10 className="h-6 w-6 text-green-600 dark:text-green-300" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-green-700 dark:text-green-200">
+                Active Shifts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-green-900 dark:text-green-200">
+              {filteredShifts.filter(shift => shift.isActive === true).length}
+              </div>
+              <p className="text-xs text-green-600 mt-1 font-medium">
+              {filteredShifts.filter(shift => shift.isActive === true).length} Active
+              </p>
+            </CardContent>
+          </Card> 
+
+          {/* Scheduled Shifts Card */}
+          {/* <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-blue-500/10 rounded-full p-2">
+                <Plus className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-blue-700 dark:text-blue-200">
+                Scheduled
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-blue-900 dark:text-blue-200">
+                {shiftStats[1].value}
+              </div>
+              <p className="text-xs text-blue-600 mt-1 font-medium">
+                {Number(shiftStats[1].value) > 0
+                  ? `${shiftStats[1].change} today`
+                  : "No scheduled shifts"}
+              </p>
+            </CardContent>
+          </Card> */}
+
+          {/* On Break Card */}
+          {/* <Card className="shadow-lg border-0 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-yellow-500/10 rounded-full p-2">
+                <Clock10 className="h-6 w-6 text-yellow-600 dark:text-yellow-300" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-yellow-700 dark:text-yellow-200">
+                On Break
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-yellow-900 dark:text-yellow-200">
+                {shiftStats[2].value}
+              </div>
+              <p className="text-xs text-yellow-600 mt-1 font-medium">
+                {Number(shiftStats[2].value) > 0
+                  ? `${shiftStats[2].change} today`
+                  : "No drivers on break"}
+              </p>
+            </CardContent>
+          </Card> */}
+
+          {/* Completed Shifts Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-gray-500/10 rounded-full p-2">
+                <Car className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                Completed
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-gray-900 dark:text-gray-200">
+              {filteredShifts.filter(shift => shift.isActive === false).length}
+              </div>
+              <p className="text-xs text-gray-600 mt-1 font-medium">
+              {filteredShifts.filter(shift => shift.isActive === false).length} Completed
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="rounded-lg overflow-hidden">
-          <Card>
+        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>

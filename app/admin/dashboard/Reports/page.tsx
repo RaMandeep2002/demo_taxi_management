@@ -11,6 +11,7 @@ import {
   MapPin,
   MapPinCheck,
   Route,
+  TrendingUp,
   // Search,
 } from "lucide-react";
 import {
@@ -42,6 +43,38 @@ import {
 // } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+const performanceMetrics = [
+  {
+    title: 'Total Revenue',
+    value: '$48,675',
+    change: '+18%',
+    trend: 'up',
+    period: 'vs last month'
+  },
+  {
+    title: 'Total Trips',
+    value: '2,847',
+    change: '+12%',
+    trend: 'up',
+    period: 'vs last month'
+  },
+  {
+    title: 'Average Trip Value',
+    value: '$17.10',
+    change: '+5%',
+    trend: 'up',
+    period: 'vs last month'
+  },
+  {
+    title: 'Customer Satisfaction',
+    value: '4.8/5',
+    change: '+0.2',
+    trend: 'up',
+    period: 'vs last month'
+  }
+];
+
 
 export default function Reports() {
   const [fromDate, setFromDate] = useState("");
@@ -131,13 +164,39 @@ export default function Reports() {
   return (
     <DashboardLayout>
       <div className="p-4 md:p-8">
-        <h1 className="text-3xl font-bold mb-6 text-black dark:text-white">
-          Booking History Reports
-        </h1>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-black dark:text-white tracking-wider">
+            Booking History Reports
+          </h1>
+          <p className="mt-2 text-gray-700 dark:text-gray-300 tracking-wider">
+            View, filter, and download detailed reports of all taxi bookings. Use the filters below to customize your report by date, driver, or pickup location.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {performanceMetrics.map((metric, index) => (
+            <Card
+              key={index}
+              className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition hover:scale-[1.05] w-full"
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{metric.value}</div>
+                <div className="flex items-center gap-1 mt-1">
+                  <TrendingUp className="h-3 w-3 text-green-600" />
+                  <span className="text-sm text-green-600 font-medium">{metric.change}</span>
+                  <span className="text-sm text-gray-500">{metric.period}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
         {/* Filter & Download Form */}
         <form onSubmit={handleDownload} className="w-full mb-8">
-          <Card>
+        <Card className="shadow-lg border-0 bg-gradient-to-br  dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition ">
             <CardHeader>
               <CardTitle>Filter Bookings</CardTitle>
               <CardDescription>
@@ -147,7 +206,7 @@ export default function Reports() {
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor="fromDate" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="fromDate" className="text-sm font-medium">
                     From Date
                   </Label>
                   <Input
@@ -155,7 +214,7 @@ export default function Reports() {
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    className="px-2 py-2 text-black border rounded-md appearance-none 
+                    className="px-2 py-2 text-black border dark:border-white rounded-md appearance-none 
                       dark:text-white
                       [&::-webkit-calendar-picker-indicator]:invert
                       dark:[&::-webkit-calendar-picker-indicator]:invert-0
@@ -164,7 +223,7 @@ export default function Reports() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor="toDate" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="toDate" className="text-sm font-medium">
                     To Date
                   </Label>
                   <Input
@@ -172,7 +231,7 @@ export default function Reports() {
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    className="px-2 py-2 text-black border rounded-md appearance-none 
+                    className="px-2 py-2 text-black border dark:border-white rounded-md appearance-none 
                     dark:text-white
                     [&::-webkit-calendar-picker-indicator]:invert
                     dark:[&::-webkit-calendar-picker-indicator]:invert-0
@@ -181,19 +240,19 @@ export default function Reports() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor="pickup" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="pickup" className="text-sm font-medium">
                     Pickup Address
                   </Label>
-                  <Input
+                  <Input  
                     id="pickup"
                     value={pickup}
                     onChange={(e) => setPickup(e.target.value)}
                     placeholder="Pickup Address"
-                    className="px-2 py-2 text-black border rounded-md"
+                    className="px-2 py-2 border dark:border-white rounded-md"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor="drivername" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="drivername" className="text-sm font-medium">
                     Driver Name
                   </Label>
                   <Input
@@ -201,7 +260,7 @@ export default function Reports() {
                     value={drivername}
                     onChange={(e) => setDrivername(e.target.value)}
                     placeholder="Driver Name"
-                    className="px-2 py-2 text-black border rounded-md"
+                   className="px-2 py-2 border dark:border-white rounded-md"
                   />
                 </div>
                 <div className="flex flex-col gap-1 justify-end">
@@ -216,7 +275,22 @@ export default function Reports() {
                 </div>
               </div>
               {iserror && (
-                <p className="text-red-500 text-sm mt-2">{iserror}</p>
+                <div className="flex items-center gap-2 mt-3 px-3 py-2">
+                  <svg
+                    className="w-4 h-4 text-red-500 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                  <span className="text-red-600 text-sm font-medium">{iserror}</span>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -259,7 +333,7 @@ export default function Reports() {
 
         {/* Table */}
         <div className="border rounded-xl overflow-auto shadow-lg">
-          <Card>
+        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             {/* <CardHeader className="px-4 py-6 sm:px-6 bg-white border-b">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>

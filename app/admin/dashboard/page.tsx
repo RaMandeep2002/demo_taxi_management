@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { fetchdriverdetails } from "../slices/slice/fetchingDriversSlice";
+import { fetchAdminInfo } from "../slices/slice/adminslice";
+import * as motion from "motion/react-client";
 // import { useDebounce } from "@/lib/useDebounce";
 
 type StatCardProps = {
@@ -33,17 +35,20 @@ type StatCardProps = {
 };
 function StatCard({ title, value, icon }: StatCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-lg bg-white dark:bg-zinc-800 shadow transition-colors">
-      <div className="flex flex-row items-center justify-between pb-2 px-4 pt-4">
-        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-          {title}
-        </p>
-        <div className="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-800">
-          <span className="text-yellow-600 dark:text-yellow-200">{icon}</span>
+    // <Card className="shadow-lg border-0 bg-gradient-to-br from-indigo-200 via-violet-300 to-fuchsia-200 dark:from-violet-950 dark:via-purple-950 dark:to-fuchsia-950 transition"></Card>
+    <div className="relative overflow-hidden rounded-xl  dark:dark:bg-[#34363F] shadow-lg transition group hover:scale-[1.025] hover:shadow-xl duration-200">
+      <div className="flex flex-row items-center justify-between px-5 pt-5 pb-2">
+        <div className="flex flex-col gap-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-[#BAFB5D]">
+            {title}
+          </p>
+        </div>
+        <div className="bg-blue-500/10 rounded-full p-2 flex items-center justify-center shadow-inner">
+          <span className="text-blue-600 dark:text-[#FBE4D8] text-xl">{icon}</span>
         </div>
       </div>
-      <div className="px-4 pb-4">
-        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="px-5 pb-5">
+        <div className="text-3xl font-extrabold text-blue-900 dark:text-[#fffbf8] drop-shadow-sm">
           {value}
         </div>
       </div>
@@ -74,6 +79,8 @@ export default function DashboardPage() {
     dispatch(fetchBookingHistory());
     dispatch(fetchDashboardStats());
     dispatch(fetchdriverdetails());
+    dispatch(fetchAdminInfo());
+    // console.log("admin ---> ", admin)
   }, [dispatch]);
 
   // const filteredDrivers =
@@ -101,19 +108,25 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-full mx-auto sm:p-4">
+      <div className="max-w-full mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
           <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-[#BAFB5D] tracking-wider">
               Dashboard
             </h1>
-            <p className="text-gray-700 dark:text-gray-300">
+            <motion.p
+              
+              className="text-gray-700 dark:text-gray-300 tracking-wider"
+
+            >
               Welcome back! Here&apos;s what&apos;s happening with your taxi
               fleet today.
-            </p>
+            </motion.p>
+           
           </div>
           <Button
-            className="mt-4 sm:mt-0 px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg transition-colors flex items-center gap-2 shadow"
+                  // className="w-full px-6 py-4 flex items-center justify-center gap-3 text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black rounded-full transition-colors shadow tracking-wider hover:bg-gray-900 dark:hover:bg-[#d6ff7f]"
+            className="mt-4 sm:mt-0 px-6 py-4 font-bold text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black rounded-full transition-colors shadow tracking-wide hover:bg-gray-900 dark:hover:bg-[#d6ff7f]  flex items-center gap-3 hover:scale-[1.05] "
             onClick={() => {
               router.push("/admin/dashboard/Reports/");
             }}
@@ -157,11 +170,12 @@ export default function DashboardPage() {
           )}
         </div>
 
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 transition-colors shadow">
+        <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2 mb-2 text-gray-900 dark:text-white">
+                <CardTitle className="flex items-center gap-2 mb-2 text-gray-900 dark:text-[#BAFB5D]">
                   <Clock className="h-5 w-5" />
                   Recent Bookings
                 </CardTitle>
@@ -178,9 +192,28 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {loading ? (
-                <div className="text-center text-gray-600 dark:text-gray-400 py-8">
-                  Fetching recent bookings, please wait...
+              <div>
+              <div className="text-center py-8">
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  <span className="text-blue-700 dark:text-blue-300 font-medium text-base">Loading bookings...</span>
                 </div>
+              </div>
+            </div>
               ) : error ? (
                 <div className="text-center text-red-500 dark:text-red-400 py-8">{error}</div>
               ) : paginatedBookings.length === 0 ? (
@@ -192,11 +225,11 @@ export default function DashboardPage() {
                   {paginatedBookings.map((booking) => (
                     <div
                       key={booking.bookingId}
-                      className="flex items-center justify-between p-4 border border-gray-200 dark:border-zinc-700 rounded-lg transition-colors text-gray-900 dark:text-white bg-white dark:bg-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-800"
+                   className="flex items-center justify-between p-4 bg-white/80 dark:bg-zinc-900/70 border border-gray-100 dark:border-zinc-800 rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.025]"
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-gray-900 dark:text-blue-100">
+                          <span className="font-medium text-gray-900 dark:text-[#BAFB5D]">
                             #{booking.bookingId}
                           </span>
                           <span
@@ -212,14 +245,16 @@ export default function DashboardPage() {
                             {booking.status || "pending"}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-700 dark:text-gray-200">
+                        <p className="text-sm text-gray-700 dark:text-gray-400">
                           <span className="font-medium">
-                            {booking.driver?.drivername || "No driver assigned"}
+                            {booking.driver?.drivername
+                              ? booking.driver.drivername.charAt(0).toUpperCase() + booking.driver.drivername.slice(1)
+                              : "No driver assigned"}
                           </span>
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {booking.pickup?.address || "N/A"} →{" "}
-                          {booking.dropOff?.address || "N/A"}
+                          {booking.dropOff?.address || "Ongoing"}
                         </p>
                       </div>
                       <div className="text-right min-w-[80px]">
@@ -239,7 +274,7 @@ export default function DashboardPage() {
                         setBookingPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={bookingPage === 1}
-                      className="text-gray-900 dark:text-white bg-gray-100 dark:bg-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-800 w-full sm:w-auto border border-gray-200 dark:border-zinc-700"
+                      className="text-gray-900 dark:text-white bg-gray-100 dark:bg-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-800 w-full sm:w-auto border border-gray-200 dark:border-zinc-700 "
                     >
                       Previous
                     </Button>
@@ -257,16 +292,16 @@ export default function DashboardPage() {
                     >
                       Next
                     </Button>
-                  </div>
+                  </div>  
                 </>
               )}
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 transition-colors shadow">
+          <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
+                <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-[#BAFB5D]">
                   <Users2 className="h-5 w-5" />
                   Drivers
                 </CardTitle>
@@ -283,7 +318,28 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {isLoading ? (
-                <div className="text-center text-gray-600 dark:text-gray-400 py-8">Loading...</div>
+                 <div>
+                 <div className="text-center py-8">
+                   <div className="flex flex-col items-center justify-center gap-2">
+                     <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                       <circle
+                         className="opacity-25"
+                         cx="12"
+                         cy="12"
+                         r="10"
+                         stroke="currentColor"
+                         strokeWidth="4"
+                       ></circle>
+                       <path
+                         className="opacity-75"
+                         fill="currentColor"
+                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                       ></path>
+                     </svg>
+                     <span className="text-blue-700 dark:text-blue-300 font-medium text-base">Loading Drivers...</span>
+                   </div>
+                 </div>
+               </div>
               ) : isthereerror ? (
                 <div className="text-center text-red-500 dark:text-red-400 py-8">{isthereerror}</div>
               ) : paginatedDrivers.length === 0 ? (
@@ -295,9 +351,9 @@ export default function DashboardPage() {
                   {paginatedDrivers.map((driver) => (
                     <div
                       key={driver._id}
-                      className="flex items-center justify-between p-4 border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 shadow hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-white/80 dark:bg-zinc-900/70 border border-gray-100 dark:border-zinc-800 rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.025]"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-shrink-0">
                         <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
                           <span className="text-blue-600 dark:text-blue-300 font-semibold text-base">
                             {driver.drivername
@@ -310,15 +366,19 @@ export default function DashboardPage() {
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium">
-                            {driver.drivername}
+                          <p className="text-sm text-gray-700 dark:text-[#BAFB5D]">
+                            <span className="font-medium">
+                              {driver?.drivername
+                                ? driver.drivername.charAt(0).toUpperCase() + driver.drivername.slice(1)
+                                : "No driver assigned"}
+                            </span>
                           </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 break-all">
                             {driver.email}
                           </p>
-                        </div>  
+                        </div>
                       </div>
-                      <div className="text-right min-w-[120px] flex flex-col items-end">
+                      <div className="text-right min-w-[120px] flex flex-col items-end sm:items-end sm:mt-0 mt-2">
                         <span
                           className={
                             "inline-block px-2 py-0.5 rounded text-xs font-medium mb-1 " +
@@ -370,6 +430,7 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
     </DashboardLayout>
   );
 }

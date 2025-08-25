@@ -41,7 +41,7 @@ export const fetchdriverdetails = createAsyncThunk(
     } catch (error) {
       console.error(error);
       return rejectWithValue(
-        "Failed to Get Drivers Data",
+        "No Drivers Data",
       );
     }
   },
