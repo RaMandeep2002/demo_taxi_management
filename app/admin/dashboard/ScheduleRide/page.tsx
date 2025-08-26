@@ -113,7 +113,7 @@ export default function ScheduleRide() {
           <p className="mt-1">Create a new ride booking for customers</p>
         </div>
 
-        <div className="max-w-5xl mx-auto p-4 sm:p-6 md:p-8 mt-4 w-full">
+        <div className="w-full max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto sm:p-6 md:p-8 mt-4">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {success && (
               <div className="flex justify-center">
