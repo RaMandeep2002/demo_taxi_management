@@ -421,7 +421,7 @@ export default function VechicleList() {
                             {vehicle.vehicle_plate_number}
                           </div>
                           <div className="text-sm text-gray-500">
-                            VIN: {vehicle.vin_number.slice(-6)}
+                            VIN: {vehicle.vin_number ? vehicle.vin_number.slice(-6) : "N/A"}
                           </div>
                         </TableCell>
                         <TableCell>
