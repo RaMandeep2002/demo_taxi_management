@@ -83,8 +83,10 @@ export default function DashboardLayout({
         </nav> */}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-8 md:p-8 bg-gradient-to-br from-gray-50 via-blue-50 to-fuchsia-100 dark:from-[#252428] dark:via-[#34363F] dark:to-[#1a1a2e] transition-colors">
-          <div className="max-w-full mx-auto space-y-6">{children}</div>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-gradient-to-br from-gray-50 via-blue-50 to-fuchsia-100 dark:from-[#252428] dark:via-[#34363F] dark:to-[#1a1a2e] transition-colors">
+          <div className="w-full max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto space-y-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>
