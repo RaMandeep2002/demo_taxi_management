@@ -102,7 +102,7 @@ export default function ScheduleRide() {
 
   return (
     <DashboardLayout>
-      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
+      <div className="w-full sm:px-6 lg:px-8 mx-auto">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-black dark:text-[#BAFB5D]">
             <span>
