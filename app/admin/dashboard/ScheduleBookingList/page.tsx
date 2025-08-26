@@ -142,6 +142,7 @@ export default function ScheduleRideList() {
                   <TableHead>Route - Pickup / Drop off</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Round Trip</TableHead>
+                  <TableHead>Send To Email</TableHead>
                   <TableHead>Return Date & Time</TableHead>
                   {/* <TableHead>Route - Pickup / Drop off</TableHead> */}
                 </TableRow>
@@ -341,6 +342,43 @@ export default function ScheduleRideList() {
                                 <span>
                                   <span className="hidden xs:inline">
                                     No Round
+                                  </span>
+                                  <span className="inline xs:hidden">No</span>
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="text-xs sm:text-sm font-medium">
+                            <span
+                              className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${
+                                booking.sendtoemail === true
+                                  ? "bg-green-100 text-green-800"
+                                  : booking.sendtoemail === false
+                                  ? "bg-gray-100 text-gray-800"
+                                  : "bg-gray-300 text-gray-600"
+                              }`}
+                              style={{
+                                display: "inline-block",
+                                minWidth: "70px",
+                                textAlign: "center",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {booking.sendtoemail ? (
+                                <span>
+                                  <span className="hidden xs:inline">
+                                   Send
+                                  </span>
+                                  <span className="inline xs:hidden">Yes</span>
+                                </span>
+                              ) : (
+                                <span>
+                                  <span className="hidden xs:inline">
+                                   Not
                                   </span>
                                   <span className="inline xs:hidden">No</span>
                                 </span>

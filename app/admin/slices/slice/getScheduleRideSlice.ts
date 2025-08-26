@@ -18,6 +18,7 @@ export interface ScheduleData {
     roundTrip: boolean;
     returnDate?: string;
     returnTime?: string;
+    sendtoemail?:boolean;
 }
 
 export interface ScheduleState {
