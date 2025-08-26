@@ -157,6 +157,9 @@ export default function AddDriver() {
             </Dialog>
           )}
 
+
+
+<div className="w-full max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto sm:p-6 md:p-8 mt-4">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
@@ -412,6 +415,7 @@ export default function AddDriver() {
               )}
             </Button>
           </form>
+          </div>
         </div>
       </div>
     </DashboardLayout>
