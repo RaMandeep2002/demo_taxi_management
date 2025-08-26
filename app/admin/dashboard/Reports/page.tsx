@@ -11,7 +11,7 @@ import {
   MapPin,
   MapPinCheck,
   Route,
-  TrendingUp,
+  // TrendingUp,
   // Search,
 } from "lucide-react";
 import {
@@ -44,36 +44,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const performanceMetrics = [
-  {
-    title: 'Total Revenue',
-    value: '$48,675',
-    change: '+18%',
-    trend: 'up',
-    period: 'vs last month'
-  },
-  {
-    title: 'Total Trips',
-    value: '2,847',
-    change: '+12%',
-    trend: 'up',
-    period: 'vs last month'
-  },
-  {
-    title: 'Average Trip Value',
-    value: '$17.10',
-    change: '+5%',
-    trend: 'up',
-    period: 'vs last month'
-  },
-  {
-    title: 'Customer Satisfaction',
-    value: '4.8/5',
-    change: '+0.2',
-    trend: 'up',
-    period: 'vs last month'
-  }
-];
+// const performanceMetrics = [
+//   {
+//     title: 'Total Revenue',
+//     value: '$48,675',
+//     change: '+18%',
+//     trend: 'up',
+//     period: 'vs last month'
+//   },
+//   {
+//     title: 'Total Trips',
+//     value: '2,847',
+//     change: '+12%',
+//     trend: 'up',
+//     period: 'vs last month'
+//   },
+//   {
+//     title: 'Average Trip Value',
+//     value: '$17.10',
+//     change: '+5%',
+//     trend: 'up',
+//     period: 'vs last month'
+//   },
+//   {
+//     title: 'Customer Satisfaction',
+//     value: '4.8/5',
+//     change: '+0.2',
+//     trend: 'up',
+//     period: 'vs last month'
+//   }
+// ];
 
 
 export default function Reports() {
@@ -172,7 +172,7 @@ export default function Reports() {
             View, filter, and download detailed reports of all taxi bookings. Use the filters below to customize your report by date, driver, or pickup location.
           </p>
         </div>
-
+{/* 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {performanceMetrics.map((metric, index) => (
             <Card
@@ -192,7 +192,7 @@ export default function Reports() {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div> */}
 
         {/* Filter & Download Form */}
         <form onSubmit={handleDownload} className="w-full mb-8">
