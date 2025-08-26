@@ -35,6 +35,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
 
 export default function DashboardSidebar() {
   // const { setTheme } = useTheme();
@@ -80,9 +81,11 @@ export default function DashboardSidebar() {
             className="text-lg font-bold cursor-pointer hover:text-primary flex items-center gap-2 justify-center w-full"
             onClick={() => handleNavigation("/admin/dashboard")}
           >
-            <img
-              src="https://i.postimg.cc/02m5mBSD/Group-43-2.png"
+            <Image
+              src={"/taxi-dark.png"}
               alt="Demo Taxi Logo"
+              width={24}
+              height={24}
               className="h-6 w-6 dark:invert"
               aria-label="Demo Taxi Logo"
             />
