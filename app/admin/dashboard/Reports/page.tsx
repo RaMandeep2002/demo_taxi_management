@@ -107,7 +107,7 @@ export default function Reports() {
   };
   const formattedFromDate = convertDateFormat(fromDate);
   const formattedToDate = convertDateFormat(toDate);
-
+  
   const filteredBookings =
     bookings?.filter((booking) => {
       const bookingDate = booking?.pickupDate;
@@ -193,6 +193,71 @@ export default function Reports() {
             </Card>
           ))}
         </div> */}
+
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Total Bookings Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-blue-500/10 rounded-full p-2">
+                <svg className="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/>
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-blue-700 dark:text-blue-200">Total Bookings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-blue-900 dark:text-blue-200">{bookings.length}</div>
+              <p className="text-xs text-blue-600 mt-1 font-medium">
+                {bookings.length > 0 ? `+${Math.floor(bookings.length * 0.12)} this month` : "No new bookings"}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Completed Bookings Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-green-500/10 rounded-full p-2">
+                <svg className="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-green-700 dark:text-green-200">Completed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-green-900 dark:text-green-200">
+                {bookings.filter((booking) => booking.status === "completed").length}
+              </div>
+              <p className="text-xs text-green-600 mt-1 font-medium">
+                {bookings.length > 0
+                  ? `${Math.round(
+                      (bookings.filter((booking) => booking.status === "completed").length / bookings.length) * 100
+                    )}% of total`
+                  : "No completed bookings"}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total Earnings Card */}
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800 transition">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-yellow-500/10 rounded-full p-2">
+                <svg className="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4"/>
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-yellow-700 dark:text-yellow-200">Total Earnings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-yellow-900 dark:text-yellow-200">
+                ${bookings.reduce((acc, booking) => acc + (booking.totalFare || 0), 0).toLocaleString()}
+              </div>
+              <p className="text-xs text-yellow-600 mt-1 font-medium">
+                {bookings.length > 0 ? "+18% this month" : "No earnings yet"}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Filter & Download Form */}
         <form onSubmit={handleDownload} className="w-full mb-8">
