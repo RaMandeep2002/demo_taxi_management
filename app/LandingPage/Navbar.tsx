@@ -1,18 +1,11 @@
 "use client";
 import Link from "next/link";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import * as motion from "motion/react-client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useTheme } from "next-themes";
 
 export default function Navbar() {
-  const { setTheme } = useTheme();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -93,32 +86,6 @@ export default function Navbar() {
               {section.charAt(0).toUpperCase() + section.slice(1)}
             </Link>
           ))}
-
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="relative w-12 h-12 flex items-center justify-center rounded-full border border-zinc-900 dark:border-gray-300 bg-transparent dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-fuchsia-950 transition-colors shadow"
-                  aria-label="Toggle theme" 
-                >
-                  <Sun className="h-[1.5rem] w-[1.5rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Moon className="absolute h-[1.5rem] w-[1.5rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="sr-only">Toggle theme</span>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                  System
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
         </motion.nav>
 
         {/* Mobile Menu Toggle Button */}
@@ -170,31 +137,6 @@ export default function Navbar() {
               </Link>
             ))}
             {/* Theme Toggle Dropdown */}
-            <div className="mt-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className="relative w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-300 bg-transparent dark:bg-transparent hover:bg-gray-100 dark:hover:bg-fuchsia-950 transition-colors shadow"
-                    aria-label="Toggle theme"
-                  >
-                    <Sun className="h-[1.5rem] w-[1.5rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-[1.5rem] w-[1.5rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
           </nav>
         </motion.div>
       )}
