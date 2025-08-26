@@ -122,7 +122,7 @@ export default function AddDriver() {
     // bg-gradient-to-r from-slate-900 to-slate-700
     <DashboardLayout>
       <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
-        <h1 className="text-2xl sm:text-3xl font-bold text-black dark:text-white flex items-center gap-2">
+      <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-black dark:text-[#BAFB5D]">
           <span>
             <Plus className="h-6 w-6" />
           </span>
@@ -142,7 +142,7 @@ export default function AddDriver() {
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                   <DialogTitle className="text-green-600 dark:text-yellow-300 text-center">
-                    Vehicle added successfully!
+                    New Driver added successfully!
                   </DialogTitle>
                   <DialogDescription className="text-center">
                     The new vehicle has been added to your fleet.
@@ -157,7 +157,7 @@ export default function AddDriver() {
             </Dialog>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <form onSubmit={handleSubmit} className="w-full max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto sm:p-6 md:p-8 mt-4">
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
