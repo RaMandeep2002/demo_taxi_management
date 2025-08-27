@@ -4,7 +4,7 @@ import * as motion from "motion/react-client";
 export default function WelcomeSection() {
   return (
     <>
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-zinc-900">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-white">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             {/* Image First on Large Screens */}

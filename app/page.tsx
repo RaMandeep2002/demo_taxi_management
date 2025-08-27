@@ -18,7 +18,7 @@ export default function Home() {
       {/* Navbar */}
       {/* <Navbar /> */}
       {/* HeroSection */}
-      <main className="flex-1">
+      <main className="flex-1 bg-white text-black">
         <Navbar />
 
         <HeroSection />

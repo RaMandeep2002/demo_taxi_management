@@ -2,6 +2,7 @@ import { useState } from "react";
 import * as motion from "motion/react-client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function BookingSection() {
   const [form, setForm] = useState({
@@ -178,7 +179,7 @@ export default function BookingSection() {
                 >
                   Additional Notes (optional)
                 </Label>
-                <textarea
+                <Textarea
                   id="notes"
                   name="notes"
                   value={form.notes}
