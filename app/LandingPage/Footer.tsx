@@ -18,16 +18,16 @@ export default function Footer(){
               className="space-y-4">
                 <div className="flex items-center gap-2">
                   <Image
-                    src="/salmon-logo-final.jpg"
-                    alt="Salmon Arm Taxi Logo"
+                    src="/fotter_logo.svg"
+                    alt="Demo Taxi Logo"
                     width={40}
                     height={40}
                     className="h-10 w-10 object-contain rounded-full"
                   />
-                  <span className="text-lg font-bold">Salmon Arm Taxi</span>
+                  <span className="text-lg font-bold">Demo Taxi</span>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                Locally owned Salmon Arm Taxi is a major part of transportation services in Salmon Arm all year around.By emphasizing on quality and service Salmon Arm Taxi has been providing contractual transportation services to many local and national companies.
+                <p className="text-base text-muted-foreground">
+                Locally owned Demo Taxi is a major part of transportation services in [Your place] all year around. By emphasizing on quality and service, Demo Taxi has been providing contractual transportation services to many local and national companies.
                 </p>
               </motion.div>
               <motion.div
@@ -37,7 +37,7 @@ export default function Footer(){
                  viewport={{ once: true }}
               className="space-y-4">
                 <h3 className="text-lg font-semibold">Quick Links</h3>
-                <ul className="space-y-2 text-sm">
+                <ul className="space-y-2 text-base">
                   <li>
                     <Link
                       href="#home"
@@ -54,14 +54,14 @@ export default function Footer(){
                       About Us
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       href="#gallery"
                       className="text-muted-foreground hover:text-yellow-500 transition-colors"
                     >
                       Our Fleet
                     </Link>
-                  </li>
+                  </li> */}
                   {/* <li>
                     <Link
                       href="#app"
@@ -79,15 +79,15 @@ export default function Footer(){
                 viewport={{ once: true }}
               id="contact" className="space-y-4">
                 <h3 className="text-lg font-semibold">Contact Us</h3>
-                <ul className="space-y-2 text-sm">
+                <ul className="space-y-2 text-base">
                   <li className="flex items-center gap-2">
                     <PhoneCall className="h-4 w-4 text-yellow-500" />
                     <span className="text-muted-foreground">
                     <a
-                    href="tel:+12508321111"
+                    href="tel:"
                  className="ml-1 hover:underline hover:text-yellow-500"
                   >
-                    +1 (250) 832-1111
+             +1 (245) 823-2222
                   </a>
                     </span>
                   </li>
@@ -98,7 +98,7 @@ export default function Footer(){
                     href="mailto:salmonarmtaxi@yahoo.ca"
                     className="ml-1 hover:underline hover:text-yellow-500"
                   >
-                    salmonarmtaxi@yahoo.ca
+                    demotaxi@gmail.com
                   </a>
                     </span>
                   </li>
@@ -144,7 +144,7 @@ export default function Footer(){
               viewport={{ once: true }}
             className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Salmon Arm Taxi. All rights reserved.
+                © {new Date().getFullYear()} Demo Taxi. All rights reserved.
               </p>
               {/* <div className="flex gap-4 text-xs text-muted-foreground">
                 <Link href="#" className="hover:underline">

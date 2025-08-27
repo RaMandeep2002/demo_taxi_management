@@ -57,7 +57,7 @@ export default function Navbar() {
             alt="SpeedyTaxi Logo"
             className="h-12 w-12 object-contain"
           />
-          <span className="text-2xl font-extrabold text-black">Demo Taxi</span>
+          <span className="text-2xl font-extrabold text-black dark:text-black">Demo Taxi</span>
         </motion.div>
 
         {/* Desktop Navigation */}
@@ -77,11 +77,11 @@ export default function Navbar() {
           }}
           className="hidden md:flex gap-8 items-center"
         >
-          {["home", "about", "gallery", "contact"].map((section) => (
+          {["home", "about","booking", "contact"].map((section) => (
             <Link
               key={section}
               href={`#${section}`}
-              className="text-lg font-semibold text-black hover:text-white transition-colors duration-200"
+              className="text-lg font-semibold text-black dark:text-black hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors duration-200"
             >
               {section.charAt(0).toUpperCase() + section.slice(1)}
             </Link>
@@ -126,7 +126,7 @@ export default function Navbar() {
           className="md:hidden bg-yellow-400 px-5 pb-4"
         >
           <nav className="flex flex-col gap-3">
-            {["home", "about", "gallery", "contact"].map((section) => (
+          {["home", "about","booking", "contact"].map((section) => (  
               <Link
                 key={section}
                 href={`#${section}`}

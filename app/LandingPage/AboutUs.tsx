@@ -25,9 +25,9 @@ export default function AboutUs() {
                 transition={{ duration: 0.4}}
                 viewport={{ once: true }}
                  className="text-muted-foreground md:text-xl">
-                Locally owned Salmon Arm Taxi is a major part of transportation
-                services in Salmon Arm all year around. By emphasizing on
-                quality and service, Salmon Arm Taxi has been providing
+                Locally owned Demo Taxi is a major part of transportation
+                services in [Your place] all year around. By emphasizing on
+                quality and service, Demo Taxi has been providing
                 contractual transportation services to many local and national
                 companies.
               </motion.p>
@@ -40,10 +40,10 @@ export default function AboutUs() {
                  className="gap-3">
                   <strong>Email:</strong>
                   <a
-                    href="mailto:salmonarmtaxi@yahoo.ca"
+                    href="mailto:demotaxi@gmail.com"
                     className="ml-1 text-yellow-600 hover:underline"
                   >
-                    salmonarmtaxi@yahoo.ca
+                    demotaxi@gmail.com
                   </a>
                 </motion.p>
                 <motion.p
@@ -53,10 +53,10 @@ export default function AboutUs() {
                  viewport={{ once: true }}>
                   <strong>Contact:</strong>
                   <a
-                    href="tel:+12508321111"
+                    href="tel:"
                     className="ml-1 text-yellow-600 hover:underline"
                   >
-                    +1 (250) 832-1111
+                    +1 (245) 823-2222
                   </a>
                 </motion.p>
               </div>

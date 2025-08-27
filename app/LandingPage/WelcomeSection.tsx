@@ -22,7 +22,7 @@ export default function WelcomeSection() {
                 viewport={{ once: true }}
                 className="text-3xl font-bold tracking-tighter md:text-4xl"
               >
-                Welcome to Salmon Arm Taxi
+                Welcome to Demo Taxi
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: -50 }}
@@ -31,9 +31,9 @@ export default function WelcomeSection() {
                 viewport={{ once: true }}
                 className="text-muted-foreground md:text-xl"
               >
-                Locally owned Salmon Arm Taxi is a major part of transportation
-                services in Salmon Arm all year around.By emphasizing on quality
-                and service Salmon Arm Taxi has been providing contractual
+                Locally owned Demo Taxi is a major part of transportation
+                services in [Your Place] all year around.By emphasizing on quality
+                and service Demo Taxi has been providing contractual
                 transportation services to many local and national companies.
               </motion.p>
               <motion.ul
@@ -116,7 +116,7 @@ export default function WelcomeSection() {
               >
                 With 24 hours taxi and delivery service, our distinctive Yellow
                 colors taxi can be spotted throughout the city. You can count on
-                Salmon Arm Taxi excellent 24 hours service for your car break
+                Demo Taxi excellent 24 hours service for your car break
                 down, you vehicle needs a charge boost, you need food or liquor
                 delivered, package or parcel delivered local or out of town.
               </motion.p>
@@ -127,7 +127,7 @@ export default function WelcomeSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                src="https://i.postimg.cc/x8tm6dRx/Group-39-1.png"
+                src="https://i.postimg.cc/4y0ZwYFG/Group-39-1.png"
                 alt="Professional taxi service"
                 className="mx-auto w-58 md:w-58 overflow-hidden object-cover"
               />

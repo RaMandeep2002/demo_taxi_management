@@ -2,12 +2,13 @@
 import AboutUs from "./LandingPage/AboutUs";
 import Footer from "./LandingPage/Footer";
 // import AppDownloadSection from "./LandingPage/AppDownloadSection";
-import GallerySection from "./LandingPage/GallerySection";
+// import GallerySection from "./LandingPage/GallerySection";
 import HeroSection from "./LandingPage/HeroSection";
 import Navbar from "./LandingPage/Navbar";
 import WelcomeSection from "./LandingPage/WelcomeSection";
 import * as motion from "motion/react-client";
 import { useScroll } from "motion/react";
+import BookingSection from "./LandingPage/BookingSections";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -24,12 +25,13 @@ export default function Home() {
 
         <WelcomeSection />
 
-        <GallerySection />
-
+        {/* <GallerySection /> */}
         {/* <AppDownloadSection /> */}
 
         <AboutUs />
 
+        <BookingSection />
+        
         <Footer />
       </main>
     </div>
