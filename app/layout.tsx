@@ -37,13 +37,11 @@ export default function RootLayout({
       >
         <Toaster />
         <Providers>
-          {" "}
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
-            enableSystem={false}  
+            defaultTheme="dark"
+            enableSystem={false}
             disableTransitionOnChange
-            themes={["light", "dark", "dracula", "solarized"]} // custom themes
           >
             {children}
           </ThemeProvider>
