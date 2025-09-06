@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "next-themes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Settings() {
   const { setTheme } = useTheme();
@@ -96,12 +97,12 @@ export default function Settings() {
               >
                 Price Settings
               </TabsTrigger>
-            
+
               <TabsTrigger
                 value="emailsetting"
                 className="px-5 py-2 rounded-md font-medium text-zinc-700 dark:text-zinc-200 transition-colors data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow"
               >
-                Email Settings
+                Notification Email Settings
               </TabsTrigger>
               <TabsTrigger
                 value="themeSetting"
@@ -111,7 +112,7 @@ export default function Settings() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="priceSetting">
-              <div className="max-w-2xl w-full mt-5">
+              <div className="max-w-2xl w-full  ">
                 <div className="relative">
                   {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-zinc-900/70 z-10 rounded-xl">
@@ -212,6 +213,57 @@ export default function Settings() {
                           Fare charged for each minute the driver waits.
                         </span>
                       </div>
+                      <div className="md:col-span-2">
+                        <Label
+                          className="block text-zinc-800 dark:text-zinc-200 font-semibold mb-2"
+                          htmlFor="currency"
+                        >
+                          Currency
+                        </Label>
+                        <Select
+                          // value={currency}
+                          // onValueChange={setCurrency}
+                        >
+                          <SelectTrigger className="border border-gray-300 dark:border-zinc-700 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full py-2 px-3">
+                            <SelectValue placeholder="Select currency" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-gray-900 rounded-lg shadow-lg border dark:border-gray-700">
+                            <SelectItem
+                              value="USD"
+                              className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                            >
+                              USD - US Dollar
+                            </SelectItem>
+                            <SelectItem
+                              value="CAD"
+                              className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                            >
+                              CAD - Canadian Dollar
+                            </SelectItem>
+                            <SelectItem
+                              value="INR"
+                              className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                            >
+                              INR - Indian Rupee
+                            </SelectItem>
+                            <SelectItem
+                              value="EUR"
+                              className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                            >
+                              EUR - Euro
+                            </SelectItem>
+                            <SelectItem
+                              value="GBP"
+                              className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                            >
+                              GBP - British Pound
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                          Choose the currency for ride fares and pricing.
+                        </span>
+                      </div>
                     </div>
 
                     <Button
@@ -233,14 +285,15 @@ export default function Settings() {
               </div>
             </TabsContent>
             <TabsContent value="emailsetting">
-              <div className="max-w-2xl w-full mt-5">
+              <div className="max-w-2xl w-full  ">
                 <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-8">
                   <h2 className="text-lg font-semibold mb-2 text-zinc-900 dark:text-white flex items-center gap-2">
                     {/* <span className="inline-block bg-yellow-200 text-yellow-800 rounded-full px-2 py-1 text-xs font-bold mr-2">Email</span> */}
                     Email Settings
                   </h2>
                   <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">
-                    Configure the email address used for admin notifications and ride booking alerts.
+                    Configure the email address used for admin notifications and
+                    ride booking alerts.
                   </p>
                   <form className="space-y-6">
                     <div>
@@ -248,14 +301,16 @@ export default function Settings() {
                         htmlFor="admin_email"
                         className="block text-zinc-800 dark:text-zinc-200 font-semibold mb-2"
                       >
-                        Admin Email Address
+                        Notification Email Address
                       </Label>
                       <Input
                         id="admin_email"
                         type="email"
                         className="border border-gray-300 dark:border-zinc-700 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full"
-                        placeholder="Enter admin email (e.g., admin@example.com)"
+                        placeholder="Enter Notification email (e.g., john@example.com)"
                         required
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                        title="Please enter a valid email address"
                         // value and onChange should be connected to state in a real implementation
                       />
                       <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
@@ -277,9 +332,9 @@ export default function Settings() {
                         required
                         // value and onChange should be connected to state in a real implementation
                       />
-                      {/* <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
-                        This email will receive all ride booking notifications.
-                      </span> */}
+                      <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                        You can genrate the <b>App Password </b>from the Google Account Manager.
+                      </span>
                     </div>
                     <Button
                       type="submit"
@@ -294,7 +349,7 @@ export default function Settings() {
               </div>
             </TabsContent>
             <TabsContent value="themeSetting">
-            <div className="max-w-2xl w-full mt-5">
+              <div className="max-w-2xl w-full  ">
                 <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-8">
                   <h2 className="text-lg font-semibold mb-2 text-zinc-900 dark:text-white flex items-center gap-2">
                     <Settings2 className="w-5 h-5" /> Theme Settings
@@ -337,7 +392,11 @@ export default function Settings() {
                           if (theme === "dark") return "Dark";
                           if (theme === "light") return "Light";
                           // fallback to system
-                          return window.matchMedia("(prefers-color-scheme: dark)").matches ? "Dark" : "Light";
+                          return window.matchMedia(
+                            "(prefers-color-scheme: dark)"
+                          ).matches
+                            ? "Dark"
+                            : "Light";
                         })()}
                       </span>
                     </span>

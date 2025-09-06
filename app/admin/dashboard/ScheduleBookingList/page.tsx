@@ -90,7 +90,7 @@ export default function ScheduleRideList() {
             <p className="mt-1">Create a new ride booking for customers</p>
           </div>
           <Button
-            className="mt-4 sm:mt-0 px-6 py-4 text-lg bg-black dark:bg-[#BAFB5D] rounded-full transition-colors flex items-center gap-3 shadow hover:scale-[1.05] tracking-wider"
+             className="mt-4 sm:mt-0 px-7 py-4 font-extrabold text-lg bg-gradient-to-r from-black via-gray-900 to-gray-800 text-white dark:bg-gradient-to-r dark:from-[#BAFB5D] dark:via-[#d6ff7f] dark:to-[#BAFB5D] dark:text-black rounded-full transition-all duration-200 shadow-lg tracking-wider flex items-center gap-3 hover:scale-105 hover:shadow-xl hover:bg-gray-900 dark:hover:bg-[#eaffb0] focus:outline-none focus:ring-2 focus:ring-yellow-400"
             onClick={() => {
               router.push("/admin/dashboard/ScheduleRide/");
             }}

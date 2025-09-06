@@ -43,6 +43,12 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -232,7 +238,7 @@ export default function VechicleList() {
           </div>
           <div className="w-full sm:w-auto flex justify-end mt-4 sm:mt-0">
             <Button
-              className="w-full sm:w-auto"
+               className="redirect-button"
               type="submit"
               onClick={() => router.push("/admin/dashboard/RegsiterVehicle")}
             >
@@ -313,8 +319,8 @@ export default function VechicleList() {
             />
           </div>
         </div> */}
-        <div className="border rounded-lg overflow-hidden">
-          <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
+        <div>
+        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -337,193 +343,310 @@ export default function VechicleList() {
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Vehicle Model</TableHead>
-                    <TableHead>License Plate</TableHead>
-                    <TableHead>Year</TableHead>
-                    <TableHead>Vehcile Plate Number</TableHead>
-                    <TableHead>Maintenance</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
+              {/* Responsive Table/Accordion for Vehicle List */}
+              {/* Desktop Table */}
+              <div className="hidden sm:block">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center">
-                        Loading...
-                      </TableCell>
+                      <TableHead>Company</TableHead>
+                      <TableHead>Vehicle Model</TableHead>
+                      <TableHead>License Plate</TableHead>
+                      <TableHead>Year</TableHead>
+                      <TableHead>Vehcile Plate Number</TableHead>
+                      <TableHead>Maintenance</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
                     </TableRow>
-                  ) : error ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={9}
-                        className="text-center text-black dark:text-white"
-                      >
-                        {error}
-                      </TableCell>
-                    </TableRow>
-                  ) : paginatedVehicles.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={9} className="text-center">
-                        No vehicle found
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    paginatedVehicles.map((vehicle) => (
-                      <TableRow key={vehicle._id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={9} className="text-center">
+                          Loading...
+                        </TableCell>
+                      </TableRow>
+                    ) : error ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={9}
+                          className="text-center text-black dark:text-white"
+                        >
+                          {error}
+                        </TableCell>
+                      </TableRow>
+                    ) : paginatedVehicles.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={9} className="text-center">
+                          No vehicle found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      paginatedVehicles.map((vehicle) => (
+                        <TableRow key={vehicle._id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span className="text-blue-600 font-semibold text-base">
+                                  {vehicle.company
+                                    ? vehicle.company
+                                        .split(" ")
+                                        .map((n) => n[0])
+                                        .join("")
+                                        .toUpperCase()
+                                    :   <Car className="h-5 w-5 text-blue-600" />}
+                                </span>
+                              </div>
+                              <div>
+                                <div className="font-medium text-gray-900 dark:text-gray-200">
+                                  {highlightMatch(
+                                    vehicle?.company,
+                                    debouncedsearch
+                                  )}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {vehicle.color
+                                    ? vehicle.color.charAt(0).toUpperCase() +
+                                      vehicle.color.slice(1)
+                                    : ""}{" "}
+                                  • {vehicle?._id?.slice(0, 8)}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1 text-sm">
+                                <span className="text-gray-600 dark:text-gray-200">
+                                  {vehicle?.vehicleModel}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">
+                              {vehicle.vehicle_plate_number}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              VIN: {vehicle.vin_number ? `${vehicle.vin_number.slice(0, 4)}...${vehicle.vin_number.slice(-4)}` : "N/A"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1 text-sm">
+                                <span className="text-gray-600 dark:text-gray-200">
+                                  {vehicle?.year}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div className="text-gray-500 dark:text-gray-200">
+                                {vehicle?.vehicle_plate_number
+                                  ? vehicle.vehicle_plate_number
+                                  : "Not Set"}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1 text-xs">
+                                <Wrench className="h-3 w-3 text-gray-400" />
+                                <span>
+                                  Last: {vehicle.registration_Expiry_Date ? new Date(vehicle.registration_Expiry_Date).toLocaleDateString() : "N/A"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1 text-xs">
+                                <Calendar className="h-3 w-3 text-gray-400" />
+                                <span>
+                                  Next: {vehicle.last_Inspection_Date ? new Date(vehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1 text-xs">
+                                <span
+                                  className={`px-2 py-1 rounded-full font-semibold ${
+                                    vehicle.status === "active"
+                                      ? "bg-green-100 text-green-800"
+                                      : vehicle.status === "inactive"
+                                      ? "bg-gray-200 text-gray-700"
+                                      : vehicle.status === "maintenance"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : "bg-red-100 text-red-800"
+                                  }`}
+                                >
+                                  {vehicle.status
+                                    ? vehicle.status.charAt(0).toUpperCase() +
+                                      vehicle.status.slice(1)
+                                    : "Unknown"}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleDialogOpen(vehicle, "view")
+                                  }
+                                >
+                                  <Eye className="w-4 h-4" />
+                                  View Vehicle
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleDialogOpen(vehicle, "edit")
+                                  }
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                  Update Vehicle
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-red-600"
+                                  onClick={() =>
+                                    handleDialogOpen(vehicle, "delete")
+                                  }
+                                >
+                                  <Trash className="w-4 h-4" />
+                                  Delete Vehicle
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+              {/* Mobile Accordion */}
+              <div className="block sm:hidden">
+                {isLoading ? (
+                  <div className="text-center py-8 text-gray-500">Loading...</div>
+                ) : error ? (
+                  <div className="text-center py-8 text-red-600">{error}</div>
+                ) : paginatedVehicles.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">No vehicle found</div>
+                ) : (
+                  <Accordion type="single" collapsible>
+                    {paginatedVehicles.map((vehicle) => (
+                      <AccordionItem key={vehicle._id} value={vehicle._id}>
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 w-full">
                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                               <span className="text-blue-600 font-semibold text-base">
-                                {/* {vehicle.company
+                                {vehicle.company
                                   ? vehicle.company
                                       .split(" ")
                                       .map((n) => n[0])
                                       .join("")
                                       .toUpperCase()
-                                  :   <Car className="h-5 w-5 text-blue-600" />} */}
-                                <Car className="h-5 w-5 text-blue-600" />
+                                  : <Car className="h-5 w-5 text-blue-600" />}
                               </span>
                             </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-200">
-                                {highlightMatch(
-                                  vehicle?.company,
-                                  debouncedsearch
-                                )}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {vehicle.color
-                                  ? vehicle.color.charAt(0).toUpperCase() +
-                                    vehicle.color.slice(1)
-                                  : ""}{" "}
-                                • {vehicle?._id?.slice(0, 8)}
-                              </div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1 text-sm">
-                              {/* <Mail className="h-3 w-3 text-gray-400" /> */}
-                              <span className="text-gray-600 dark:text-gray-200">
+                            <div className="flex flex-col flex-1 min-w-0">
+                              <span className="font-medium text-gray-900 dark:text-gray-200 truncate">
+                                {highlightMatch(vehicle?.company, debouncedsearch)}
+                              </span>
+                              <span className="text-xs text-gray-500 truncate">
                                 {vehicle?.vehicleModel}
                               </span>
                             </div>
+                            <span
+                              className={`px-2 py-1 mr-2 rounded-full font-semibold text-xs ${
+                                vehicle.status === "active"
+                                  ? "bg-green-100 text-green-800"
+                                  : vehicle.status === "inactive"
+                                  ? "bg-gray-200 text-gray-700"
+                                  : vehicle.status === "maintenance"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
+                              {vehicle.status
+                                ? vehicle.status.charAt(0).toUpperCase() +
+                                  vehicle.status.slice(1)
+                                : "Unknown"}
+                            </span>
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="font-medium">
-                            {vehicle.vehicle_plate_number}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            VIN: {vehicle.vin_number ? vehicle.vin_number.slice(-6) : "N/A"}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1 text-sm">
-                              {/* <Mail className="h-3 w-3 text-gray-400" /> */}
-                              <span className="text-gray-600 dark:text-gray-200">
-                                {vehicle?.year}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="px-2 py-3 space-y-2">
+                            <div>
+                              <span className="block text-xs text-gray-400">License Plate</span>
+                              <span className="font-medium">{vehicle.vehicle_plate_number}</span>
+                            </div>
+                            <div>
+                              <span className="block text-xs text-gray-400">VIN</span>
+                              <span className="font-medium">
+                                {vehicle.vin_number
+                                  ? `${vehicle.vin_number}`
+                                  : "N/A"}
                               </span>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            <div className="text-gray-500 dark:text-gray-200">
-                              {vehicle?.vehicle_plate_number
-                                ? vehicle.vehicle_plate_number
-                                : "Not Set"}
+                            <div>
+                              <span className="block text-xs text-gray-400">Year</span>
+                              <span className="font-medium">{vehicle.year}</span>
                             </div>
-                          </div>
-                        </TableCell>
-
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1 text-xs">
-                              <Wrench className="h-3 w-3 text-gray-400" />
-                              <span>
-                                Last: {vehicle.registration_Expiry_Date ? new Date(vehicle.registration_Expiry_Date).toLocaleDateString() : "N/A"}
-                              </span>
+                            <div>
+                              <span className="block text-xs text-gray-400">Maintenance</span>
+                              <div className="flex flex-col gap-1">
+                                <span className="flex items-center gap-1 text-xs">
+                                  <Wrench className="h-3 w-3 text-gray-400" />
+                                  Last: {vehicle.registration_Expiry_Date ? new Date(vehicle.registration_Expiry_Date).toLocaleDateString() : "N/A"}
+                                </span>
+                                <span className="flex items-center gap-1 text-xs">
+                                  <Calendar className="h-3 w-3 text-gray-400" />
+                                  Next: {vehicle.last_Inspection_Date ? new Date(vehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                                </span>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-1 text-xs">
-                              <Calendar className="h-3 w-3 text-gray-400" />
-                              <span>
-                                Next: {vehicle.last_Inspection_Date ? new Date(vehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1 text-xs">
-                              <span
-                                className={`px-2 py-1 rounded-full font-semibold ${
-                                  vehicle.status === "active"
-                                    ? "bg-green-100 text-green-800"
-                                    : vehicle.status === "inactive"
-                                    ? "bg-gray-200 text-gray-700"
-                                    : vehicle.status === "maintenance"
-                                    ? "bg-yellow-100 text-yellow-800"
-                                    : "bg-red-100 text-red-800"
-                                }`}
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1"
+                                onClick={() => handleDialogOpen(vehicle, "view")}
                               >
-                                {vehicle.status
-                                  ? vehicle.status.charAt(0).toUpperCase() +
-                                    vehicle.status.slice(1)
-                                  : "Unknown"}
-                              </span>
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
+                                <Eye className="w-4 h-4 mr-1" />
+                                View
                               </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleDialogOpen(vehicle, "view")
-                                }
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1"
+                                onClick={() => handleDialogOpen(vehicle, "edit")}
                               >
-                                <Eye className="w-4 h-4" />
-                                View Vehicle
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleDialogOpen(vehicle, "edit")
-                                }
+                                <Pencil className="w-4 h-4 mr-1" />
+                                Edit
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                className="flex-1"
+                                onClick={() => handleDialogOpen(vehicle, "delete")}
                               >
-                                <Pencil className="w-4 h-4" />
-                                Update Vehicle
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-red-600"
-                                onClick={() =>
-                                  handleDialogOpen(vehicle, "delete")
-                                }
-                              >
-                                <Trash className="w-4 h-4" />
-                                Delete Vehicle
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+                                <Trash className="w-4 h-4 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                )}
+              </div>
             </CardContent>
           </Card>
 

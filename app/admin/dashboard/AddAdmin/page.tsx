@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Shield, UserCheck } from "lucide-react";
+import { FileText, Lock, Shield, UserCheck } from "lucide-react";
 // import { Textarea } from "@/components/ui/textarea";
 
 export default function AddAdmin() {
@@ -27,7 +27,8 @@ export default function AddAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
+  const [phone_number, setPhoneNumber] = useState<string>("");
+  const [role, setRole] = useState<string>("");
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -42,13 +43,15 @@ export default function AddAdmin() {
         name,
         email,
         password,
-        role: "admin",
+        phone_number,
+        role
       })
     );
     if (addUser.fulfilled.match(resultAction)) {
       setName("");
       setEmail("");
       setPassword("");
+      // setRole("")
     }
   };
 
@@ -70,10 +73,15 @@ export default function AddAdmin() {
   return (
     <DashboardLayout>
       <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Add New Admin</h1>
-          <p className="text-gray-600 dark:text-white mt-1">
-            Create a new administrator account
+        <div className="flex flex-col items-center justify-center mt-8 mb-8">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#BAFB5D] to-[#23272F] flex items-center justify-center shadow-lg mb-4">
+            <UserCheck className="h-8 w-8 text-black dark:text-[#BAFB5D]" />
+          </div>
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2">
+            Add New Admin
+          </h1>
+          <p className="text-lg text-zinc-600 dark:text-zinc-300 text-center max-w-xl">
+            Create a new administrator account to manage your platform. Fill in the details below to get started.
           </p>
         </div>
         <div
@@ -151,7 +159,7 @@ export default function AddAdmin() {
                       international
                       defaultCountry="US"
                       placeholder="Enter phone number"
-                      value={phoneNumber}
+                      value={phone_number}
                       onChange={(value) => setPhoneNumber(value || "")}
                       className="PhoneInputInput w-full h-9 px-2 py-2 border dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
@@ -171,7 +179,7 @@ export default function AddAdmin() {
             <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">Admin Role</Label>
-                  <Select>
+                  <Select value={role} onValueChange={setRole}>
                     <SelectTrigger   className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition">
                       <SelectValue placeholder="Select admin role" />
                     </SelectTrigger>
@@ -268,15 +276,41 @@ export default function AddAdmin() {
                 </p>
               </CardContent>
             </Card>
+
+            
+            <Card className="mt-4 shadow-lg border-0 bg-gradient-to-br   dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    <span className="text-lg font-semibold">Admin Registration Details</span>
+                  </CardTitle>
+                  <CardDescription>
+                    <span className="text-zinc-600 dark:text-zinc-300">
+                      Please review and submit the admin registration details above.
+                    </span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex justify-end">
+                    <Button
+                        type="submit"
+                        disabled={isLoading}
+                      className="px-8 py-4 font-bold text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black rounded-full transition-colors shadow tracking-wide hover:bg-gray-900 dark:hover:bg-[#BAFB5D] flex items-center gap-3 duration-300 disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto"
+                    >
+                        {isLoading ? "Adding..." : "Add Admin"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             
 
-            <Button
+            {/* <Button
               type="submit"
               disabled={isLoading}
               className="w-full rounded-md py-2 sm:py-3 text-base sm:text-lg font-semibold transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? "Adding..." : "Add Admin"}
-            </Button>
+            </Button> */}
           </form>
         </div>
       </div>

@@ -20,6 +20,9 @@ export interface Drivers {
   createdAt: string;
   updatedAt: string;
   isActive: boolean;
+  licenseState?: string;
+  licenseExpiryDate?: string;
+  licenseClass?: string;
   __v: number;
 }
 

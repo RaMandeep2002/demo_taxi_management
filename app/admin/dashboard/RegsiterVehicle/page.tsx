@@ -42,8 +42,10 @@ export default function RegisterVehicle() {
   const [color, setColor] = useState("");
   const [fuel_type, setFuel_type] = useState("");
   const [transmission, setTransmission] = useState("");
+  const [registrationNumber, setRegistrationNumber] = useState("");
   const [registration_State, setRegistration_State] = useState("");
-  const [registration_Expiry_Date, setRegistration_Expiry_Date] = useState<Date>();
+  const [registration_Expiry_Date, setRegistration_Expiry_Date] =
+    useState<Date>();
   const [last_Inspection_Date, setLast_Inspection_Date] = useState<Date>();
 
   // const [expirydate, setExpirydate] = useState<Date>();
@@ -51,7 +53,7 @@ export default function RegisterVehicle() {
   // const [status, setStatus] = useState("active");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { isloading, iserror } = useSelector(
+  const { isloading, validationErrors, iserror } = useSelector(
     (state: RootState) => state.registerVehicle
   );
   const [success, setSuccess] = useState(false);
@@ -68,12 +70,17 @@ export default function RegisterVehicle() {
           year: Number(year),
           vehicle_plate_number,
           vin_number,
-  color,
-  fuel_type,
-  transmission,
-  registration_State,
-  registration_Expiry_Date: registration_Expiry_Date ? registration_Expiry_Date.toISOString() : undefined,
-  last_Inspection_Date: last_Inspection_Date ? last_Inspection_Date.toISOString() : undefined,
+          color,
+          fuel_type,
+          transmission,
+          registration_State,
+          registrationNumber,
+          registration_Expiry_Date: registration_Expiry_Date
+            ? registration_Expiry_Date.toISOString()
+            : undefined,
+          last_Inspection_Date: last_Inspection_Date
+            ? last_Inspection_Date.toISOString()
+            : undefined,
         })
       ).unwrap();
 
@@ -91,6 +98,7 @@ export default function RegisterVehicle() {
       setColor("");
       setFuel_type("");
       setTransmission("");
+      setRegistrationNumber("");
       setRegistration_State("");
       setRegistration_Expiry_Date(undefined);
       setLast_Inspection_Date(undefined);
@@ -98,7 +106,9 @@ export default function RegisterVehicle() {
     } catch (iserror) {
       toast.toast({
         title: "Error",
-        description: `Failed to update driver: ${iserror}`,
+        description: `Failed to add vehicle. Please check the form for errors and try again.  ${
+          iserror ? `` : ""
+        }`,
         variant: "destructive",
       });
       setSuccess(false);
@@ -108,19 +118,47 @@ export default function RegisterVehicle() {
   return (
     <DashboardLayout>
       <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
-        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-          <Plus />
-          Add New Vehicle
-        </h1>
+      <div className="flex flex-col items-start justify-center mt-8 mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#BAFB5D] to-[#23272F] flex items-center justify-center shadow-lg">
+              <Plus className="h-8 w-8 text-black dark:text-[#BAFB5D]" />
+            </div>
+            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              Add New Vehicle
+            </h1>
+          </div>
+          <p className="text-lg text-zinc-600 dark:text-zinc-300 text-center max-w-xl">
+          Fill in the details below to register a new vehicle to your fleet.
+          </p>
+        </div>
         <div
           className="max-w-6xl mx-auto w-full p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
         "
         >
           {iserror && (
-            <p className="text-red-500 text-center text-sm sm:text-base">
-              {iserror}
-            </p>
+            <div className="flex items-center justify-center mb-4">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2 shadow-sm w-full max-w-xl">
+                <svg
+                  className="w-5 h-5 text-red-500 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0ZM12 7v4m0 4h.01"
+                  />
+                </svg>
+                <span className="text-sm sm:text-base font-medium">
+                  {iserror}
+                </span>
+              </div>
+            </div>
           )}
+
           {success && (
             <Dialog open={success} onOpenChange={setSuccess}>
               <DialogContent className="sm:max-w-md">
@@ -144,7 +182,7 @@ export default function RegisterVehicle() {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <Car className="h-5 w-5" />
                   Vehicle Information
                 </CardTitle>
@@ -161,9 +199,19 @@ export default function RegisterVehicle() {
                       placeholder="Enter the Make"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {/* Show error for 'company' field only */}
+                    {validationErrors
+                      .filter((err) => err.field === "company")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="vehicleModel">Model</Label>
@@ -172,9 +220,18 @@ export default function RegisterVehicle() {
                       placeholder="Enter the Model"
                       value={vehicleModel}
                       onChange={(e) => setVehicleModel(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "vehicleModel")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Manufacture Year</Label>
@@ -183,9 +240,18 @@ export default function RegisterVehicle() {
                       placeholder="Enter the year"
                       value={year}
                       onChange={(e) => setYear(Number(e.target.value))}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "year")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                 </div>
 
@@ -197,9 +263,18 @@ export default function RegisterVehicle() {
                       placeholder="Enter the VIN Number"
                       value={vin_number}
                       onChange={(e) => setVin_number(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "vin_number")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="drivers_License_Number">
@@ -210,9 +285,18 @@ export default function RegisterVehicle() {
                       placeholder="Enter the License Plate"
                       value={vehicle_plate_number}
                       onChange={(e) => setVehiclePlateNumber(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "vehicle_plate_number")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -223,9 +307,18 @@ export default function RegisterVehicle() {
                       placeholder="Enter the Color"
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                        {validationErrors
+                          .filter((err) => err.field === "color")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="drivers_License_Number">Fuel Type</Label>
@@ -234,32 +327,50 @@ export default function RegisterVehicle() {
                       placeholder="Enter the Fuel Type"
                       value={fuel_type}
                       onChange={(e) => setFuel_type(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "fuel_type")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="drivers_License_Number">Transmission</Label>
+                    <Label htmlFor="drivers_License_Number">Transmission</Label>  
                     <Input
                       type="text"
                       placeholder="Enter the Transmission"
                       value={transmission}
                       onChange={(e) => setTransmission(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "transmission")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <FileText className="h-5 w-5" />
-                  Registration & Documentation
+                  Registration
                 </CardTitle>
                 <CardDescription>
-                  Legal documentation and registration details
+                  Registration details
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -268,12 +379,22 @@ export default function RegisterVehicle() {
                     <Label htmlFor="companyName">Registration Number</Label>
                     <Input
                       type="text"
-                      placeholder="Enter the company name"
-                      // value={company}
-                      // onChange={(e) => setCompany(e.target.value)}
+                      placeholder="Enter the Registration Number"
+                      value={registrationNumber}
+                      onChange={(e) => setRegistrationNumber(e.target.value)}
                       // required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "registrationNumber")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="vehicleModel">Registration State</Label>
@@ -282,9 +403,18 @@ export default function RegisterVehicle() {
                       placeholder="Enter the Registration State"
                       value={registration_State}
                       onChange={(e) => setRegistration_State(e.target.value)}
-                      required
                       className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
                     />
+                    {validationErrors
+                      .filter((err) => err.field === "registration_State")
+                      .map((err, i) => (
+                        <p
+                          key={i}
+                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                        >
+                          {err.message}
+                        </p>
+                      ))}
                   </div>
                 </div>
 
@@ -306,6 +436,18 @@ export default function RegisterVehicle() {
                             : "Pick a date"}
                         </Button>
                       </PopoverTrigger>
+                      {validationErrors
+                        .filter(
+                          (err) => err.field === "registration_Expiry_Date"
+                        )
+                        .map((err, i) => (
+                          <p
+                            key={i}
+                            className="mt-1 text-sm text-red-600 dark:text-red-300"
+                          >
+                            {err.message}
+                          </p>
+                        ))}
                       <PopoverContent className="w-auto p-0">
                         <Calendar
                           mode="single"
@@ -415,12 +557,36 @@ export default function RegisterVehicle() {
               </select>
             </div> */}
 
-            <Button
-              type="submit"
-              className="w-full rounded-md py-2 sm:py-3 text-base sm:text-lg font-semibold transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isloading ? "Adding..." : "Add Vehicle"}
-            </Button>
+            <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
+              <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
+                  <FileText className="h-5 w-5" />
+                  Vehicle Registration Details
+                </CardTitle>
+                <CardDescription>
+                  Please review and submit the vehicle registration details below.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-end">
+                  <Button
+                    className="px-8 py-4 font-bold text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black  transition-colors shadow tracking-wide hover:bg-gray-900 dark:hover:bg-[#BAFB5D] flex items-center gap-3 duration-300 disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto"
+                  >
+                    {isloading ? "Submitting..." : "Submit Vehicle"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* <div className="flex justify-end mt-6">
+              <Button
+                type="submit"
+                className="px-6 py-4 font-bold text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black rounded-full transition-colors shadow tracking-wide hover:bg-gray-900 dark:hover:bg-[#BAFB5D] flex items-center gap-3 duration-300 disabled:opacity-70 disabled:cursor-not-allowed
+                  w-full sm:w-auto"
+              >
+                {isloading ? "Adding..." : "Add Vehicle"}
+              </Button>
+            </div> */}
           </form>
         </div>
       </div>

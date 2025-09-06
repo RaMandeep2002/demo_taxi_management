@@ -31,6 +31,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge";
 // import { Badge } from "@/components/ui/badge";
 // import {
@@ -190,9 +196,14 @@ export default function ShiftsAndVehicle() {
     <DashboardLayout>
       <div className="p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
-          <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold">Shift Management</h1>
-            <p>Monitor and manage driver shifts and schedules</p>
+          <div className="space-y-1">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 dark:text-blue-200 tracking-tight">
+              Shift Management
+            </h1>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-medium">
+              Monitor and manage driver shifts and schedules
+            </p>
+            <div className="h-1 w-20 bg-blue-500 rounded mt-2" />
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 sm:mt-0">
             <Button
@@ -350,14 +361,14 @@ export default function ShiftsAndVehicle() {
           </Card>
         </div>
 
-        <div className="rounded-lg overflow-hidden">
-        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
+        <div>
+        <Card className="list-card">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <CardTitle>All Drivers</CardTitle>
+                  <CardTitle>All Shifts</CardTitle>
                   <CardDescription>
-                    Complete list of registered drivers
+                    Overview of all driver shifts and their statuses
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -374,6 +385,7 @@ export default function ShiftsAndVehicle() {
               </div>
             </CardHeader>
             <CardContent>
+            <div className="hidden sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -488,15 +500,15 @@ export default function ShiftsAndVehicle() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          <Badge
+                            className={`px-2 py-1 rounded-full text-xs font-semibold border ${
                               shift.isActive
                                 ? shift.vehicle.isAssigned
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
+                                  ? "bg-green-100 text-green-800 border-green-300"
+                                  : "bg-red-100 text-red-800 border-red-300"
                                 : shift.vehicle.isAssigned
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
+                                ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                : "bg-red-100 text-red-800 border-red-300"
                             }`}
                           >
                             {shift.isActive
@@ -506,7 +518,7 @@ export default function ShiftsAndVehicle() {
                               : shift.vehicle.isAssigned
                               ? "Free"
                               : "Free"}
-                          </span>
+                          </Badge>
                         </TableCell>
                         <TableCell>
                           <Button
@@ -528,6 +540,115 @@ export default function ShiftsAndVehicle() {
                   )}
                 </TableBody>
               </Table>
+            </div>
+
+            <div className="block sm:hidden">
+            {loading ? (
+              <div className="text-center py-8 text-gray-500">Loading...</div>
+            ) : error ? (
+              <div className="text-center py-8 text-red-600">{error}</div>
+            ) : paginatedShifts.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No Shifts found</div>
+            ) : (
+              <Accordion type="single" collapsible>
+                {paginatedShifts.map((shift, index) => (
+                  <AccordionItem key={index} value={String(index)}>
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <span className="text-blue-600 font-semibold text-base">
+                            {shift.driver.drivername
+                              ? shift.driver.drivername
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")
+                                  .toUpperCase()
+                              : "D"}
+                          </span>
+                        </div>
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <span className="font-medium text-gray-900 dark:text-gray-200 truncate">
+                            {shift.driver.drivername}
+                          </span>
+                          <span className="text-xs text-gray-500 truncate">
+                            {shift.vehicle.vehicleModel}
+                          </span>
+                        </div>
+                        <span
+                          className={`px-2 py-1 mr-2 rounded-full font-semibold text-xs ${
+                            shift.isActive
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-200 text-gray-700"
+                          }`}
+                        >
+                          {shift.isActive ? "Active" : "Completed"}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="px-2 py-3 space-y-2">
+                        <div>
+                          <span className="block text-xs text-gray-400">Vehicle</span>
+                          <span className="font-medium">{shift.vehicle.vehicleModel}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs text-gray-400">Start</span>
+                          <span className="font-medium">{shift.startTime}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs text-gray-400">End</span>
+                          <span className="font-medium">{shift.endTime || "Ongoing"}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs text-gray-400">Shift Earnings</span>
+                          <span className="font-medium text-green-600 dark:text-yellow-300">
+                            ${shift.totalEarnings}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="block text-xs text-gray-400">Vehicle Status</span>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                              shift.isActive
+                                ? shift.vehicle.isAssigned
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                                : shift.vehicle.isAssigned
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {shift.isActive
+                              ? shift.vehicle.isAssigned
+                                ? "Assigned"
+                                : "Free"
+                              : shift.vehicle.isAssigned
+                              ? "Free"
+                              : "Free"}
+                          </span>
+                        </div>
+                        <div>
+                          <Button
+                            size="sm"
+                            disabled={
+                              !shift.isActive ||
+                              stoppingDriverId === shift.driver.driverId
+                            }
+                            onClick={handleStopShiftDriver(
+                              shift.driver.driverId
+                            )}
+                            className="hover:cursor-pointer mt-2"
+                          >
+                            Stop Shift
+                          </Button>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+            </div>
             </CardContent>
           </Card>
         </div>

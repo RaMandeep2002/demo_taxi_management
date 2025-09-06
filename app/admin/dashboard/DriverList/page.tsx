@@ -19,7 +19,21 @@ import {
   Trash,
   BadgeCheck,
   DollarSign,
+  Map,
+  CalendarIcon,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { fetchdriverdetails } from "@/app/admin/slices/slice/fetchingDriversSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -73,6 +87,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 // import { resetDriverPassword } from "../../slices/slice/resetPasswordSlice";
 
 interface FormData {
@@ -81,6 +103,9 @@ interface FormData {
   phoneNumber: string;
   driversLicenseNumber: string;
   password: string;
+  licenseState: string;
+  licenseClass: string;
+  licenseExpiryDate: string;
 }
 
 export default function DriverList() {
@@ -132,6 +157,9 @@ export default function DriverList() {
     phoneNumber: "",
     driversLicenseNumber: "",
     password: "",
+    licenseState: "",
+    licenseClass: "",
+    licenseExpiryDate: "",
   });
 
   useEffect(() => {
@@ -146,8 +174,12 @@ export default function DriverList() {
         phoneNumber: selectedDriver.phoneNumber.toString(),
         driversLicenseNumber: selectedDriver.driversLicenseNumber,
         password: "",
+        licenseState: selectedDriver?.licenseState ?? "",
+        licenseClass: selectedDriver?.licenseClass ?? "",
+        licenseExpiryDate: selectedDriver?.licenseExpiryDate ?? "",
       });
     }
+    console.log(selectedDriver?.licenseState);
   }, [selectedDriver]);
 
   const filteredDrivers =
@@ -258,7 +290,7 @@ export default function DriverList() {
           </div>
           <div className="w-full sm:w-auto flex justify-end mt-4 sm:mt-0">
             <Button
-              className="w-full sm:w-auto"
+              className="redirect-button"
               onClick={() => router.push("/admin/dashboard/AddDriver")}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -307,7 +339,8 @@ export default function DriverList() {
               <p className="text-xs text-green-600 mt-1 font-medium">
                 {filteredDrivers.length > 0
                   ? `${Math.round(
-                      (filteredDrivers.filter((d) => d.status === "available").length /
+                      (filteredDrivers.filter((d) => d.status === "available")
+                        .length /
                         filteredDrivers.length) *
                         100
                     )}% of total`
@@ -321,7 +354,7 @@ export default function DriverList() {
             <CardHeader className="pb-2 flex flex-row items-center gap-3">
               <div className="bg-fuchsia-500/10 rounded-full p-2">
                 {/* <span className="font-bold text-fuchsia-600 dark:text-fuchsia-300 text-lg">$</span> */}
-                <DollarSign className="font-bold text-fuchsia-600 dark:text-fuchsia-300 text-lg"/>
+                <DollarSign className="font-bold text-fuchsia-600 dark:text-fuchsia-300 text-lg" />
               </div>
               <CardTitle className="text-sm font-semibold text-fuchsia-700 dark:text-fuchsia-200">
                 Total Earnings
@@ -343,8 +376,8 @@ export default function DriverList() {
           </Card>
         </div>
 
-        <div className="rounded-lg overflow-hidden">
-        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
+        <div>
+          <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -354,55 +387,223 @@ export default function DriverList() {
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <div className="relative w-64">
                     <Input
                       placeholder="Search drivers..."
-                      className="pl-10 w-64"
+                      className="pl-10 w-full"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <Search className="text-gray-400 h-4 w-4" />
+                    </span>
                   </div>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Driver</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>License No.</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Trips</TableHead>
-                    <TableHead>Earnings</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
+              <div className="hidden sm:block">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center">
-                        Loading...
-                      </TableCell>
+                      <TableHead>Driver</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>License No.</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Trips</TableHead>
+                      <TableHead>Earnings</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
                     </TableRow>
-                  ) : isthereerror ? (
-                    <TableRow>
-                      <TableCell colSpan={9} className="text-center text-black dark:text-white">
-                        {isthereerror}
-                      </TableCell>
-                    </TableRow>
-                  ) : filteredDrivers.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center">
-                        No drivers found
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    paginatedDrivers.map((driver) => (
-                      <TableRow key={driver._id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center">
+                          Loading...
+                        </TableCell>
+                      </TableRow>
+                    ) : isthereerror ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={9}
+                          className="text-center text-black dark:text-white"
+                        >
+                          {isthereerror}
+                        </TableCell>
+                      </TableRow>
+                    ) : filteredDrivers.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center">
+                          No drivers found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      paginatedDrivers.map((driver) => (
+                        <TableRow key={driver._id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span className="text-blue-600 font-semibold text-base">
+                                  {driver.drivername
+                                    ? driver.drivername
+                                        .split(" ")
+                                        .map((n) => n[0])
+                                        .join("")
+                                        .toUpperCase()
+                                    : "D"}
+                                </span>
+                              </div>
+                              <div>
+                                <div className="font-medium text-gray-900 dark:text-white">
+                                  {highlightMatch(
+                                    driver.drivername,
+                                    debouncedSearch
+                                  )}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {(driver.driverId || driver._id)?.slice(0, 8)}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 text-sm">
+                                <Mail className="h-3 w-3 text-gray-400 dark:text-gray-200" />
+                                <span className="text-gray-600 dark:text-white">
+                                  {driver.email}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm">
+                                <Phone className="h-3 w-3 text-gray-400 dark:text-gray-200" />
+                                <span className="text-gray-600 dark:text-white">
+                                  <a href={`tel:${driver.phoneNumber}`}>
+                                    {driver.phoneNumber}
+                                  </a>
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div className="font-medium text-gray-600 dark:text-white">
+                                {driver.vehicle || "N/A"}
+                              </div>
+                              <div className="text-gray-600 dark:text-white">
+                                License: {driver.driversLicenseNumber || "N/A"}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                driver.status === "available"
+                                  ? "default"
+                                  : driver.status === "busy"
+                                  ? "secondary"
+                                  : "outline"
+                              }
+                              className={
+                                driver.status === "available"
+                                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : driver.status === "busy"
+                                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                  : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                              }
+                            >
+                              {driver.status === "available"
+                                ? "Available"
+                                : driver.status === "busy"
+                                ? "Busy"
+                                : "Not Working"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">
+                              {driver.totalTrips
+                                ? driver.totalTrips.toLocaleString()
+                                : "0"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium text-green-600 dark:text-yellow-300">
+                              {driver.totalEarnings !== undefined &&
+                              driver.totalEarnings !== null
+                                ? driver.totalEarnings.toLocaleString("en-US", {
+                                    style: "currency",
+                                    currency: "USD",
+                                  })
+                                : "$0"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleDialogOpen(driver, "profile")
+                                  }
+                                >
+                                  <Eye className="w-4 h-4" />
+                                  View Profile
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleDialogOpen(driver, "edit")
+                                  }
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                  Update Driver
+                                </DropdownMenuItem>
+                                {/* <DropdownMenuItem
+                                onClick={() => handleDialogOpen(driver, "edit")}
+                              >
+                                <BadgeCheck className="w-4 h-4"/>
+                                Approved Driver
+                              </DropdownMenuItem> */}
+                                <DropdownMenuItem
+                                  className="text-red-600"
+                                  onClick={() =>
+                                    handleDialogOpen(driver, "delete")
+                                  }
+                                >
+                                  <Trash className="w-4 h-4" />
+                                  Delete Driver
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="block sm:hidden">
+                {isLoading ? (
+                  <div className="text-center py-8 text-gray-500">
+                    Loading...
+                  </div>
+                ) : isthereerror ? (
+                  <div className="text-center py-8 text-red-600">
+                    {isthereerror}
+                  </div>
+                ) : filteredDrivers.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No Driver found
+                  </div>
+                ) : (
+                  <Accordion type="single" collapsible>
+                    {paginatedDrivers.map((driver) => (
+                      <AccordionItem key={driver._id} value={driver._id}>
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 w-full">
                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                               <span className="text-blue-600 font-semibold text-base">
                                 {driver.drivername
@@ -414,129 +615,136 @@ export default function DriverList() {
                                   : "D"}
                               </span>
                             </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-white">
+                            <div className="flex flex-col flex-1 min-w-0">
+                              <span className="font-medium text-gray-900 dark:text-gray-200 truncate">
                                 {highlightMatch(
                                   driver.drivername,
-                                  debouncedSearch 
+                                  debouncedSearch
                                 )}
-                              </div>
-                              <div className="text-sm text-gray-500">
+                              </span>
+                              <span className="text-xs text-gray-500 truncate">
                                 {(driver.driverId || driver._id)?.slice(0, 8)}
-                              </div>
+                              </span>
+                            </div>
+                            <div className="mr-2">
+                              <Badge
+                                variant={
+                                  driver.status === "available"
+                                    ? "default"
+                                    : driver.status === "busy"
+                                    ? "secondary"
+                                    : "outline"
+                                }
+                                className={
+                                  driver.status === "available"
+                                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                    : driver.status === "busy"
+                                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                    : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                                }
+                              >
+                                {driver.status === "available"
+                                  ? "Available"
+                                  : driver.status === "busy"
+                                  ? "Busy"
+                                  : "Not Working"}
+                              </Badge>
                             </div>
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-sm">
-                              <Mail className="h-3 w-3 text-gray-400 dark:text-gray-200" />
-                              <span className="text-gray-600 dark:text-white">
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="px-2 py-3 space-y-2">
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Email
+                              </span>
+                              <span className="font-medium">
                                 {driver.email}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-3 w-3 text-gray-400 dark:text-gray-200"/>
-                                <span className="text-gray-600 dark:text-white">
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Phone
+                              </span>
+                              <span className="font-medium">
                                 <a href={`tel:${driver.phoneNumber}`}>
                                   {driver.phoneNumber}
                                 </a>
                               </span>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            <div className="font-medium text-gray-600 dark:text-white">
-                              {driver.vehicle || "N/A"}
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                License No.
+                              </span>
+                              <span className="font-medium">
+                                {driver?.driversLicenseNumber}
+                              </span>
                             </div>
-                            <div className="text-gray-600 dark:text-white">
-                              License: {driver.driversLicenseNumber || "N/A"}
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Trips
+                              </span>
+                              <span className="font-medium">
+                                {driver.totalTrips ?? 0}
+                              </span>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              driver.status === "Active"
-                                ? "default"
-                                : driver.status === "On Trip"
-                                ? "secondary"
-                                : "outline"
-                            }
-                            className={
-                              driver.status === "Active"
-                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                : driver.status === "On Trip"
-                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                            }
-                          >
-                            {driver.status || "Inactive"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="font-medium">
-                            {driver.totalTrips
-                              ? driver.totalTrips.toLocaleString()
-                              : "0"}  
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="font-medium text-green-600 dark:text-yellow-300">
-                            {driver.totalEarnings !== undefined && driver.totalEarnings !== null
-                              ? driver.totalEarnings.toLocaleString("en-US", {
-                                  style: "currency",
-                                  currency: "USD",
-                                })
-                              : "$0"}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Earnings
+                              </span>
+                              <div className="font-medium text-green-600 dark:text-yellow-300">
+                                {driver.totalEarnings !== undefined &&
+                                driver.totalEarnings !== null
+                                  ? driver.totalEarnings.toLocaleString(
+                                      "en-US",
+                                      {
+                                        style: "currency",
+                                        currency: "USD",
+                                      }
+                                    )
+                                  : "$0"}
+                              </div>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1"
                                 onClick={() =>
                                   handleDialogOpen(driver, "profile")
                                 }
                               >
-                                <Eye className="w-4 h-4"/>
-                                View Profile
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
+                                <Eye className="w-4 h-4 mr-1" />
+                                View
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1"
                                 onClick={() => handleDialogOpen(driver, "edit")}
                               >
-                                <Pencil className="w-4 h-4"/>
-                                Update Driver
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleDialogOpen(driver, "edit")}
-                              >
-                                <BadgeCheck className="w-4 h-4"/>
-                                Approved Driver
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-red-600"
+                                <Pencil className="w-4 h-4 mr-1" />
+                                Edit
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                className="flex-1"
                                 onClick={() =>
                                   handleDialogOpen(driver, "delete")
                                 }
                               >
-                                <Trash className="w-4 h-4"/>
-                                Delete Driver
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+                                <Trash className="w-4 h-4 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -602,7 +810,39 @@ export default function DriverList() {
                       License Number
                     </Label>
                     <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
-                      {selectedDriver.driversLicenseNumber || <span className="italic text-gray-400">N/A</span>}
+                      {selectedDriver.driversLicenseNumber || (
+                        <span className="italic text-gray-400">N/A</span>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      License State
+                    </Label>
+                    <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                      {selectedDriver?.licenseState || (
+                        <span className="italic text-gray-400">N/A</span>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      License Expiry Date
+                    </Label>
+                    <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                      {selectedDriver.licenseExpiryDate || (
+                        <span className="italic text-gray-400">N/A</span>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      License Class
+                    </Label>
+                    <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                      {selectedDriver.licenseClass || (
+                        <span className="italic text-gray-400">N/A</span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -623,7 +863,8 @@ export default function DriverList() {
                         }`}
                         variant="outline"
                       >
-                        {selectedDriver.status.charAt(0).toUpperCase() + selectedDriver.status.slice(1)}
+                        {selectedDriver.status.charAt(0).toUpperCase() +
+                          selectedDriver.status.slice(1)}
                       </Badge>
                     </div>
                   </div>
@@ -659,7 +900,7 @@ export default function DriverList() {
         </Dialog>
 
         <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-          <DialogContent className="sm:max-w-[520px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
+          <DialogContent className="sm:max-w-[650px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
             <DialogHeader className="space-y-0 pb-0">
               <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
                 <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
@@ -675,7 +916,8 @@ export default function DriverList() {
                 </div>
                 <DialogTitle className="text-2xl font-bold text-white tracking-wide">
                   {selectedDriver?.drivername
-                    ? selectedDriver.drivername.charAt(0).toUpperCase() + selectedDriver.drivername.slice(1)
+                    ? selectedDriver.drivername.charAt(0).toUpperCase() +
+                      selectedDriver.drivername.slice(1)
                     : "Driver Profile"}
                 </DialogTitle>
                 <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
@@ -695,8 +937,8 @@ export default function DriverList() {
                 </div>
               )}
               <form onSubmit={handleSubmit} className="space-y-7">
-                <div className="grid grid-cols-1 gap-5">
-                  <div className="space-y-1.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="space-y-3">
                     <Label
                       htmlFor="drivername"
                       className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
@@ -718,7 +960,7 @@ export default function DriverList() {
                       className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-3">
                     <Label
                       htmlFor="email"
                       className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
@@ -739,7 +981,7 @@ export default function DriverList() {
                       className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-3">
                     <Label
                       htmlFor="phoneNumber"
                       className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
@@ -755,7 +997,7 @@ export default function DriverList() {
                       className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-3">
                     <Label
                       htmlFor="driversLicenseNumber"
                       className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
@@ -776,36 +1018,227 @@ export default function DriverList() {
                       className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-3">
                     <Label
-                      htmlFor="password"
+                      htmlFor="licenseState"
                       className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
                     >
-                      <LockIcon className="w-4 h-4" />
-                      Password
+                      <Map className="w-4 h-4" />
+                      License State
                     </Label>
-                    <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter Updated Password"
-                        value={formData.password}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            password: e.target.value,
-                          })
-                        }
-                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-zinc-500 hover:text-blue-600 dark:hover:text-blue-300 transition"
-                        tabIndex={-1}
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
+                    <Select
+                      value={formData.licenseState}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          licenseState: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Alabama">Alabama</SelectItem>
+                        <SelectItem value="Alaska">Alaska</SelectItem>
+                        <SelectItem value="Arizona">Arizona</SelectItem>
+                        <SelectItem value="Arkansas">Arkansas</SelectItem>
+                        <SelectItem value="California">California</SelectItem>
+                        <SelectItem value="Colorado">Colorado</SelectItem>
+                        <SelectItem value="Connecticut">Connecticut</SelectItem>
+                        <SelectItem value="Delaware">Delaware</SelectItem>
+                        <SelectItem value="Florida">Florida</SelectItem>
+                        <SelectItem value="Georgia">Georgia</SelectItem>
+                        <SelectItem value="Hawaii">Hawaii</SelectItem>
+                        <SelectItem value="Idaho">Idaho</SelectItem>
+                        <SelectItem value="Illinois">Illinois</SelectItem>
+                        <SelectItem value="Indiana">Indiana</SelectItem>
+                        <SelectItem value="Iowa">Iowa</SelectItem>
+                        <SelectItem value="Kansas">Kansas</SelectItem>
+                        <SelectItem value="Kentucky">Kentucky</SelectItem>
+                        <SelectItem value="Louisiana">Louisiana</SelectItem>
+                        <SelectItem value="Maine">Maine</SelectItem>
+                        <SelectItem value="Maryland">Maryland</SelectItem>
+                        <SelectItem value="Massachusetts">
+                          Massachusetts
+                        </SelectItem>
+                        <SelectItem value="Michigan">Michigan</SelectItem>
+                        <SelectItem value="Minnesota">Minnesota</SelectItem>
+                        <SelectItem value="Mississippi">Mississippi</SelectItem>
+                        <SelectItem value="Missouri">Missouri</SelectItem>
+                        <SelectItem value="Montana">Montana</SelectItem>
+                        <SelectItem value="Nebraska">Nebraska</SelectItem>
+                        <SelectItem value="Nevada">Nevada</SelectItem>
+                        <SelectItem value="New Hampshire">
+                          New Hampshire
+                        </SelectItem>
+                        <SelectItem value="New Jersey">New Jersey</SelectItem>
+                        <SelectItem value="New Mexico">New Mexico</SelectItem>
+                        <SelectItem value="New York">New York</SelectItem>
+                        <SelectItem value="North Carolina">
+                          North Carolina
+                        </SelectItem>
+                        <SelectItem value="North Dakota">
+                          North Dakota
+                        </SelectItem>
+                        <SelectItem value="Ohio">Ohio</SelectItem>
+                        <SelectItem value="Oklahoma">Oklahoma</SelectItem>
+                        <SelectItem value="Oregon">Oregon</SelectItem>
+                        <SelectItem value="Pennsylvania">
+                          Pennsylvania
+                        </SelectItem>
+                        <SelectItem value="Rhode Island">
+                          Rhode Island
+                        </SelectItem>
+                        <SelectItem value="South Carolina">
+                          South Carolina
+                        </SelectItem>
+                        <SelectItem value="South Dakota">
+                          South Dakota
+                        </SelectItem>
+                        <SelectItem value="Tennessee">Tennessee</SelectItem>
+                        <SelectItem value="Texas">Texas</SelectItem>
+                        <SelectItem value="Utah">Utah</SelectItem>
+                        <SelectItem value="Vermont">Vermont</SelectItem>
+                        <SelectItem value="Virginia">Virginia</SelectItem>
+                        <SelectItem value="Washington">Washington</SelectItem>
+                        <SelectItem value="West Virginia">
+                          West Virginia
+                        </SelectItem>
+                        <SelectItem value="Wisconsin">Wisconsin</SelectItem>
+                        <SelectItem value="Wyoming">Wyoming</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="licenseClass"
+                      className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                    >
+                      <IdCard className="w-4 h-4" />
+                      License Class
+                    </Label>
+                    <Select
+                      value={formData?.licenseClass}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          licenseClass: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                        <SelectValue placeholder="Select Class" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                        <SelectItem
+                          value="A"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Class A
+                        </SelectItem>
+                        <SelectItem
+                          value="B"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Class B
+                        </SelectItem>
+                        <SelectItem
+                          value="C"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Class C
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="LicenseExpiryDate"
+                      className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                    >
+                      <CalendarIcon className="w-4 h-4" />
+                      License Expiry Date
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition w-full flex items-center justify-between px-4 py-2 bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none shadow-sm hover:border-indigo-400",
+                            !formData.licenseExpiryDate &&
+                              "text-zinc-400 dark:text-gray-400"
+                          )}
+                        >
+                          <span className="flex items-center">
+                            <CalendarIcon className="mr-2 h-5 text-indigo-500" />
+                            {formData.licenseExpiryDate ? (
+                              <span className="text-zinc-400 dark:text-gray-400">
+                                {formData.licenseExpiryDate}
+                              </span>
+                            ) : (
+                              <span className="text-zinc-400 dark:text-gray-400">
+                                Pick a date
+                              </span>
+                            )}
+                          </span>
+                          <span className="ml-2 text-xs text-gray-400 dark:text-gray-400">
+                            {formData?.licenseExpiryDate ? "Change" : ""}
+                          </span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 rounded-lg shadow-lg border-0 bg-white dark:bg-zinc-900">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            formData.licenseExpiryDate
+                              ? new Date(formData.licenseExpiryDate)
+                              : undefined
+                          }
+                          onSelect={(date: Date | undefined) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              licenseExpiryDate: date
+                                ? date.toDateString()
+                                : "",
+                            }))
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label
+                    htmlFor="password"
+                    className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                  >
+                    <LockIcon className="w-4 h-4" />
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter Updated Password"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          password: e.target.value,
+                        })
+                      }
+                      className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute top-1/2 right-3 transform -translate-y-1/2 text-zinc-500 hover:text-blue-600 dark:hover:text-blue-300 transition"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
                 </div>
                 <DialogFooter className="pt-4">
@@ -816,9 +1249,24 @@ export default function DriverList() {
                   >
                     {isProcessing ? (
                       <span className="flex items-center gap-2">
-                        <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8z"
+                          />
                         </svg>
                         Updating...
                       </span>
@@ -832,21 +1280,52 @@ export default function DriverList() {
           </DialogContent>
         </Dialog>
 
-        <AlertDialog open={dialogType === "delete"} onOpenChange={handleDialogClose}>
+        <AlertDialog
+          open={dialogType === "delete"}
+          onOpenChange={handleDialogClose}
+        >
           <AlertDialogContent className="border-none p-0 overflow-hidden rounded-2xl shadow-2xl max-w-lg">
             <div className="bg-gradient-to-r from-red-600 via-red-500 to-yellow-400 dark:from-red-900 dark:via-yellow-800 dark:to-yellow-600 px-8 py-6 flex flex-col items-center">
               <div className="bg-white dark:bg-slate-900 rounded-full p-3 shadow-lg mb-3 border-4 border-red-200 dark:border-yellow-700">
-                <svg className="w-10 h-10 text-red-600 dark:text-yellow-300" fill="none" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" className="opacity-30"/>
-                  <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg
+                  className="w-10 h-10 text-red-600 dark:text-yellow-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="opacity-30"
+                  />
+                  <path
+                    d="M15 9l-6 6M9 9l6 6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
-              <AlertDialogTitle className="text-2xl font-bold text-white mb-1">Delete Driver?</AlertDialogTitle>
+              <AlertDialogTitle className="text-2xl font-bold text-white mb-1">
+                Delete Driver?
+              </AlertDialogTitle>
               <AlertDialogDescription className="text-white text-base text-center font-medium">
-                Are you sure you want to <span className="font-bold text-yellow-200">permanently delete</span> the driver <br />
-                <span className="font-bold text-white bg-red-700/70 px-2 py-1 rounded">{selectedDriver?.drivername}</span>?
+                Are you sure you want to{" "}
+                <span className="font-bold text-yellow-200">
+                  permanently delete
+                </span>{" "}
+                the driver <br />
+                <span className="font-bold text-white bg-red-700/70 px-2 py-1 rounded">
+                  {selectedDriver?.drivername}
+                </span>
+                ?
                 <br />
-                <span className="text-sm text-yellow-100 font-normal">This action cannot be undone.</span>
+                <span className="text-sm text-yellow-100 font-normal">
+                  This action cannot be undone.
+                </span>
               </AlertDialogDescription>
             </div>
             <div className="bg-white dark:bg-slate-900 px-8 py-6 flex flex-col sm:flex-row gap-3 justify-end rounded-b-2xl">
@@ -864,16 +1343,41 @@ export default function DriverList() {
               >
                 {isDeleteting ? (
                   <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      />
                     </svg>
                     Deleting...
                   </span>
                 ) : (
                   <>
-                    <svg className="w-5 h-5 mr-1 -ml-1 inline-block" fill="none" viewBox="0 0 24 24">
-                      <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg
+                      className="w-5 h-5 mr-1 -ml-1 inline-block"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M15 9l-6 6M9 9l6 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     Delete
                   </>

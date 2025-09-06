@@ -15,9 +15,26 @@ export interface Vehicle {
     isAssigned?: boolean;
   }
   
+  export interface ValidationError {
+    path: string;
+    message: string;
+  }
+  
   export interface VehicleState {
     vehicles: Vehicle[];
+    validationErrors: ValidationError[];
     isloading: boolean;
     iserror: string | null;
   }
   
+  export interface VehicleResponse{
+    message: string;
+    vehicle: Vehicle;
+  }
+
+  export interface ApiErrorResponse {
+    error?: string;
+    message?: string;
+    errors?: ValidationError[];
+    validationErrors?: ValidationError[];
+  }

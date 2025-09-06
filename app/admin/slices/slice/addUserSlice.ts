@@ -7,6 +7,7 @@ export interface User {
     name: string;
     email: string;
     password: string;
+    phone_number:string;
     role: string;
 }
 
@@ -38,10 +39,24 @@ export const addUser = createAsyncThunk<
     "driver/addUser",
     async (userData, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                return rejectWithValue("No authentication token found.");
+              }
+        
             const response = await axios.post<AddUserResponse>(
                 `${API_URL}/api/auth/register`,
-                userData
+                userData,
+                {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                  }
             );
+
+            console.log(response.data)
 
             return response.data;
 

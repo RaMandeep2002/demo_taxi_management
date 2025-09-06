@@ -228,8 +228,8 @@ export default function AdminList() {
           </div>
         </div>
 
-        <div className="border rounded-lg overflow-hidden">
-         <Card className="lg:col-span-2 shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
+        <div>
+        <Card className="list-card">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
