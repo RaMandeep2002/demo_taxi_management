@@ -78,7 +78,7 @@ export default function ScheduleRideList() {
 
   return (
     <DashboardLayout>
-      <div className="w-full px-4 sm:px-8 lg:px-8 mx-auto">
+      <div className="w-full px-4 pt-4 sm:px-8 lg:px-8 mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-black dark:text-[#BAFB5D]">

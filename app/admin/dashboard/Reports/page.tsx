@@ -171,18 +171,18 @@ export default function Reports() {
   return (
     <DashboardLayout>
       <div className="p-4 md:p-8">
-        <Card className="mb-6 shadow-lg border-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-black dark:text-white tracking-wider">
+        <div className="mb-6">
+          <div>
+            <h2 className="text-3xl font-bold text-black dark:text-white tracking-wider">
               Booking History Reports
-            </CardTitle>
-            <CardDescription className="mt-2 text-gray-700 dark:text-gray-300 tracking-wider">
+            </h2>
+            <p className="mt-2 text-gray-700 dark:text-gray-300 tracking-wider">
               View, filter, and download detailed reports of all taxi bookings.
-              Use the filters below to customize your report by date, driver, or
+                Use the filters below to customize your report by date, driver, or
               pickup location.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+            </p>
+          </div>
+        </div>
         {/* 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {performanceMetrics.map((metric, index) => (

@@ -316,28 +316,49 @@ export default function DashboardSidebar() {
 
   return (
     <>
-      {/* Mobile Sidebar Button */}
-      {!isMobileSidebarOpen && (
-        <button
-          onClick={toggleMobileSidebar}
-          className="fixed top-4 left-4 z-50 block md:hidden p-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg shadow-lg hover:bg-yellow-500 transition-colors"
-        >
-          <MenuIcon size={28} />
-        </button>
-      )}
+      {/* Mobile Header with Sidebar Content */}
+      <div className="md:hidden">
+        <header className="flex items-center justify-center px-4 py-4 bg-white dark:bg-gray-900 shadow-md fixed top-0 left-0 right-0 z-50">
+          <button
+            onClick={toggleMobileSidebar}
+            className="p-3 bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-lg hover:bg-yellow-500 transition-colors rounded-full absolute left-4"
+            style={{ zIndex: 10 }}
+          >
+            <MenuIcon size={28} />
+          </button>
+          <div className="flex items-center gap-3 mx-auto">
+            <div className="flex items-center justify-center">
+              <Image
+                src="/taxi-dark.png"
+                alt="Demo Taxi Logo"
+                width={36}
+                height={36}
+                className="h-9 w-9 dark:invert"
+              />
+            </div>
+            <span className="text-xl font-extrabold text-gray-900 dark:text-[#BAFB5D] tracking-wider text-center drop-shadow-sm">
+              Demo Taxi
+            </span>
+          </div>
+        </header>
 
-      {/* Mobile Sidebar */}
-      {isMobileSidebarOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <aside className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg z-50">
-            {SidebarContent(false, true)}
-          </aside>
+        {/* Mobile Sidebar Content - Shows beside menu button when open */}
+        {isMobileSidebarOpen && (
+          <div className="fixed top-16 z-40 bg-white dark:bg-gray-900 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 max-w-xs w-80 overflow-y-auto max-h-[calc(100vh-4rem)]">
+            <div className="p-4">
+              {SidebarContent(false, true)}
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Overlay */}
+        {isMobileSidebarOpen && (
           <div
-            className="absolute inset-0 bg-[#252428] opacity-30"
+            className="fixed inset-0 bg-black bg-opacity-25 z-30"
             onClick={toggleMobileSidebar}
           ></div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Desktop Sidebar */}
       <aside
