@@ -4,11 +4,19 @@ import axios from "axios";
 // const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-interface Vehicle {
+export interface Vehicle {
     company: string;
     vehicleModel: string;
     year: number;
     vehicle_plate_number: string;
+    vin_number?: string;
+    color?: string;
+    fuel_type?: string;
+    transmission?: string;
+    registrationNumber?: string;
+    registration_State?: string;
+    registration_Expiry_Date?: string | null;
+    last_Inspection_Date?: string  | null;
 }
 
 interface VehicleState {
@@ -35,6 +43,14 @@ export const updateVehicle = createAsyncThunk(
             vehicleModel: string;
             year: number;
             vehicle_plate_number: string;
+            vin_number?: string;
+            color?: string;
+            fuel_type?: string;
+            transmission?: string;
+            registrationNumber?: string;
+            registration_State?: string;
+            registration_Expiry_Date?: string | null;
+            last_Inspection_Date?: string | null;
         };
     },
         { rejectWithValue }

@@ -121,17 +121,7 @@ export default function Settings() {
                   <span className="tracking-wide">Theme Settings</span>
                 </span>
               </TabsTrigger>
-              {/* <TabsTrigger
-                value="themeSetting"
-                className="w-full sm:w-auto px-5 py-2 rounded-lg font-semibold text-zinc-800 dark:text-zinc-100 bg-gradient-to-r from-fuchsia-100 via-blue-100 to-blue-200 dark:from-zinc-800 dark:via-fuchsia-900 dark:to-blue-900 border border-blue-200 dark:border-fuchsia-800 shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-center"
-              >
-                <span className="flex items-center gap-2">
-                  <span className="bg-blue-100 dark:bg-fuchsia-900 rounded-full p-1 flex items-center justify-center">
-                    <Settings2 className="w-5 h-5 text-blue-500 dark:text-fuchsia-300" />
-                  </span>
-                  <span className="tracking-wide">Theme Settings</span>
-                </span>
-              </TabsTrigger> */}
+            
             </TabsList>
            
 

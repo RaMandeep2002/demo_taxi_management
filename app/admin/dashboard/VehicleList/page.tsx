@@ -12,8 +12,21 @@ import {
   Trash,
   Car,
   Wrench,
-  Calendar,
+  IdCardIcon,
+  CalendarIcon,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { fetchDetailWithVehicle } from "@/app/admin/slices/slice/detailWithVechicle";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -47,7 +60,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,6 +91,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
 
 export default function VechicleList() {
   // const [company, setCompany] = useState<string | "">("");
@@ -137,6 +153,14 @@ export default function VechicleList() {
     vehicleModel: selectedVehicle?.vehicleModel || "",
     year: selectedVehicle?.year || 0,
     vehicle_plate_number: selectedVehicle?.vehicle_plate_number || "",
+    vin_number: selectedVehicle?.vin_number || "",
+    color: selectedVehicle?.color || "",
+    fuel_type: selectedVehicle?.fuel_type || "",
+    transmission: selectedVehicle?.transmission || "",
+    registrationNumber: selectedVehicle?.registrationNumber || "",
+    registration_State: selectedVehicle?.registration_State || "",
+    registration_Expiry_Date: selectedVehicle?.registration_Expiry_Date || "",
+    last_Inspection_Date: selectedVehicle?.last_Inspection_Date || "",
   });
   useEffect(() => {
     if (selectedVehicle) {
@@ -145,6 +169,15 @@ export default function VechicleList() {
         vehicleModel: selectedVehicle.vehicleModel || "",
         year: selectedVehicle.year || 0,
         vehicle_plate_number: selectedVehicle.vehicle_plate_number || "",
+        vin_number: selectedVehicle.vin_number || "",
+        color: selectedVehicle.color || "",
+        fuel_type: selectedVehicle.fuel_type || "",
+        transmission: selectedVehicle.transmission || "",
+        registrationNumber: selectedVehicle.registrationNumber || "",
+        registration_State: selectedVehicle.registration_State || "",
+        registration_Expiry_Date:
+          selectedVehicle.registration_Expiry_Date || "",
+        last_Inspection_Date: selectedVehicle.last_Inspection_Date || "",
       });
     }
   }, [selectedVehicle]);
@@ -185,6 +218,14 @@ export default function VechicleList() {
             vehicleModel: formData.vehicleModel,
             year: formData.year,
             vehicle_plate_number: formData.vehicle_plate_number,
+            vin_number: formData.vin_number,
+            color: formData.color,
+            fuel_type: formData.fuel_type,
+            transmission: formData.transmission,
+            registrationNumber: formData.registrationNumber,
+            registration_State: formData.registration_State,
+            registration_Expiry_Date: formData.registration_Expiry_Date,
+            last_Inspection_Date: formData.last_Inspection_Date,
           },
         })
       ).unwrap();
@@ -238,7 +279,7 @@ export default function VechicleList() {
           </div>
           <div className="w-full sm:w-auto flex justify-end mt-4 sm:mt-0">
             <Button
-               className="redirect-button"
+              className="redirect-button"
               type="submit"
               onClick={() => router.push("/admin/dashboard/RegsiterVehicle")}
             >
@@ -320,7 +361,7 @@ export default function VechicleList() {
           </div>
         </div> */}
         <div>
-        <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
+          <Card className="shadow-lg border-0 bg-gradient-to-br dark:from-[#34363F] dark:via-[#34363F] dark:to-[#34363F] transition">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -388,13 +429,15 @@ export default function VechicleList() {
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                                 <span className="text-blue-600 font-semibold text-base">
-                                  {vehicle.company
-                                    ? vehicle.company
-                                        .split(" ")
-                                        .map((n) => n[0])
-                                        .join("")
-                                        .toUpperCase()
-                                    :   <Car className="h-5 w-5 text-blue-600" />}
+                                  {vehicle.company ? (
+                                    vehicle.company
+                                      .split(" ")
+                                      .map((n) => n[0])
+                                      .join("")
+                                      .toUpperCase()
+                                  ) : (
+                                    <Car className="h-5 w-5 text-blue-600" />
+                                  )}
                                 </span>
                               </div>
                               <div>
@@ -428,7 +471,13 @@ export default function VechicleList() {
                               {vehicle.vehicle_plate_number}
                             </div>
                             <div className="text-sm text-gray-500">
-                              VIN: {vehicle.vin_number ? `${vehicle.vin_number.slice(0, 4)}...${vehicle.vin_number.slice(-4)}` : "N/A"}
+                              VIN:{" "}
+                              {vehicle.vin_number
+                                ? `${vehicle.vin_number.slice(
+                                    0,
+                                    4
+                                  )}...${vehicle.vin_number.slice(-4)}`
+                                : "N/A"}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -454,13 +503,23 @@ export default function VechicleList() {
                               <div className="flex items-center gap-1 text-xs">
                                 <Wrench className="h-3 w-3 text-gray-400" />
                                 <span>
-                                  Last: {vehicle.registration_Expiry_Date ? new Date(vehicle.registration_Expiry_Date).toLocaleDateString() : "N/A"}
+                                  Last:{" "}
+                                  {vehicle.registration_Expiry_Date
+                                    ? new Date(
+                                        vehicle.registration_Expiry_Date
+                                      ).toLocaleDateString()
+                                    : "N/A"}
                                 </span>
                               </div>
                               <div className="flex items-center gap-1 text-xs">
-                                <Calendar className="h-3 w-3 text-gray-400" />
+                                <CalendarIcon className="h-3 w-3 text-gray-400" />
                                 <span>
-                                  Next: {vehicle.last_Inspection_Date ? new Date(vehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                                  Next:{" "}
+                                  {vehicle.last_Inspection_Date
+                                    ? new Date(
+                                        vehicle.last_Inspection_Date
+                                      ).toLocaleDateString()
+                                    : "N/A"}
                                 </span>
                               </div>
                             </div>
@@ -532,11 +591,15 @@ export default function VechicleList() {
               {/* Mobile Accordion */}
               <div className="block sm:hidden">
                 {isLoading ? (
-                  <div className="text-center py-8 text-gray-500">Loading...</div>
+                  <div className="text-center py-8 text-gray-500">
+                    Loading...
+                  </div>
                 ) : error ? (
                   <div className="text-center py-8 text-red-600">{error}</div>
                 ) : paginatedVehicles.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">No vehicle found</div>
+                  <div className="text-center py-8 text-gray-500">
+                    No vehicle found
+                  </div>
                 ) : (
                   <Accordion type="single" collapsible>
                     {paginatedVehicles.map((vehicle) => (
@@ -545,18 +608,23 @@ export default function VechicleList() {
                           <div className="flex items-center gap-3 w-full">
                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                               <span className="text-blue-600 font-semibold text-base">
-                                {vehicle.company
-                                  ? vehicle.company
-                                      .split(" ")
-                                      .map((n) => n[0])
-                                      .join("")
-                                      .toUpperCase()
-                                  : <Car className="h-5 w-5 text-blue-600" />}
+                                {vehicle.company ? (
+                                  vehicle.company
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")
+                                    .toUpperCase()
+                                ) : (
+                                  <Car className="h-5 w-5 text-blue-600" />
+                                )}
                               </span>
                             </div>
                             <div className="flex flex-col flex-1 min-w-0">
                               <span className="font-medium text-gray-900 dark:text-gray-200 truncate">
-                                {highlightMatch(vehicle?.company, debouncedsearch)}
+                                {highlightMatch(
+                                  vehicle?.company,
+                                  debouncedsearch
+                                )}
                               </span>
                               <span className="text-xs text-gray-500 truncate">
                                 {vehicle?.vehicleModel}
@@ -583,11 +651,23 @@ export default function VechicleList() {
                         <AccordionContent>
                           <div className="px-2 py-3 space-y-2">
                             <div>
-                              <span className="block text-xs text-gray-400">License Plate</span>
-                              <span className="font-medium">{vehicle.vehicle_plate_number}</span>
+                              <div className="flex items-center gap-2">
+                                <Car className="w-4 " />
+                                <span className="block text-xs text-gray-400">
+                                  License Plate
+                                </span>
+                              </div>
+                              <span className="font-medium">
+                                {vehicle.vehicle_plate_number}
+                              </span>
                             </div>
                             <div>
-                              <span className="block text-xs text-gray-400">VIN</span>
+                              <div className="flex items-center gap-2">
+                                <IdCardIcon className="w-4" />
+                                <span className="block text-xs text-gray-400">
+                                  VIN
+                                </span>
+                              </div>
                               <span className="font-medium">
                                 {vehicle.vin_number
                                   ? `${vehicle.vin_number}`
@@ -595,19 +675,60 @@ export default function VechicleList() {
                               </span>
                             </div>
                             <div>
-                              <span className="block text-xs text-gray-400">Year</span>
-                              <span className="font-medium">{vehicle.year}</span>
+                              <div></div>
+                              <span className="block text-xs text-gray-400">
+                                Year
+                              </span>
+                              <span className="font-medium">
+                                {vehicle.year}
+                              </span>
                             </div>
                             <div>
-                              <span className="block text-xs text-gray-400">Maintenance</span>
+                              <span className="block text-xs text-gray-400">
+                                Color
+                              </span>
+                              <span className="font-medium">
+                                {vehicle.color}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Fuel Type
+                              </span>
+                              <span className="font-medium">
+                                {vehicle.fuel_type}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Transmission
+                              </span>
+                              <span className="font-medium">
+                                {vehicle.transmission}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="block text-xs text-gray-400">
+                                Maintenance
+                              </span>
                               <div className="flex flex-col gap-1">
                                 <span className="flex items-center gap-1 text-xs">
                                   <Wrench className="h-3 w-3 text-gray-400" />
-                                  Last: {vehicle.registration_Expiry_Date ? new Date(vehicle.registration_Expiry_Date).toLocaleDateString() : "N/A"}
+                                  Last:{" "}
+                                  {vehicle.registration_Expiry_Date
+                                    ? new Date(
+                                        vehicle.registration_Expiry_Date
+                                      ).toLocaleDateString()
+                                    : "N/A"}
                                 </span>
                                 <span className="flex items-center gap-1 text-xs">
-                                  <Calendar className="h-3 w-3 text-gray-400" />
-                                  Next: {vehicle.last_Inspection_Date ? new Date(vehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                                  <CalendarIcon className="h-3 w-3 text-gray-400" />
+                                  Next:{" "}
+                                  {vehicle.last_Inspection_Date
+                                    ? new Date(
+                                        vehicle.last_Inspection_Date
+                                      ).toLocaleDateString()
+                                    : "N/A"}
                                 </span>
                               </div>
                             </div>
@@ -616,7 +737,9 @@ export default function VechicleList() {
                                 variant="outline"
                                 size="sm"
                                 className="flex-1"
-                                onClick={() => handleDialogOpen(vehicle, "view")}
+                                onClick={() =>
+                                  handleDialogOpen(vehicle, "view")
+                                }
                               >
                                 <Eye className="w-4 h-4 mr-1" />
                                 View
@@ -625,7 +748,9 @@ export default function VechicleList() {
                                 variant="outline"
                                 size="sm"
                                 className="flex-1"
-                                onClick={() => handleDialogOpen(vehicle, "edit")}
+                                onClick={() =>
+                                  handleDialogOpen(vehicle, "edit")
+                                }
                               >
                                 <Pencil className="w-4 h-4 mr-1" />
                                 Edit
@@ -634,7 +759,9 @@ export default function VechicleList() {
                                 variant="destructive"
                                 size="sm"
                                 className="flex-1"
-                                onClick={() => handleDialogOpen(vehicle, "delete")}
+                                onClick={() =>
+                                  handleDialogOpen(vehicle, "delete")
+                                }
                               >
                                 <Trash className="w-4 h-4 mr-1" />
                                 Delete
@@ -667,10 +794,17 @@ export default function VechicleList() {
                   </div>
                   <div>
                     <DialogTitle className="text-2xl font-bold text-white tracking-wide">
-                      {selectedVehicle?.company || "Vehicle Profile"}
+                      {selectedVehicle?.company
+                        ? selectedVehicle.company.charAt(0).toUpperCase() +
+                          selectedVehicle.company.slice(1)
+                        : "Vehicle Profile"}
                     </DialogTitle>
                     <DialogDescription className="text-blue-100 mt-1">
-                      Detailed information about {selectedVehicle?.company}
+                      Detailed information about{" "}
+                      {selectedVehicle?.company
+                        ? selectedVehicle.company.charAt(0).toUpperCase() +
+                          selectedVehicle.company.slice(1)
+                        : "Vehicle Profile"}
                     </DialogDescription>
                   </div>
                 </div>
@@ -705,6 +839,56 @@ export default function VechicleList() {
                         )}
                       </p>
                     </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        VIN Number
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.vin_number || (
+                          <span className="italic text-gray-400">Not Set</span>
+                        )}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Registration Number
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.registrationNumber || (
+                          <span className="italic text-gray-400">Not Set</span>
+                        )}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Registration State
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.registration_State || (
+                          <span className="italic text-gray-400">Not Set</span>
+                        )}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Registration Expiry Date
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.registration_Expiry_Date
+                          ? new Date(
+                            selectedVehicle.registration_Expiry_Date
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Last Inspection Date
+                      </Label>
+                      <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                        {selectedVehicle.last_Inspection_Date ? new Date(selectedVehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                      </p>
+                    </div>
                     {/* <div>
                       <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                         Vehicle ID
@@ -730,7 +914,7 @@ export default function VechicleList() {
                       </Label>
                       <div className="mt-1">
                         <Badge
-                          className={`px-3 py-1 text-base font-semibold rounded-full ${
+                          className={`${
                             selectedVehicle.status === "Active"
                               ? "bg-green-100 text-green-700 border border-green-300"
                               : selectedVehicle.status === "Inactive"
@@ -742,6 +926,113 @@ export default function VechicleList() {
                           {selectedVehicle.status?.charAt(0).toUpperCase() +
                             selectedVehicle.status?.slice(1)}
                         </Badge>
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Color
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        {selectedVehicle.color && (
+                          <span
+                            className="inline-block w-5 h-5 rounded-full border border-gray-300"
+                            style={{
+                              backgroundColor: selectedVehicle.color,
+                            }}
+                            title={selectedVehicle.color}
+                          />
+                        )}
+                        <span>{selectedVehicle.color}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Fuel Type
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        {selectedVehicle.fuel_type && (
+                          <>
+                            {selectedVehicle.fuel_type.toLowerCase() ===
+                              "petrol" && (
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M7 2v2m10-2v2M5 6h14M6 6v14a2 2 0 002 2h8a2 2 0 002-2V6" />
+                                <rect
+                                  x="9"
+                                  y="10"
+                                  width="6"
+                                  height="8"
+                                  rx="1"
+                                />
+                              </svg>
+                            )}
+                            {selectedVehicle.fuel_type.toLowerCase() ===
+                              "diesel" && (
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M3 16v-1a4 4 0 014-4h10a4 4 0 014 4v1" />
+                                <rect
+                                  x="7"
+                                  y="16"
+                                  width="10"
+                                  height="6"
+                                  rx="2"
+                                />
+                              </svg>
+                            )}
+                            {selectedVehicle.fuel_type.toLowerCase() ===
+                              "gas" && (
+                              <svg
+                                className="w-4 h-4 text-green-500"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle cx="12" cy="12" r="6" />
+                                <path d="M12 8v4l2 2" />
+                              </svg>
+                            )}
+                            {selectedVehicle.fuel_type.toLowerCase() ===
+                              "cng" && (
+                              <svg
+                                className="w-4 h-4 text-yellow-500"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <rect
+                                  x="4"
+                                  y="8"
+                                  width="16"
+                                  height="8"
+                                  rx="4"
+                                />
+                                <path d="M4 12h16" />
+                              </svg>
+                            )}
+                            <span>{selectedVehicle.fuel_type}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Transmission
+                      </Label>
+                      <div className="mt-1">
+                        <span>{selectedVehicle.transmission}</span>
                       </div>
                     </div>
                   </div>
@@ -760,7 +1051,7 @@ export default function VechicleList() {
           </Dialog>
 
           <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-            <DialogContent className="sm:max-w-[520px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
+            <DialogContent className="sm:max-w-[650px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
               <DialogHeader className="space-y-0 pb-0">
                 <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
                   <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
@@ -797,13 +1088,13 @@ export default function VechicleList() {
                   </div>
                 )}
                 <form onSubmit={handleSubmit} className="space-y-7">
-                  <div className="grid grid-cols-1 gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
                       <Label
                         htmlFor="company"
                         className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
                       >
-                        Company
+                        Make
                       </Label>
                       <Input
                         id="company"
@@ -845,7 +1136,7 @@ export default function VechicleList() {
                         htmlFor="year"
                         className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
                       >
-                        Year
+                        Manufacture Year
                       </Label>
                       <Input
                         id="year"
@@ -866,12 +1157,33 @@ export default function VechicleList() {
                         htmlFor="vehicle_plate_number"
                         className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
                       >
-                        Vehicle Plate Number
+                        VIN Number
+                      </Label>
+                      <Input
+                        id="vin_number"
+                        type="text"
+                        placeholder="Enter VIN Number"
+                        value={formData.vin_number}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            vin_number: e.target.value,
+                          })
+                        }
+                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="vehicle_plate_number"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        License Plate
                       </Label>
                       <Input
                         id="vehicle_plate_number"
                         type="text"
-                        placeholder="Enter Vehicle Plate Number"
+                        placeholder="Enter the License Plate"
                         value={formData.vehicle_plate_number}
                         onChange={(e) =>
                           setFormData({
@@ -881,6 +1193,294 @@ export default function VechicleList() {
                         }
                         className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                       />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="color"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Color
+                      </Label>
+                      <Select
+                        value={formData.color}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            color: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                          <SelectValue placeholder="Select Color" />
+                        </SelectTrigger>
+
+                        <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                          <SelectItem value="Black">Black</SelectItem>
+                          <SelectItem value="White">White</SelectItem>
+                          <SelectItem value="Silver">Silver</SelectItem>
+                          <SelectItem value="Gray">Gray</SelectItem>
+                          <SelectItem value="Blue">Blue</SelectItem>
+                          <SelectItem value="Red">Red</SelectItem>
+                          <SelectItem value="Green">Green</SelectItem>
+                          <SelectItem value="Yellow">Yellow</SelectItem>
+                          <SelectItem value="Brown">Brown</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="drivers_License_Number"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Fuel Type
+                      </Label>
+                      <Select
+                        value={formData.fuel_type}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            fuel_type: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                          <SelectValue placeholder="Select Fuel Type" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                          <SelectItem
+                            value="Petrol"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Petrol
+                          </SelectItem>
+                          <SelectItem
+                            value="Diesel"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Diesel
+                          </SelectItem>
+                          <SelectItem
+                            value="Electric"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Electric
+                          </SelectItem>
+                          <SelectItem
+                            value="Hybrid"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Hybrid
+                          </SelectItem>
+                          <SelectItem
+                            value="CNG"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            CNG
+                          </SelectItem>
+                          <SelectItem
+                            value="LPG"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            LPG
+                          </SelectItem>
+                          <SelectItem
+                            value="Other"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Other
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="drivers_License_Number"
+                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                      >
+                        Transmission
+                      </Label>
+                      <Select
+                        // value={transmission}
+                        // onValueChange={setTransmission}
+                        value={formData.transmission}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            transmission: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                          <SelectValue placeholder="Select Transmission" />
+                        </SelectTrigger>
+
+                        <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                          <SelectItem
+                            value="Automatic"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Automatic
+                          </SelectItem>
+                          <SelectItem
+                            value="Manual"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Manual
+                          </SelectItem>
+                          <SelectItem
+                            value="Semi-Automatic"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Semi-Automatic
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="companyName"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Registration Number
+                          </Label>
+                          <Input
+                            type="text"
+                            placeholder="Enter the Registration Number"
+                            value={formData.registrationNumber}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                registrationNumber: e.target.value,
+                              })
+                            }
+                            // required
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="vehicleModel"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Registration State
+                          </Label>
+                          <Input
+                            type="text"
+                            placeholder="Enter the Registration State"
+                            value={formData.registration_State}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                registration_State: e.target.value,
+                              })
+                            }
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="phone"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Registration Expiry Date
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition text-zinc-800 dark:text-white bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900 placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none w-full justify-start text-left font-normal",
+                                  // Add muted foreground if no date is selected
+                                  !formData.registration_Expiry_Date &&
+                                    "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {formData.registration_Expiry_Date
+                                  ? format(
+                                      formData.registration_Expiry_Date,
+                                      "PPP"
+                                    )
+                                  : "Pick a date"}
+                              </Button>
+                            </PopoverTrigger>
+
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar
+                                mode="single"
+                                selected={
+                                  formData.registration_Expiry_Date
+                                    ? new Date(
+                                        formData.registration_Expiry_Date
+                                      )
+                                    : undefined
+                                }
+                                onSelect={(date) =>
+                                  setFormData({
+                                    ...formData,
+                                    registration_Expiry_Date: date
+                                      ? date.toISOString()
+                                      : "",
+                                  })
+                                }
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="drivers_License_Number"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Last Inspection Date
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition text-zinc-800 dark:text-white bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900 placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none w-full justify-start text-left font-normal",
+                                  !formData.last_Inspection_Date &&
+                                    "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {formData.last_Inspection_Date
+                                  ? format(formData.last_Inspection_Date, "PPP")
+                                  : "Pick a date"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar
+                                mode="single"
+                                selected={
+                                  formData.last_Inspection_Date
+                                    ? new Date(formData.last_Inspection_Date)
+                                    : undefined
+                                }
+                                onSelect={(date) =>
+                                  setFormData({
+                                    ...formData,
+                                    last_Inspection_Date: date
+                                      ? date.toISOString()
+                                      : "",
+                                  })
+                                }
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <DialogFooter className="pt-4">

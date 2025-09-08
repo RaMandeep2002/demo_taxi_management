@@ -31,6 +31,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function RegisterVehicle() {
   const toast = useToast();
@@ -118,7 +125,7 @@ export default function RegisterVehicle() {
   return (
     <DashboardLayout>
       <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
-      <div className="flex flex-col items-start justify-center mt-8 mb-8">
+        <div className="flex flex-col items-start justify-center mt-8 mb-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#BAFB5D] to-[#23272F] flex items-center justify-center shadow-lg">
               <Plus className="h-8 w-8 text-black dark:text-[#BAFB5D]" />
@@ -128,7 +135,7 @@ export default function RegisterVehicle() {
             </h1>
           </div>
           <p className="text-lg text-zinc-600 dark:text-zinc-300 text-center max-w-xl">
-          Fill in the details below to register a new vehicle to your fleet.
+            Fill in the details below to register a new vehicle to your fleet.
           </p>
         </div>
         <div
@@ -182,7 +189,7 @@ export default function RegisterVehicle() {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
+                <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <Car className="h-5 w-5" />
                   Vehicle Information
                 </CardTitle>
@@ -302,76 +309,150 @@ export default function RegisterVehicle() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="phone">Color</Label>
-                    <Input
-                      type="name"
-                      placeholder="Enter the Color"
-                      value={color}
-                      onChange={(e) => setColor(e.target.value)}
-                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
-                    />
-                        {validationErrors
-                          .filter((err) => err.field === "color")
-                      .map((err, i) => (
-                        <p
-                          key={i}
-                          className="mt-1 text-sm text-red-600 dark:text-red-300"
-                        >
-                          {err.message}
-                        </p>
-                      ))}
+                    <Select value={color} onValueChange={setColor}>
+                      <SelectTrigger className="border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400">
+                        <SelectValue placeholder="Select Color" />
+                      </SelectTrigger>
+                      {validationErrors
+                        .filter((err) => err.field === "color")
+                        .map((err, i) => (
+                          <p
+                            key={i}
+                            className="mt-1 text-sm text-red-600 dark:text-red-300"
+                          >
+                            {err.message}
+                          </p>
+                        ))}
+                      <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                        <SelectItem value="Black">Black</SelectItem>
+                        <SelectItem value="White">White</SelectItem>
+                        <SelectItem value="Silver">Silver</SelectItem>
+                        <SelectItem value="Gray">Gray</SelectItem>
+                        <SelectItem value="Blue">Blue</SelectItem>
+                        <SelectItem value="Red">Red</SelectItem>
+                        <SelectItem value="Green">Green</SelectItem>
+                        <SelectItem value="Yellow">Yellow</SelectItem>
+                        <SelectItem value="Brown">Brown</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="drivers_License_Number">Fuel Type</Label>
-                    <Input
-                      type="text"
-                      placeholder="Enter the Fuel Type"
-                      value={fuel_type}
-                      onChange={(e) => setFuel_type(e.target.value)}
-                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
-                    />
-                    {validationErrors
-                      .filter((err) => err.field === "fuel_type")
-                      .map((err, i) => (
-                        <p
-                          key={i}
-                          className="mt-1 text-sm text-red-600 dark:text-red-300"
+                    <Select value={fuel_type} onValueChange={setFuel_type}>
+                      <SelectTrigger className="border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400">
+                        <SelectValue placeholder="Select Fuel Type" />
+                      </SelectTrigger>
+
+                      {validationErrors
+                        .filter((err) => err.field === "fuel_type")
+                        .map((err, i) => (
+                          <p
+                            key={i}
+                            className="mt-1 text-sm text-red-600 dark:text-red-300"
+                          >
+                            {err.message}
+                          </p>
+                        ))}
+
+                      <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                        <SelectItem
+                          value="Petrol"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
                         >
-                          {err.message}
-                        </p>
-                      ))}
+                          Petrol
+                        </SelectItem>
+                        <SelectItem
+                          value="Diesel"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Diesel
+                        </SelectItem>
+                        <SelectItem
+                          value="Electric"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Electric
+                        </SelectItem>
+                        <SelectItem
+                          value="Hybrid"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Hybrid
+                        </SelectItem>
+                        <SelectItem
+                          value="CNG"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          CNG
+                        </SelectItem>
+                        <SelectItem
+                          value="LPG"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          LPG
+                        </SelectItem>
+                        <SelectItem
+                          value="Other"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Other
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="drivers_License_Number">Transmission</Label>  
-                    <Input
-                      type="text"
-                      placeholder="Enter the Transmission"
+                    <Label htmlFor="drivers_License_Number">Transmission</Label>
+                    <Select
                       value={transmission}
-                      onChange={(e) => setTransmission(e.target.value)}
-                      className="border  dark:border-gray-300 text-zinc-800 dark:text-white rounded-lg bg-transparent  placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none transition"
-                    />
-                    {validationErrors
-                      .filter((err) => err.field === "transmission")
-                      .map((err, i) => (
-                        <p
-                          key={i}
-                          className="mt-1 text-sm text-red-600 dark:text-red-300"
-                        >
-                          {err.message}
-                        </p>
-                      ))}
+                      onValueChange={setTransmission}
+                    >
+                       <SelectTrigger className="border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400">
+                          <SelectValue placeholder="Select Transmission" />
+                        </SelectTrigger>
+                      {validationErrors
+                        .filter((err) => err.field === "transmission")
+                        .map((err, i) => (
+                          <p
+                            key={i}
+                            className="mt-1 text-sm text-red-600 dark:text-red-300"
+                          >
+                            {err.message}
+                          </p>
+                        ))}
+
+                         <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                          <SelectItem
+                            value="Automatic"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Automatic
+                          </SelectItem>
+                          <SelectItem
+                            value="Manual"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Manual
+                          </SelectItem>
+                          <SelectItem
+                            value="Semi-Automatic"
+                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                          >
+                            Semi-Automatic
+                          </SelectItem>
+                        </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
+                <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <FileText className="h-5 w-5" />
                   Registration
                 </CardTitle>
-                <CardDescription>
-                  Registration details
-                </CardDescription>
+                <CardDescription>Registration details</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -559,19 +640,18 @@ export default function RegisterVehicle() {
 
             <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
               <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
+                <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-[#BAFB5D]">
                   <FileText className="h-5 w-5" />
                   Vehicle Registration Details
                 </CardTitle>
                 <CardDescription>
-                  Please review and submit the vehicle registration details below.
+                  Please review and submit the vehicle registration details
+                  below.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-end">
-                  <Button
-                    className="px-8 py-4 font-bold text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black  transition-colors shadow tracking-wide hover:bg-gray-900 dark:hover:bg-[#BAFB5D] flex items-center gap-3 duration-300 disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto"
-                  >
+                  <Button className="px-8 py-4 font-bold text-lg bg-black text-white dark:bg-[#BAFB5D] dark:text-black  transition-colors shadow tracking-wide hover:bg-gray-900 dark:hover:bg-[#BAFB5D] flex items-center gap-3 duration-300 disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto">
                     {isloading ? "Submitting..." : "Submit Vehicle"}
                   </Button>
                 </div>
