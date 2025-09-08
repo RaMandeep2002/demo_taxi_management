@@ -264,7 +264,7 @@ export default function VechicleList() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="w-full px-2 pt-4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
@@ -778,7 +778,7 @@ export default function VechicleList() {
           </Card>
 
           <Dialog open={dialogType === "view"} onOpenChange={handleDialogClose}>
-            <DialogContent className="max-w-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl border-0 p-0 rounded-3xl overflow-hidden">
+            <DialogContent className="max-w-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl border-0 p-0 rounded-xl overflow-hidden">
               <DialogHeader className="bg-blue-600 dark:bg-blue-900 px-8 py-6">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-blue-200 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-900">
@@ -877,7 +877,7 @@ export default function VechicleList() {
                       <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
                         {selectedVehicle.registration_Expiry_Date
                           ? new Date(
-                            selectedVehicle.registration_Expiry_Date
+                              selectedVehicle.registration_Expiry_Date
                             ).toLocaleDateString()
                           : "N/A"}
                       </p>
@@ -887,7 +887,11 @@ export default function VechicleList() {
                         Last Inspection Date
                       </Label>
                       <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
-                        {selectedVehicle.last_Inspection_Date ? new Date(selectedVehicle.last_Inspection_Date).toLocaleDateString() : "N/A"}
+                        {selectedVehicle.last_Inspection_Date
+                          ? new Date(
+                              selectedVehicle.last_Inspection_Date
+                            ).toLocaleDateString()
+                          : "N/A"}
                       </p>
                     </div>
                     {/* <div>
@@ -1052,7 +1056,7 @@ export default function VechicleList() {
           </Dialog>
 
           <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-            <DialogContent className="sm:max-w-[650px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
+            <DialogContent className="w-full max-w-full sm:max-w-[95vw] md:max-w-[750px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-0 overflow-hidden">
               <DialogHeader className="space-y-0 pb-0">
                 <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
                   <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
@@ -1081,269 +1085,266 @@ export default function VechicleList() {
                 </div>
               </DialogHeader>
               <div className="px-8 py-6">
-                {iserror && (
-                  <div className="mb-4">
-                    <p className="text-red-500 text-center font-semibold bg-red-50 dark:bg-red-900 rounded py-2">
-                      {iserror}
-                    </p>
-                  </div>
-                )}
                 <form onSubmit={handleSubmit} className="space-y-7">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="company"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        Make
-                      </Label>
-                      <Input
-                        id="company"
-                        type="text"
-                        placeholder="Enter Company Name"
-                        value={formData.company}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            company: e.target.value,
-                          })
-                        }
-                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
-                      />
+                  {iserror && (
+                    <div className="mb-4">
+                      <p className="text-red-500 text-center font-semibold bg-red-50 dark:bg-red-900 rounded py-2">
+                        {iserror}
+                      </p>
                     </div>
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="vehicleModel"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        Vehicle Model
-                      </Label>
-                      <Input
-                        id="vehicleModel"
-                        type="text"
-                        placeholder="Enter Vehicle Model"
-                        value={formData.vehicleModel}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            vehicleModel: e.target.value,
-                          })
-                        }
-                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="year"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        Manufacture Year
-                      </Label>
-                      <Input
-                        id="year"
-                        type="number"
-                        placeholder="Enter Year"
-                        value={formData.year}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            year: Number(e.target.value),
-                          })
-                        }
-                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="vehicle_plate_number"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        VIN Number
-                      </Label>
-                      <Input
-                        id="vin_number"
-                        type="text"
-                        placeholder="Enter VIN Number"
-                        value={formData.vin_number}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            vin_number: e.target.value,
-                          })
-                        }
-                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="vehicle_plate_number"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        License Plate
-                      </Label>
-                      <Input
-                        id="vehicle_plate_number"
-                        type="text"
-                        placeholder="Enter the License Plate"
-                        value={formData.vehicle_plate_number}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            vehicle_plate_number: e.target.value,
-                          })
-                        }
-                        className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="color"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        Color
-                      </Label>
-                      <Select
-                        value={formData.color}
-                        onValueChange={(value) =>
-                          setFormData({
-                            ...formData,
-                            color: value,
-                          })
-                        }
-                      >
-                        <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
-                          <SelectValue placeholder="Select Color" />
-                        </SelectTrigger>
-
-                        <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
-                          <SelectItem value="Black">Black</SelectItem>
-                          <SelectItem value="White">White</SelectItem>
-                          <SelectItem value="Silver">Silver</SelectItem>
-                          <SelectItem value="Gray">Gray</SelectItem>
-                          <SelectItem value="Blue">Blue</SelectItem>
-                          <SelectItem value="Red">Red</SelectItem>
-                          <SelectItem value="Green">Green</SelectItem>
-                          <SelectItem value="Yellow">Yellow</SelectItem>
-                          <SelectItem value="Brown">Brown</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="drivers_License_Number"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        Fuel Type
-                      </Label>
-                      <Select
-                        value={formData.fuel_type}
-                        onValueChange={(value) =>
-                          setFormData({
-                            ...formData,
-                            fuel_type: value,
-                          })
-                        }
-                      >
-                        <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
-                          <SelectValue placeholder="Select Fuel Type" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
-                          <SelectItem
-                            value="Petrol"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Petrol
-                          </SelectItem>
-                          <SelectItem
-                            value="Diesel"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Diesel
-                          </SelectItem>
-                          <SelectItem
-                            value="Electric"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Electric
-                          </SelectItem>
-                          <SelectItem
-                            value="Hybrid"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Hybrid
-                          </SelectItem>
-                          <SelectItem
-                            value="CNG"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            CNG
-                          </SelectItem>
-                          <SelectItem
-                            value="LPG"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            LPG
-                          </SelectItem>
-                          <SelectItem
-                            value="Other"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Other
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="drivers_License_Number"
-                        className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
-                      >
-                        Transmission
-                      </Label>
-                      <Select
-                        // value={transmission}
-                        // onValueChange={setTransmission}
-                        value={formData.transmission}
-                        onValueChange={(value) =>
-                          setFormData({
-                            ...formData,
-                            transmission: value,
-                          })
-                        }
-                      >
-                        <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
-                          <SelectValue placeholder="Select Transmission" />
-                        </SelectTrigger>
-
-                        <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
-                          <SelectItem
-                            value="Automatic"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Automatic
-                          </SelectItem>
-                          <SelectItem
-                            value="Manual"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Manual
-                          </SelectItem>
-                          <SelectItem
-                            value="Semi-Automatic"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Semi-Automatic
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+                  )}
                   <div>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="overflow-y-auto max-h-[70vh] md:max-h-none">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 min-w-[320px]">
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="company"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Make
+                          </Label>
+                          <Input
+                            id="company"
+                            type="text"
+                            placeholder="Enter Company Name"
+                            value={formData.company}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                company: e.target.value,
+                              })
+                            }
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="vehicleModel"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Vehicle Model
+                          </Label>
+                          <Input
+                            id="vehicleModel"
+                            type="text"
+                            placeholder="Enter Vehicle Model"
+                            value={formData.vehicleModel}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                vehicleModel: e.target.value,
+                              })
+                            }
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="year"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Manufacture Year
+                          </Label>
+                          <Input
+                            id="year"
+                            type="number"
+                            placeholder="Enter Year"
+                            value={formData.year}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                year: Number(e.target.value),
+                              })
+                            }
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="vehicle_plate_number"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            VIN Number
+                          </Label>
+                          <Input
+                            id="vin_number"
+                            type="text"
+                            placeholder="Enter VIN Number"
+                            value={formData.vin_number}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                vin_number: e.target.value,
+                              })
+                            }
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="vehicle_plate_number"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            License Plate
+                          </Label>
+                          <Input
+                            id="vehicle_plate_number"
+                            type="text"
+                            placeholder="Enter the License Plate"
+                            value={formData.vehicle_plate_number}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                vehicle_plate_number: e.target.value,
+                              })
+                            }
+                            className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="color"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Color
+                          </Label>
+                          <Select
+                            value={formData.color}
+                            onValueChange={(value) =>
+                              setFormData({
+                                ...formData,
+                                color: value,
+                              })
+                            }
+                          >
+                            <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                              <SelectValue placeholder="Select Color" />
+                            </SelectTrigger>
+
+                            <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                              <SelectItem value="Black">Black</SelectItem>
+                              <SelectItem value="White">White</SelectItem>
+                              <SelectItem value="Silver">Silver</SelectItem>
+                              <SelectItem value="Gray">Gray</SelectItem>
+                              <SelectItem value="Blue">Blue</SelectItem>
+                              <SelectItem value="Red">Red</SelectItem>
+                              <SelectItem value="Green">Green</SelectItem>
+                              <SelectItem value="Yellow">Yellow</SelectItem>
+                              <SelectItem value="Brown">Brown</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="drivers_License_Number"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Fuel Type
+                          </Label>
+                          <Select
+                            value={formData.fuel_type}
+                            onValueChange={(value) =>
+                              setFormData({
+                                ...formData,
+                                fuel_type: value,
+                              })
+                            }
+                          >
+                            <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                              <SelectValue placeholder="Select Fuel Type" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                              <SelectItem
+                                value="Petrol"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Petrol
+                              </SelectItem>
+                              <SelectItem
+                                value="Diesel"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Diesel
+                              </SelectItem>
+                              <SelectItem
+                                value="Electric"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Electric
+                              </SelectItem>
+                              <SelectItem
+                                value="Hybrid"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Hybrid
+                              </SelectItem>
+                              <SelectItem
+                                value="CNG"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                CNG
+                              </SelectItem>
+                              <SelectItem
+                                value="LPG"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                LPG
+                              </SelectItem>
+                              <SelectItem
+                                value="Other"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Other
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="drivers_License_Number"
+                            className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
+                          >
+                            Transmission
+                          </Label>
+                          <Select
+                            value={formData.transmission}
+                            onValueChange={(value) =>
+                              setFormData({
+                                ...formData,
+                                transmission: value,
+                              })
+                            }
+                          >
+                            <SelectTrigger className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition">
+                              <SelectValue placeholder="Select Transmission" />
+                            </SelectTrigger>
+
+                            <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                              <SelectItem
+                                value="Automatic"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Automatic
+                              </SelectItem>
+                              <SelectItem
+                                value="Manual"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Manual
+                              </SelectItem>
+                              <SelectItem
+                                value="Semi-Automatic"
+                                className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                              >
+                                Semi-Automatic
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
                         <div className="space-y-2">
                           <Label
                             htmlFor="companyName"
@@ -1361,7 +1362,6 @@ export default function VechicleList() {
                                 registrationNumber: e.target.value,
                               })
                             }
-                            // required
                             className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                           />
                         </div>
@@ -1385,9 +1385,6 @@ export default function VechicleList() {
                             className="h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition"
                           />
                         </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label
                             htmlFor="phone"
@@ -1401,7 +1398,6 @@ export default function VechicleList() {
                                 variant="outline"
                                 className={cn(
                                   "h-11 rounded-lg border-blue-200 dark:border-blue-700 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition text-zinc-800 dark:text-white bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900 placeholder:text-zinc-600 dark:placeholder:text-gray-300 text-base focus:outline-none w-full justify-start text-left font-normal",
-                                  // Add muted foreground if no date is selected
                                   !formData.registration_Expiry_Date &&
                                     "text-muted-foreground"
                                 )}
@@ -1484,6 +1480,7 @@ export default function VechicleList() {
                       </div>
                     </div>
                   </div>
+
                   <DialogFooter className="pt-4">
                     <Button
                       type="submit"
