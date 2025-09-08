@@ -810,7 +810,8 @@ export default function VechicleList() {
                 </div>
               </DialogHeader>
               {selectedVehicle && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
+                // Add scrollable container for mobile view
+                <div className="overflow-y-auto max-h-[70vh] md:max-h-none grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
                   {/* Left: Vehicle Info */}
                   <div className="space-y-6">
                     <div>
