@@ -206,7 +206,7 @@ export default function AdminList() {
   };
   return (
     <DashboardLayout>
-      <div className="p-8">
+     <div className="w-full px-2 pt-4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">

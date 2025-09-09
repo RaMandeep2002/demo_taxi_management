@@ -105,7 +105,7 @@ export default function BookingHistory() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+       <div className="w-full px-2 pt-4">
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
             <div>

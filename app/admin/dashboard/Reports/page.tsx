@@ -170,7 +170,7 @@ export default function Reports() {
 
   return (
     <DashboardLayout>
-      <div className="p-4 md:p-8">
+       <div className="w-full px-2 pt-4">
         <div className="mb-6">
           <div>
             <h2 className="text-3xl font-bold text-black dark:text-white tracking-wider">

@@ -275,7 +275,7 @@ export default function DriverList() {
 
   return (
     <DashboardLayout>
-  <div className="w-full px-2 pt-4">
+      <div className="w-full px-2 pt-4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-black dark:text-white flex items-center gap-2">
@@ -390,7 +390,7 @@ export default function DriverList() {
                   <div className="relative w-64">
                     <Input
                       placeholder="Search drivers..."
-                      className="pl-10 w-full"
+                      className="pl-10 w-full sm:w-64"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -778,17 +778,9 @@ export default function DriverList() {
               </div>
             </DialogHeader>
             {selectedDriver && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
+              <div className="overflow-y-auto max-h-[70vh] md:max-h-none grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
                 {/* Left: Personal Info */}
                 <div className="space-y-6">
-                  {/* <div>
-                    <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Driver ID
-                    </Label>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
-                      {selectedDriver._id}
-                    </p>
-                  </div> */}
                   <div>
                     <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                       Email
@@ -929,15 +921,16 @@ export default function DriverList() {
               </div>
             </DialogHeader>
             <div className="px-8 py-6">
-              {iserror && (
-                <div className="mb-4">
-                  <p className="text-red-500 text-center font-semibold bg-red-50 dark:bg-red-900 rounded py-2">
-                    {iserror}
-                  </p>
-                </div>
-              )}
               <form onSubmit={handleSubmit} className="space-y-7">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {iserror && (
+                  <div className="mb-4">
+                    <p className="text-red-500 text-center font-semibold bg-red-50 dark:bg-red-900 rounded py-2">
+                      {iserror}
+                    </p>
+                  </div>
+                )}
+                    <div className="overflow-y-auto max-h-[50vh] md:max-h-none">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 min-w-[320px]">
                   <div className="space-y-3">
                     <Label
                       htmlFor="drivername"
@@ -1208,9 +1201,7 @@ export default function DriverList() {
                       </PopoverContent>
                     </Popover>
                   </div>
-                </div>
-
-                <div className="space-y-3">
+                  <div className="space-y-3">
                   <Label
                     htmlFor="password"
                     className="text-slate-700 dark:text-white font-semibold flex items-center gap-2"
@@ -1241,6 +1232,11 @@ export default function DriverList() {
                     </button>
                   </div>
                 </div>
+                </div>
+                    </div>
+           
+
+              
                 <DialogFooter className="pt-4">
                   <Button
                     type="submit"

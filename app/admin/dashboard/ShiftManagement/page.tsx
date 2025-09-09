@@ -194,7 +194,7 @@ export default function ShiftsAndVehicle() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+   <div className="w-full px-2 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
           <div className="space-y-1">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 dark:text-blue-200 tracking-tight">

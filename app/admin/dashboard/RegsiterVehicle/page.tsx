@@ -124,7 +124,7 @@ export default function RegisterVehicle() {
 
   return (
     <DashboardLayout>
-      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
+      <div className="w-full sm:px-6 lg:px-10 mx-auto">
         <div className="flex flex-col items-start justify-center mt-8 mb-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#BAFB5D] to-[#23272F] flex items-center justify-center shadow-lg">
@@ -407,9 +407,9 @@ export default function RegisterVehicle() {
                       value={transmission}
                       onValueChange={setTransmission}
                     >
-                       <SelectTrigger className="border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400">
-                          <SelectValue placeholder="Select Transmission" />
-                        </SelectTrigger>
+                      <SelectTrigger className="border dark:border-gray-300 rounded-lg bg-transparent text-zinc-800 dark:text-white text-base focus:outline-none transition shadow-sm hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400">
+                        <SelectValue placeholder="Select Transmission" />
+                      </SelectTrigger>
                       {validationErrors
                         .filter((err) => err.field === "transmission")
                         .map((err, i) => (
@@ -421,26 +421,26 @@ export default function RegisterVehicle() {
                           </p>
                         ))}
 
-                         <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
-                          <SelectItem
-                            value="Automatic"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Automatic
-                          </SelectItem>
-                          <SelectItem
-                            value="Manual"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Manual
-                          </SelectItem>
-                          <SelectItem
-                            value="Semi-Automatic"
-                            className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
-                          >
-                            Semi-Automatic
-                          </SelectItem>
-                        </SelectContent>
+                      <SelectContent className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg border dark:border-gray-700">
+                        <SelectItem
+                          value="Automatic"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Automatic
+                        </SelectItem>
+                        <SelectItem
+                          value="Manual"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Manual
+                        </SelectItem>
+                        <SelectItem
+                          value="Semi-Automatic"
+                          className="hover:bg-indigo-100 dark:hover:bg-fuchsia-950 transition"
+                        >
+                          Semi-Automatic
+                        </SelectItem>
+                      </SelectContent>
                     </Select>
                   </div>
                 </div>

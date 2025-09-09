@@ -72,7 +72,7 @@ export default function AddAdmin() {
   };
   return (
     <DashboardLayout>
-      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
+      <div className="w-full sm:px-6 lg:px-8 mx-auto">
         <div className="flex flex-col items-center justify-center mt-8 mb-8">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#BAFB5D] to-[#23272F] flex items-center justify-center shadow-lg mb-4">
             <UserCheck className="h-8 w-8 text-black dark:text-[#BAFB5D]" />
