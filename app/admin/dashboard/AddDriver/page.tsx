@@ -192,7 +192,7 @@ export default function AddDriver() {
           </p>
         </div>
         <div
-          className="max-w-5xl mx-auto w-full p-4 sm:p-6 md:p-8  rounded-md
+          className="max-w-5xl mx-auto w-full sm:p-6 md:p-8
         "
         >
           {error && (
@@ -239,7 +239,7 @@ export default function AddDriver() {
             </Dialog>
           )}
 
-          <div className="w-full max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto sm:p-6 md:p-8">
+          <div>
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <Card className="shadow-lg border-0 dark:bg-[#34363F] transition">
                 <CardHeader>
