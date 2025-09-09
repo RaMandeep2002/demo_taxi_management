@@ -753,7 +753,7 @@ export default function DriverList() {
           open={dialogType === "profile"}
           onOpenChange={handleDialogClose}
         >
-          <DialogContent className="max-w-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  shadow-2xl border-0 p-0 rounded-3xl overflow-hidden">
+          <DialogContent className="max-w-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl rounded-lg p-0 border-0 overflow-hidden">
             <DialogHeader className="bg-blue-600 dark:bg-blue-900 px-8 py-6">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-blue-200 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-900">
@@ -778,7 +778,7 @@ export default function DriverList() {
               </div>
             </DialogHeader>
             {selectedDriver && (
-              <div className="overflow-y-auto max-h-[70vh] md:max-h-none grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8 bg-white dark:bg-slate-900">
+             <div className="overflow-y-auto max-h-[50vh] md:max-h-none grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-4 bg-white dark:bg-slate-900">
                 {/* Left: Personal Info */}
                 <div className="space-y-6">
                   <div>
@@ -892,7 +892,7 @@ export default function DriverList() {
         </Dialog>
 
         <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-          <DialogContent className="sm:max-w-[650px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900  p-0 overflow-hidden">
+          <DialogContent className="sm:max-w-[650px] border-0 bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl rounded-lg p-0 overflow-hidden">
             <DialogHeader className="space-y-0 pb-0">
               <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
                 <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
@@ -929,7 +929,7 @@ export default function DriverList() {
                     </p>
                   </div>
                 )}
-                    <div className="overflow-y-auto max-h-[50vh] md:max-h-none">
+                    <div className="overflow-y-auto max-h-[40vh] md:max-h-none">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 min-w-[320px]">
                   <div className="space-y-3">
                     <Label

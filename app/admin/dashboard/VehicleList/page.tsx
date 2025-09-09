@@ -1056,7 +1056,7 @@ export default function VechicleList() {
           </Dialog>
 
           <Dialog open={dialogType === "edit"} onOpenChange={handleDialogClose}>
-            <DialogContent className="w-full max-w-full sm:max-w-[95vw] md:max-w-[750px] border-0 shadow-2xl bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-0 overflow-hidden">
+            <DialogContent className="w-full max-w-full sm:max-w-[95vw] md:max-w-[750px] border-0 shadow-2xl rounded-lg bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-0 overflow-hidden">
               <DialogHeader className="space-y-0 pb-0">
                 <div className="flex flex-col items-center justify-center bg-blue-600 dark:bg-blue-900 py-6 px-8 shadow-inner">
                   <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-blue-700 mb-2">
@@ -1094,7 +1094,7 @@ export default function VechicleList() {
                     </div>
                   )}
                   <div>
-                    <div className="overflow-y-auto max-h-[50vh] md:max-h-none">
+                    <div className="overflow-y-auto max-h-[40vh] md:max-h-none">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 min-w-[320px]">
                         <div className="space-y-1.5">
                           <Label
