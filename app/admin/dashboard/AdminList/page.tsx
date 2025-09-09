@@ -64,6 +64,13 @@ import { updateAdmin } from "../../slices/slice/updateUserSlice";
 import { useToast } from "@/hooks/use-toast";
 import { deleteAdmin } from "../../slices/slice/deleteAdminSlice";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 interface FormData {
   name: string;
   email: string;
@@ -219,7 +226,7 @@ export default function AdminList() {
           </div>
           <div className="w-full sm:w-auto flex justify-end mt-4 sm:mt-0">
             <Button
-              className="w-full sm:w-auto"
+              className="redirect-button"
               onClick={() => router.push("/admin/dashboard/AddAdmin")}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -250,7 +257,8 @@ export default function AdminList() {
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
+            <div className="hidden sm:block">
+            <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[50px]"></TableHead>
@@ -309,17 +317,7 @@ export default function AdminList() {
                           <div className="font-medium text-gray-900 dark:text-white">
                             {admin.role ? (
                               <span
-                                className={`inline-block px-2 py-1 rounded-full text-xs font-semibold
-                                  ${
-                                    admin.role === "super-admin"
-                                      ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200"
-                                      : admin.role === "admin"
-                                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200"
-                                      : admin.role === "fleet-manager"
-                                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
-                                      : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
-                                  }
-                                `}
+                            className="font-medium text-gray-900 dark:text-white"
                               >
                                 {admin.role.charAt(0).toUpperCase() + admin.role.slice(1)}
                               </span>
@@ -367,6 +365,123 @@ export default function AdminList() {
                   )}
                 </TableBody>
               </Table>
+            </div>
+
+            <div className="block sm:hidden">
+            {isLoading ? (
+              <div className="text-center py-8 text-gray-500">
+                Loading...
+              </div>
+            ) : error ? (
+              <div className="text-center py-8 text-red-600">
+                {error}
+              </div>
+            ) : filteredAdmins.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No admins found
+              </div>
+            ) : (
+              <Accordion type="single" collapsible>
+                {[...paginatedAdmins]
+                  .sort((a, b) => {
+                    // Show "super admin" first
+                    if (a.role === "super-admin" && b.role !== "super-admin") return -1;
+                    if (a.role !== "super-admin" && b.role === "super-admin") return 1;
+                    return 0;
+                  })
+                  .map((admin) => (
+                  <AccordionItem key={admin._id} value={admin._id}>
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <span className="text-blue-600 font-semibold text-base">
+                            {admin.name
+                              ? admin.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")
+                                  .toUpperCase()
+                              : "A"}
+                          </span>
+                        </div>
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <span className="font-medium text-gray-900 dark:text-gray-200 truncate">
+                            {admin.name}
+                          </span>
+                          <span className="text-xs text-gray-500 truncate">
+                            {(admin._id)?.slice(0, 8)}
+                          </span>
+                        </div>
+                        <div className="mr-2">
+                          <span className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+                            {admin.role
+                              ? admin.role.charAt(0).toUpperCase() + admin.role.slice(1)
+                              : "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="p-4 space-y-2">
+                        <div>
+                          <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                            Name
+                          </Label>
+                          <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                            {admin.name}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                            Email
+                          </Label>
+                          <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                            {admin.email}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                            Role
+                          </Label>
+                          <p className="text-base text-gray-800 dark:text-gray-200 font-medium">
+                            {admin.role
+                              ? admin.role.charAt(0).toUpperCase() + admin.role.slice(1)
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div className="flex gap-2 mt-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDialogOpen(admin, "profile")}
+                          >
+                            <Eye className="w-4 h-4 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDialogOpen(admin, "edit")}
+                          >
+                            <Pencil className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDialogOpen(admin, "delete")}
+                          >
+                            <Trash className="w-4 h-4 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+            </div>
             </CardContent>
           </Card>
         </div>

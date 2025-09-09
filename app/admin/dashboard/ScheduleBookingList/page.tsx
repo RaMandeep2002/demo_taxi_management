@@ -7,6 +7,7 @@ import {
   MapPinCheck,
   Calendar,
   Plus,
+  ArrowRight,
 } from "lucide-react";
 import DashboardLayout from "../../DashBoardLayout";
 import {
@@ -33,6 +34,14 @@ import { useSelector } from "react-redux";
 import { fetchScheduleHistory } from "../../slices/slice/getScheduleRideSlice";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 export default function ScheduleRideList() {
   // For demo, debouncedSearch is empty string
@@ -133,7 +142,8 @@ export default function ScheduleRideList() {
           </CardHeader>
 
           <CardContent>
-            <Table>
+           <div className="hidden sm:block">
+           <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead></TableHead>
@@ -412,6 +422,170 @@ export default function ScheduleRideList() {
                 )}
               </TableBody>
             </Table>
+           </div>
+
+           <div className="block sm:hidden">
+           {loading ? (
+              <div className="text-center py-8">
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <svg
+                    className="animate-spin h-8 w-8 text-blue-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  <span className="text-blue-700 dark:text-blue-300 font-medium text-base">
+                    Loading bookings...
+                  </span>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="text-center py-8 text-red-600 dark:text-red-400">
+                {error}
+              </div>
+            ) : paginatedScheduleData.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No Bookings found
+              </div>
+            ) : (
+              <div>
+                <Accordion type="single" collapsible>
+                  {paginatedScheduleData.map((booking) => (
+                    <AccordionItem key={booking._id} value={booking._id}>
+                      <AccordionTrigger>
+                        <div className="flex items-center gap-3 w-full">
+                          <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <span className="text-yellow-600 font-semibold text-base">
+                              {booking.customerName
+                                ? booking.customerName
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")
+                                    .toUpperCase()
+                                : "C"}
+                            </span>
+                          </div>
+                          <div className="flex flex-col flex-1 min-w-0">
+                            <span className="font-medium text-gray-900 dark:text-gray-200 truncate">
+                              {highlightMatch(
+                                booking.customerName,
+                                searchTerm
+                              )}
+                            </span>
+                            <span className="text-xs text-gray-500 truncate">
+                            {booking.customer_email}
+                            </span>
+                          </div>
+                          <div>
+                          <span
+                              className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${
+                                booking.sendtoemail === true
+                                  ? "bg-green-100 text-green-800"
+                                  : booking.sendtoemail === false
+                                  ? "bg-gray-100 text-gray-800"
+                                  : "bg-gray-300 text-gray-600"
+                              }`}
+                              style={{
+                                display: "inline-block",
+                                minWidth: "70px",
+                                textAlign: "center",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {booking.sendtoemail ? (
+                                <span>
+                                  <span className="hidden xs:inline">
+                                   Send
+                                  </span>
+                                  <span className="inline xs:hidden">Yes</span>
+                                </span>
+                              ) : (
+                                <span>
+                                  <span className="hidden xs:inline">
+                                   Not
+                                  </span>
+                                  <span className="inline xs:hidden">No</span>
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="p-4 space-y-2">
+                          <div>
+                            <span className="font-semibold">Pickup Date & Time: </span>
+                            <span>
+                              <Calendar className="inline h-4 w-4 mr-1" />
+                              {booking.pickupDate || <span className="italic text-gray-400">N/A</span>}
+                              {" "}
+                              <Clock className="inline h-4 w-4 ml-2 mr-1" />
+                              {booking.pickuptime
+                               || <span className="italic text-gray-400">N/A</span>}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Route: </span>
+                            <span>
+                              <MapPin className="inline h-4 w-4 mr-1" />
+                              {booking.pickupAddress || <span className="italic text-gray-400">N/A</span>}
+                              {" "}
+                              <ArrowRight className="inline h-4 w-4 mx-1" />
+                              {booking.dropOffAddress || <span className="italic text-gray-400">N/A</span>}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Round Trip: </span>
+                            <span>
+                              {booking.roundTrip ? (
+                                <Badge variant="default">Yes</Badge>
+                              ) : (
+                                <Badge variant="outline">No</Badge>
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Send To Email: </span>
+                            <span>
+                              {booking.sendtoemail ? (
+                                <Badge variant="default">Yes</Badge>
+                              ) : (
+                                <Badge variant="outline">No</Badge>
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Return Date & Time: </span>
+                            <span>
+                              <Calendar className="inline h-4 w-4 mr-1" />
+                              {booking.returnDate || <span className="italic text-gray-400">N/A</span>}
+                              {" "}
+                              <Clock className="inline h-4 w-4 ml-2 mr-1" />
+                              {booking.returnTime || <span className="italic text-gray-400">N/A</span>}
+                            </span>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            )}
+           </div>
           </CardContent>
         </Card>
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
