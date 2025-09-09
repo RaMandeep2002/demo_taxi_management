@@ -641,7 +641,7 @@ export default function AddDriver() {
                       <Button
                         type="button"
                         onClick={togglePasswordVisibility}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-1.5 py-0.5 rounded focus:outline-none hover:bg-zinc-200 text-zinc-700 h-6 min-h-0"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-1.5 py-0.5 rounded focus:outline-none h-6 min-h-0"
                         tabIndex={-1}
                       >
                         {showPassword ? (
